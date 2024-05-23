@@ -1,6 +1,6 @@
 channels==2.4.0
 channels-redis==3.4.0
-cryptography
+cryptography==41.0.5
 django==3.2.17
 dash==2.8.1
 dash-bootstrap-components==1.2.1
