@@ -1,5 +1,8 @@
 ### Installation path
-INSTALL_PATH='/opt'
+INSTALL_PATH='/opt/relecov-platform'
+PROJECT_NAME='relecov_platform'
+REQUIRED_MODULES='relecov_core relecov_dashboard relecov_documentation'
+MIGRATION_MODULES='relecov_core relecov_dashboard'
 
 ### (optional) Python installation path where pip and python executables are located
 PYTHON_BIN_PATH='python3' # example: /opt/python/3.9.6/bin/python3
@@ -8,6 +11,7 @@ PYTHON_BIN_PATH='python3' # example: /opt/python/3.9.6/bin/python3
 
 DB_USER='<user_name>'
 DB_PASS='<your_passwd>'
+DB_NAME='<your_dbname>'
 DB_SERVER_IP='<IP_db_server>'
 DB_PORT=3306
 
