@@ -94,7 +94,6 @@ from relecov_core.core_config import (
 )
 
 
-@login_required
 def index(request):
     number_of_samples = count_handled_samples()
     nextstrain_url = get_configuration_value("NEXTSTRAIN_URL")
