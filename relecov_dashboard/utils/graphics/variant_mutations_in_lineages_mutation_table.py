@@ -5,6 +5,7 @@ Mutation table under needle plot
 - Clean or filter dataframe
 - Generate auxiliar table to needle plot
 """
+
 import pandas as pd
 
 from dash.dependencies import Input, Output
