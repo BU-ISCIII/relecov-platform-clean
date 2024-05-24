@@ -120,7 +120,7 @@ def create_mutation_table(sample_list, effect_list):
         data = {}
         sample_list = [2018185, 210067]
 
-        if type(selected_effects) == list and len(selected_effects) >= 1:
+        if isinstance(selected_effects, list) and len(selected_effects) >= 1:
             df = create_data_for_dataframe(
                 sample_list=sample_list, effect_list=selected_effects
             )
