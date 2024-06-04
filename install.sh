@@ -120,7 +120,7 @@ update_settings_and_urls(){
     # save SECRET KEY at home user directory
     grep ^SECRET $INSTALL_PATH/$PROJECT_NAME/settings.py > ~/.secret
 
-    cp conf/template_settings.txt $INSTALL_PATH/$PROJECT_NAME/settings.py
+    cp conf/template_settings.py $INSTALL_PATH/$PROJECT_NAME/settings.py
     cp conf/urls.py $INSTALL_PATH/$PROJECT_NAME/
     cp conf/routing.py $INSTALL_PATH/$PROJECT_NAME/
     
@@ -165,8 +165,8 @@ reset=true
 for arg in "$@"
 do
     if [ -n "$reset" ]; then
-      unset reset
-      set --      # this resets the "$@" array so we can rebuild it
+        unset reset
+        set --      # this resets the "$@" array so we can rebuild it
     fi
     case "$arg" in
     # OPTIONAL
@@ -377,8 +377,8 @@ if [ $upgrade == true ]; then
     echo "Copying files to installation folder"
         rsync -rlv conf/ $INSTALL_PATH/conf/
         rsync -rlv --fuzzy --delay-updates --delete-delay \
-              --exclude "logs" --exclude "documents" --exclude "migrations" --exclude "__pycache__" \
-              README.md LICENSE conf django_utils $REQUIRED_MODULES $INSTALL_PATH/
+            --exclude "logs" --exclude "documents" --exclude "migrations" --exclude "__pycache__" \
+            README.md LICENSE conf django_utils $REQUIRED_MODULES $INSTALL_PATH/
         
         # update the settings.py and the main urls
         echo "Update settings and url file."
@@ -605,7 +605,6 @@ if [ "$install_type" == "full" ] || [ "$install_type" == "app" ]; then
     mkdir -p $INSTALL_PATH/$PROJECT_NAME
     rsync -rlv README.md LICENSE conf $REQUIRED_MODULES $INSTALL_PATH/
 
-    cd $INSTALL_PATH/$PROJECT_NAME
     ## Fix permissions and owners
 
     if [ $LOG_TYPE == "symbolic_link" ]; then
