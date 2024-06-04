@@ -375,10 +375,10 @@ if [ $upgrade == true ]; then
 
     # update installation by sinchronize folders
     echo "Copying files to installation folder"
-        rsync -rlv conf/ $INSTALL_PATH/conf/
-        rsync -rlv --fuzzy --delay-updates --delete-delay \
-            --exclude "logs" --exclude "documents" --exclude "migrations" --exclude "__pycache__" \
-            README.md LICENSE conf django_utils $REQUIRED_MODULES $INSTALL_PATH/
+    rsync -rlv conf/ $INSTALL_PATH/conf/
+    rsync -rlv --fuzzy --delay-updates --delete-delay \
+        --exclude "logs" --exclude "documents" --exclude "migrations" --exclude "__pycache__" \
+        README.md LICENSE conf django_utils $REQUIRED_MODULES $INSTALL_PATH/
         
         # update the settings.py and the main urls
         echo "Update settings and url file."
@@ -396,20 +396,20 @@ if [ $upgrade == true ]; then
             echo "Updating sample sheet folder name"
             mv $INSTALL_PATH/documents/SampleSheets $INSTALL_PATH/documents/sample_sheet
         fi
-            
+
         if [ -d "$INSTALL_PATH/documents/SampleSheets4LibPrep" ]; then
             echo "Updating sample sheet for libary preparationfolder name"
             mv $INSTALL_PATH/documents/SampleSheets4LibPrep $INSTALL_PATH/documents/sample_sheets_lib_prep
         fi
 
         cd $INSTALL_PATH
-    echo "activate the virtualenv"
-    source virtualenv/bin/activate
+        echo "activate the virtualenv"
+        source virtualenv/bin/activate
 
         echo "Running collect statics..."
         python manage.py collectstatic
         echo "Done collect statics"
-        
+
         if [ $tables == true ] ; then
             echo "Loading pre-filled tables..."
             python manage.py loaddata conf/first_install_tables.json
@@ -595,34 +595,28 @@ if [ $install == true ]; then
         fi
     fi
 
-#================================================================
-# INSTALL iSkyLIMS PLATFORM APPLICATION
-#================================================================
+    #================================================================
+    # INSTALL iSkyLIMS PLATFORM APPLICATION
+    #================================================================
 
-if [ "$install_type" == "full" ] || [ "$install_type" == "app" ]; then
-    # Start relecov-platform installation
+    if [ "$install_type" == "full" ] || [ "$install_type" == "app" ]; then
 
-    mkdir -p $INSTALL_PATH/$PROJECT_NAME
-    rsync -rlv README.md LICENSE conf $REQUIRED_MODULES $INSTALL_PATH/
-
-    ## Fix permissions and owners
-
-    if [ $LOG_TYPE == "symbolic_link" ]; then
-        if [ -d $LOG_PATH ]; then
-            ln -s $LOG_PATH  $INSTALL_PATH/logs
-            chmod 775 $LOG_PATH
+        if [ $LOG_TYPE == "symbolic_link" ]; then
+            if [ -d $LOG_PATH ]; then
+                ln -s $LOG_PATH  $INSTALL_PATH/logs
+                chmod 775 $LOG_PATH
+            else
+                echo "Log folder path: $LOG_PATH does not exist. Fix it in the install_settings.txt and run again."
+            exit 1
+            fi
         else
-            echo "Log folder path: $LOG_PATH does not exist. Fix it in the install_settings.txt and run again."
-        exit 1
-        fi
-    else
             mkdir -p $INSTALL_PATH/logs
             chown $user:$apache_group $INSTALL_PATH/logs
             chmod 775 $INSTALL_PATH/logs
         fi
 
-        rsync -rlv README.md LICENSE test conf django_utils  django_plotly_dash \
-            $MIGRATION_MODULES $INSTALL_PATH/
+        mkdir -p $INSTALL_PATH/$PROJECT_NAME
+        rsync -rlv README.md LICENSE conf $REQUIRED_MODULES $INSTALL_PATH/
 
         cd $INSTALL_PATH
 
@@ -636,7 +630,7 @@ if [ "$install_type" == "full" ] || [ "$install_type" == "app" ]; then
         mkdir -p $INSTALL_PATH/documents/sample_sheets_lib_prep
         mkdir -p $INSTALL_PATH/documents
         mkdir -p $INSTALL_PATH/documents/service_files
-        
+
         chown -R $user:$apache_group $INSTALL_PATH/documents
         chmod 775 $INSTALL_PATH/documents
         
@@ -653,7 +647,6 @@ if [ "$install_type" == "full" ] || [ "$install_type" == "app" ]; then
         source virtualenv/bin/activate
 
         # Starting Relecov Platform
-
         echo "Creating $PROJECT_NAME project"
         django-admin startproject $PROJECT_NAME .
         
@@ -668,16 +661,16 @@ if [ "$install_type" == "full" ] || [ "$install_type" == "app" ]; then
             python manage.py migrate
             echo "Loading in database initial data"
             python manage.py loaddata conf/upload_tables.json
-        
+
             echo "Updating Apache configuration"
             if [[ $linux_distribution == "Ubuntu" ]]; then
                 cp conf/relecov_apache_ubuntu.conf /etc/apache2/sites-available/000-default.conf
             fi
-        
+
             if [[ $linux_distribution == "CentOS" || $linux_distribution == "RedHatEnterprise" ]]; then
                 cp conf/relecov_apache_centos_redhat.conf /etc/httpd/conf.d/relecov-platform.conf
             fi
-        
+
             echo "Creating super user "
             python manage.py createsuperuser --username admin
         fi
@@ -688,15 +681,15 @@ if [ "$install_type" == "full" ] || [ "$install_type" == "app" ]; then
 
         cd -
 
-            printf "\n\n%s"
-            printf "${BLUE}------------------${NC}\n"
-            printf "%s"
-            printf "${BLUE}Successfuly $PROJECT_NAME Installation version: ${PLATFORM_VERSION}${NC}\n"
-            printf "%s"
-            printf "${BLUE}------------------${NC}\n\n"
+        printf "\n\n%s"
+        printf "${BLUE}------------------${NC}\n"
+        printf "%s"
+        printf "${BLUE}Successfuly $PROJECT_NAME Installation version: ${PLATFORM_VERSION}${NC}\n"
+        printf "%s"
+        printf "${BLUE}------------------${NC}\n\n"
         
-            echo "Installation completed"
-            exit 0
+        echo "Installation completed"
+        exit 0
     fi
 fi
 
