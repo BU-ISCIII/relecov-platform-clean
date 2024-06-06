@@ -149,6 +149,15 @@ upgrade_venv(){
     python -m pip install -r conf/requirements.txt
 }
 
+restore_git_ref() {
+    echo "Restoring to initial git reference: $initial_git_ref"
+    git checkout "$initial_git_ref" --quiet
+}
+
+# Ensure to recover current git branch/tag/SHA on script exit
+initial_git_ref=$(git rev-parse --abbrev-ref HEAD || git rev-parse HEAD)
+trap restore_git_ref EXIT
+
 #================================================================
 #SET TEMINAL COLORS
 #================================================================
@@ -188,7 +197,7 @@ done
 
 # SETTING DEFAULT VALUES
 tables=false
-git_branch=$(git branch --show-current)
+git_branch=$initial_git_ref
 conf="./install_settings.txt"
 install=true
 install_type="full"
