@@ -279,16 +279,16 @@ fi
 
 . $conf
 
-# Check if branch exists and checkout
-if [ "`git branch --list $git_branch`" ]; then
-    if [[ $git_branch != $(git branch --show-current) ]]; then
+# Check if git reference (branch, SHA, or tag) exists and checkout
+if git rev-parse --verify "$git_branch" >/dev/null 2>&1; then
+    if [[ $git_branch != $(git rev-parse --abbrev-ref HEAD) ]]; then
         # Check for local changes
         if [[ -n $(git status --porcelain) ]]; then
             printf "\n\n%s"
             printf "${RED}------------------${NC}\n"
-            printf "${RED}Unable to switch branches.${NC}\n"
+            printf "${RED}Unable to switch to $git_branch.${NC}\n"
             printf "${RED}You have local changes that would be overwritten by checkout.${NC}\n"
-            printf "${RED}Please commit or stash your changes before switching branches.${NC}\n"
+            printf "${RED}Please commit or stash your changes before switching.${NC}\n"
             printf "${RED}------------------${NC}\n"
             exit 1
         else
@@ -302,7 +302,7 @@ else
     printf "\n\n%s"
     printf "${RED}------------------${NC}\n"
     printf "${RED}Unable to start.${NC}\n"
-    printf "${RED}Git branch $git_branch is not defined in ${PWD}.${NC}\n"
+    printf "${RED}Git reference $git_branch is not defined in ${PWD}.${NC}\n"
     printf "${RED}------------------${NC}\n"
     exit 1
 fi
