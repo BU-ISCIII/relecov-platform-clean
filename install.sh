@@ -402,7 +402,7 @@ if [ $upgrade == true ]; then
     rsync -rlv conf/ $INSTALL_PATH/conf/
     rsync -rlv --fuzzy --delay-updates --delete-delay \
         --exclude "logs" --exclude "documents" --exclude "migrations" --exclude "__pycache__" \
-        README.md LICENSE conf django_utils $REQUIRED_MODULES $INSTALL_PATH/
+        README.md LICENSE conf $REQUIRED_MODULES $INSTALL_PATH/
         
         # update the settings.py and the main urls
         echo "Update settings and url file."
