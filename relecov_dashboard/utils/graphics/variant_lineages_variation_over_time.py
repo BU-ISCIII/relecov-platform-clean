@@ -16,13 +16,17 @@ import relecov_dashboard.utils.pre_processing_data
 
 def create_lineages_variations_graphic(date_range=None):
     """Collect the pre-processed data from database"""
-    json_data = relecov_dashboard.utils.generic_functions.get_graphic_json_data("variant_graphic_data")
+    json_data = relecov_dashboard.utils.generic_functions.get_graphic_json_data(
+        "variant_graphic_data"
+    )
     if json_data is None:
         # Execute the pre-processed task to get the data
         result = relecov_dashboard.utils.pre_processing_data.pre_proc_variant_graphic()
         if "ERROR" in result:
             return result
-        json_data = relecov_dashboard.utils.generic_functions.get_graphic_json_data("variant_graphic_data")
+        json_data = relecov_dashboard.utils.generic_functions.get_graphic_json_data(
+            "variant_graphic_data"
+        )
 
     data_df = pd.DataFrame(json_data)
 

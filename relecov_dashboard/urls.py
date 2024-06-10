@@ -10,7 +10,11 @@ import relecov_dashboard.views
 urlpatterns = [
     path("django_plotly_dash/", include("django_plotly_dash.urls")),
     # Methodology graphics
-    path("methodology", relecov_dashboard.views.methodology_index, name="methodology_index"),
+    path(
+        "methodology",
+        relecov_dashboard.views.methodology_index,
+        name="methodology_index",
+    ),
     path(
         "methodology/hostInfo",
         relecov_dashboard.views.methodology_host_info,

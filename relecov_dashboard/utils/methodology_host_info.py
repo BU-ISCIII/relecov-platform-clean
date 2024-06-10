@@ -7,6 +7,7 @@ import relecov_dashboard.utils.graphics.plotly_graphics
 import relecov_core.utils.rest_api_handling
 import relecov_dashboard.dashboard_config
 
+
 def host_info_graphics():
     def split_age_in_ranges(data):
         tmp_range = {}
@@ -42,9 +43,13 @@ def host_info_graphics():
         host_age_range = OrderedDict()
         for idx in range(max_value + 1):
             try:
-                host_age_range[relecov_dashboard.dashboard_config.HOST_RANGE_AGE_TEXT[idx]] = tmp_range[idx]
+                host_age_range[
+                    relecov_dashboard.dashboard_config.HOST_RANGE_AGE_TEXT[idx]
+                ] = tmp_range[idx]
             except KeyError:
-                host_age_range[relecov_dashboard.dashboard_config.HOST_RANGE_AGE_TEXT[idx]] = 0
+                host_age_range[
+                    relecov_dashboard.dashboard_config.HOST_RANGE_AGE_TEXT[idx]
+                ] = 0
         host_age_range_df = pd.DataFrame(
             host_age_range.items(), columns=["range_age", "number"]
         )
@@ -67,7 +72,9 @@ def host_info_graphics():
 
         age_range_list = []
         for idx in range(max_value + 1):
-            age_range_list.append(relecov_dashboard.dashboard_config.HOST_RANGE_AGE_TEXT[idx])
+            age_range_list.append(
+                relecov_dashboard.dashboard_config.HOST_RANGE_AGE_TEXT[idx]
+            )
         host_age_range_per_key_df["range_age"] = age_range_list
 
         for key in tmp_range_per_key.keys():
@@ -101,31 +108,37 @@ def host_info_graphics():
     gender_label, gender_values = fetching_data_for_gender()
     if "ERROR" in gender_label:
         return gender_label
-    host_info["gender_graph"] = relecov_dashboard.utils.graphics.plotly_graphics.pie_graphic(
-        labels=gender_label,
-        values=gender_values,
-        options={"title": "Gender distribution"},
+    host_info["gender_graph"] = (
+        relecov_dashboard.utils.graphics.plotly_graphics.pie_graphic(
+            labels=gender_label,
+            values=gender_values,
+            options={"title": "Gender distribution"},
+        )
     )
     # graphic for gender and age
     host_gender_age_df = fetching_data_for_sex_and_range_data()[0]
     col_names = list(host_gender_age_df.columns)
-    host_info["gender_age_graph"] = relecov_dashboard.utils.graphics.plotly_graphics.bar_graphic(
-        data=host_gender_age_df,
-        col_names=col_names,
-        legend=col_names[1:],
-        yaxis={"title": "Number of samples"},
-        options={
-            "title": "Samples received for host gender and host age",
-            "height": 300,
-        },
+    host_info["gender_age_graph"] = (
+        relecov_dashboard.utils.graphics.plotly_graphics.bar_graphic(
+            data=host_gender_age_df,
+            col_names=col_names,
+            legend=col_names[1:],
+            yaxis={"title": "Number of samples"},
+            options={
+                "title": "Samples received for host gender and host age",
+                "height": 300,
+            },
+        )
     )
     host_age_df, invalid_data = fetching_data_for_range_age()
-    host_info["range_age_graph"] = relecov_dashboard.utils.graphics.plotly_graphics.bar_graphic(
-        data=host_age_df,
-        col_names=["range_age", "number"],
-        legend=[""],
-        yaxis={"title": "Number of samples"},
-        options={"title": "Samples received for host age", "height": 300},
+    host_info["range_age_graph"] = (
+        relecov_dashboard.utils.graphics.plotly_graphics.bar_graphic(
+            data=host_age_df,
+            col_names=["range_age", "number"],
+            legend=[""],
+            yaxis={"title": "Number of samples"},
+            options={"title": "Samples received for host age", "height": 300},
+        )
     )
     if invalid_data > 0:
         host_info["invalid_data"] = invalid_data

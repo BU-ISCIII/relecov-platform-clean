@@ -25,7 +25,9 @@ def create_dataframe_from_database():
     """
 
     # sample_objs = DateUpdateState.objects.all()
-    sample_objs = relecov_core.models.DateUpdateState.objects.filter(stateID__iexact="Defined")
+    sample_objs = relecov_core.models.DateUpdateState.objects.filter(
+        stateID__iexact="Defined"
+    )
     date_list = []
     list_of_dates = []
     list_of_samples = []

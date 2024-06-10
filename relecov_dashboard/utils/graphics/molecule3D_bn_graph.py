@@ -12,6 +12,7 @@ from dash import html
 # Local imports
 import relecov_platform.settings
 
+
 # Note: PDB parserThis module contains a class that can read PDB files and return a dictionary of structural data
 class PdbParser:
     """
@@ -87,7 +88,11 @@ def create_model3D_bn():
 
     pdb_file = PdbParser(
         os.path.join(
-            relecov_platform.settings.BASE_DIR, "relecov_dashboard", "utils", "pdb_files", "7dwz.pdb"
+            relecov_platform.settings.BASE_DIR,
+            "relecov_dashboard",
+            "utils",
+            "pdb_files",
+            "7dwz.pdb",
         )
     )
 

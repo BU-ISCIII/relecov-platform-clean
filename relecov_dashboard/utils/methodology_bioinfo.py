@@ -12,18 +12,26 @@ import relecov_dashboard.dashboard_config
 
 def bioinfo_graphics():
     def get_pre_proc_data(graphic_name):
-        json_data = relecov_dashboard.utils.generic_functions.get_graphic_json_data(graphic_name)
+        json_data = relecov_dashboard.utils.generic_functions.get_graphic_json_data(
+            graphic_name
+        )
         if json_data is None:
             # Execute the pre-processed task to get the data
             if graphic_name == "depth_variant_consensus":
-                result = relecov_dashboard.utils.pre_processing_data.pre_proc_depth_variants()
+                result = (
+                    relecov_dashboard.utils.pre_processing_data.pre_proc_depth_variants()
+                )
             elif graphic_name == "depth_samples_in_run":
-                result = relecov_dashboard.utils.pre_processing_data.pre_proc_depth_sample_run()
+                result = (
+                    relecov_dashboard.utils.pre_processing_data.pre_proc_depth_sample_run()
+                )
             else:
                 return {"ERROR": "pre-processing not defined"}
             if "ERROR" in result:
                 return result
-            json_data = relecov_dashboard.utils.generic_functions.get_graphic_json_data(graphic_name)
+            json_data = relecov_dashboard.utils.generic_functions.get_graphic_json_data(
+                graphic_name
+            )
         tmp_json_float = {}
         for key, values in json_data.items():
             tmp_json_float[float(key)] = values
@@ -63,35 +71,41 @@ def bioinfo_graphics():
     bioinfo = {}
     percentage_data = get_percentage_data()
     if "ERROR" not in percentage_data:
-        bioinfo["boxplot_comparation"] = relecov_dashboard.utils.graphics.plotly_graphics.box_plot_graphic(
-            percentage_data,
-            {"title": "Boxplot Percentage", "height": 400, "width": 420},
+        bioinfo["boxplot_comparation"] = (
+            relecov_dashboard.utils.graphics.plotly_graphics.box_plot_graphic(
+                percentage_data,
+                {"title": "Boxplot Percentage", "height": 400, "width": 420},
+            )
         )
     depth_variants_data = get_pre_proc_data("depth_variant_consensus")
     if "ERROR" not in depth_variants_data:
-        bioinfo["depth_variants"] = relecov_dashboard.utils.graphics.plotly_graphics.line_graphic(
-            depth_variants_data["depth"],
-            depth_variants_data["variant"],
-            {
-                "title": "Depth / variant consensus",
-                "height": 350,
-                "width": 420,
-                "x_title": "Depth",
-                "y_title": "number of variants",
-            },
+        bioinfo["depth_variants"] = (
+            relecov_dashboard.utils.graphics.plotly_graphics.line_graphic(
+                depth_variants_data["depth"],
+                depth_variants_data["variant"],
+                {
+                    "title": "Depth / variant consensus",
+                    "height": 350,
+                    "width": 420,
+                    "x_title": "Depth",
+                    "y_title": "number of variants",
+                },
+            )
         )
     depth_sample_run_data = get_pre_proc_data("depth_samples_in_run")
     if "ERROR" not in depth_sample_run_data:
-        bioinfo["depth_sample_run"] = relecov_dashboard.utils.graphics.plotly_graphics.line_graphic(
-            depth_sample_run_data["depth"],
-            depth_sample_run_data["variant"],
-            {
-                "title": "Depth / number of samples in run",
-                "height": 350,
-                "width": 420,
-                "x_title": "Depth",
-                "y_title": "Samples in run",
-            },
+        bioinfo["depth_sample_run"] = (
+            relecov_dashboard.utils.graphics.plotly_graphics.line_graphic(
+                depth_sample_run_data["depth"],
+                depth_sample_run_data["variant"],
+                {
+                    "title": "Depth / number of samples in run",
+                    "height": 350,
+                    "width": 420,
+                    "x_title": "Depth",
+                    "y_title": "Samples in run",
+                },
+            )
         )
     if not bioinfo:
         bioinfo["ERROR"] = relecov_dashboard.dashboard_config.ERROR_NOT_DATA_LOADED_YET

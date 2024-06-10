@@ -26,9 +26,13 @@ def get_graphic_in_data_frame(graphic_name):
 
 def get_graphic_json_data(graphic_name):
     """ """
-    if relecov_dashboard.models.GraphicJsonFile.objects.filter(graphic_name__exact=graphic_name).exists():
+    if relecov_dashboard.models.GraphicJsonFile.objects.filter(
+        graphic_name__exact=graphic_name
+    ).exists():
         return (
-            relecov_dashboard.models.GraphicJsonFile.objects.filter(graphic_name__exact=graphic_name)
+            relecov_dashboard.models.GraphicJsonFile.objects.filter(
+                graphic_name__exact=graphic_name
+            )
             .last()
             .get_json_data()
         )

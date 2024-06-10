@@ -12,11 +12,7 @@ import dash_daq as daq
 
 # Local imports
 import relecov_core.utils.handling_bioinfo_analysis
-import relecov_dashboard.utils.graphics.plotly_graphics # TODO: not accessed
-import relecov_dashboard.utils.generic_functions
 import relecov_core.models
-import relecov_dashboard.utils.pre_processing_data
-import relecov_dashboard.dashboard_config # TODO: unused
 
 
 def graph_not_empty_fields(value, label):
@@ -205,7 +201,9 @@ def create_utilization_graphic(lineage):
 
 def schema_fields_utilization():
     """ """
-    schema_fields = relecov_core.utils.handling_bioinfo_analysis.get_bioinfo_analyis_fields_utilization()
+    schema_fields = (
+        relecov_core.utils.handling_bioinfo_analysis.get_bioinfo_analyis_fields_utilization()
+    )
     for schema_name, fields in schema_fields.items():
         # import pdb; pdb.set_trace()
 
