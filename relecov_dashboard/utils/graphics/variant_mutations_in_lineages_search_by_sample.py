@@ -1,9 +1,15 @@
+"""
+Needle plot graph mutation by sample
+"""
+
+# Generic imports
 from dash import dcc, html
 from django_plotly_dash import DjangoDash
 from dash.dependencies import Input, Output
 import dash_bio as dashbio
 
-from relecov_core.utils.handling_variant import create_dataframe
+# Local imports
+import relecov_core.utils.handling_variant
 
 
 def create_needle_plot_graph_mutation_by_sample(sample_name, mdata):
@@ -74,7 +80,9 @@ def create_needle_plot_graph_mutation_by_sample(sample_name, mdata):
         Input("needleplot-select-sample", "value"),
     )
     def update_sample(selected_sample: int):
-        mdata = create_dataframe(sample_name=selected_sample, organism_code="NC_045512")
+        mdata = relecov_core.utils.handling_variant.create_dataframe(
+            sample_name=selected_sample, organism_code="NC_045512"
+        )
         mutationData = mdata
         return mutationData
 

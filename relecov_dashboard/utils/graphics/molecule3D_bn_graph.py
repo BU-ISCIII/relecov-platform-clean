@@ -1,16 +1,18 @@
+# Generic imports
 import os
+import pandas as pd
+import dash_bio as dashbio
+import parmed as pmd
+
 from django_plotly_dash import DjangoDash
 from dash import dash_table
 from dash.dependencies import Input, Output
-import pandas as pd
-import dash_bio as dashbio
 from dash import html
-from relecov_platform import settings
 
-# PDB parserThis module contains a class that can read PDB files and return a dictionary of structural data
-import parmed as pmd
+# Local imports
+import relecov_platform.settings
 
-
+# Note: PDB parserThis module contains a class that can read PDB files and return a dictionary of structural data
 class PdbParser:
     """
     Parse the protein data bank (PDB) file to generate
@@ -85,7 +87,7 @@ def create_model3D_bn():
 
     pdb_file = PdbParser(
         os.path.join(
-            settings.BASE_DIR, "relecov_dashboard", "utils", "pdb_files", "7dwz.pdb"
+            relecov_platform.settings.BASE_DIR, "relecov_dashboard", "utils", "pdb_files", "7dwz.pdb"
         )
     )
 

@@ -1,29 +1,24 @@
+# Generic imports
 from dash import dcc, html
 from django_plotly_dash import DjangoDash
 from dash.dependencies import Input, Output
 import dash_bio as dashbio
 
-from relecov_dashboard.utils.generic_functions import get_graphic_json_data
-
-from relecov_dashboard.utils.pre_processing_data import (
-    pre_proc_variations_per_lineage,
-)
-
-from relecov_core.models import (
-    LineageValues,
-)
-
+# Local imports
+import relecov_dashboard.utils.generic_functions
+import relecov_dashboard.utils.pre_processing_data
+import relecov_core.models
 
 def get_variant_data_from_lineages(graphic_name=None, lineage=None, chromosome=None):
-    json_data = get_graphic_json_data(graphic_name)
+    json_data = relecov_dashboard.utils.generic_functions.get_graphic_json_data(graphic_name)
 
     if json_data is None:
         # Execute the pre-processed task to get the data
-        result = pre_proc_variations_per_lineage(chromosome)
+        result = relecov_dashboard.utils.pre_processing_data.pre_proc_variations_per_lineage(chromosome)
         if "ERROR" in result:
             return result
 
-    json_data = get_graphic_json_data(graphic_name)
+    json_data = relecov_dashboard.utils.generic_functions.get_graphic_json_data(graphic_name)
     # Return None to indicate that there is no data stored yet
     if not json_data:
         return None, None
@@ -34,7 +29,7 @@ def get_variant_data_from_lineages(graphic_name=None, lineage=None, chromosome=N
 
     if lineage is None:
         lineage = (
-            LineageValues.objects.filter(
+            relecov_core.models.LineageValues.objects.filter(
                 lineage_fieldID__property_name__iexact="lineage_name"
             )
             .values_list("value", flat=True)

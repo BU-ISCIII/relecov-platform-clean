@@ -13,9 +13,7 @@ import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-# from dash import dcc
-
-
+# FIXME: This file contains harcoded paths.
 def select_range_date(start_date, end_date, df):
     """ "
     Select range date

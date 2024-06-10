@@ -1,26 +1,20 @@
+# Generic imports
 from statistics import mean
 
-from relecov_core.utils.handling_bioinfo_analysis import (
-    get_bioinfo_analyis_fields_utilization,
-)
-from relecov_core.utils.schema_handling import (
-    get_default_schema,
-)
-from relecov_core.utils.rest_api_handling import get_stats_data
-from relecov_dashboard.utils.graphics.plotly_graphics import (
-    bar_graphic,
-    graph_gauge_percent_values,
-)
-from relecov_dashboard.dashboard_config import ERROR_NO_SCHEMA_DEFINED
-
+# Local imports
+import relecov_core.utils.handling_bioinfo_analysis
+import relecov_core.utils.schema_handling
+import relecov_core.utils.rest_api_handling
+import relecov_dashboard.utils.graphics.plotly_graphics
+import relecov_dashboard.dashboard_config
 
 def schema_fields_utilization():
     """Return ERROR when no connection to iSkyLIMS, NO_SCHEMA when there is
     no schema loaded yet, or the data to display graphic
     """
-    schema_obj = get_default_schema()
+    schema_obj = relecov_core.utils.schema_handling.get_default_schema()
     if schema_obj is None:
-        return {"NO_SCHEMA": ERROR_NO_SCHEMA_DEFINED}
+        return {"NO_SCHEMA": relecov_dashboard.dashboard_config.ERROR_NO_SCHEMA_DEFINED}
 
     util_data = {"summary": {}}
     util_data["summary"]["group"] = ["Empty Fields", "Total Fields"]
@@ -30,7 +24,7 @@ def schema_fields_utilization():
         "percent": [],
     }
     # get stats utilization fields from LIMS
-    lims_fields = get_stats_data({"sample_project_name": "Relecov"})
+    lims_fields = relecov_core.utils.rest_api_handling.get_stats_data({"sample_project_name": "Relecov"})
     if "ERROR" in lims_fields:
         util_data["ERROR"] = lims_fields["ERROR"]
     else:
@@ -47,7 +41,7 @@ def schema_fields_utilization():
         total_fields = len(lims_fields["fields_norm"]) + empty_fields
         util_data["summary"]["lab_values"] = [empty_fields, total_fields]
 
-        # get the maximun to make the percentage of filled
+        # get the maximum to make the percentage of filled
         max_value = max(set(lims_fields["fields_value"].values()))
         for key, val in lims_fields["fields_value"].items():
             util_data["field_detail_data"]["field_name"].append(key)
@@ -56,7 +50,7 @@ def schema_fields_utilization():
         util_data["num_lab_fields"] = len(lims_fields["fields_value"])
 
     # get fields utilization from bioinfo analysis
-    bio_fields = get_bioinfo_analyis_fields_utilization(schema_obj)
+    bio_fields = relecov_core.utils.handling_bioinfo_analysis.get_bioinfo_analyis_fields_utilization(schema_obj)
     # if return an empty value skip looking for data
     if not bool(bio_fields):
         util_data["ERROR_ANALYSIS"] = "Not Data to process"
@@ -73,7 +67,7 @@ def schema_fields_utilization():
     empty_fields = len(bio_fields["always_none"]) + len(bio_fields["never_used"])
     total_fields = len(bio_fields["fields_norm"]) + empty_fields
     util_data["summary"]["bio_values"] = [empty_fields, total_fields]
-    # get the maximun from bio fields to make the percentage of filled
+    # get the maximum from bio fields to make the percentage of filled
     max_value = max(set(bio_fields["fields_value"].values()))
     for key, val in bio_fields["fields_value"].items():
         util_data["field_detail_data"]["field_name"].append(key)
@@ -97,7 +91,7 @@ def index_dash_fields():
         if "ERROR_ANALYSIS" in util_data:
             graphics["ERROR_ANALYSIS"] = util_data["ERROR_ANALYSIS"]
             return graphics
-        graphics["grouped_fields"] = bar_graphic(
+        graphics["grouped_fields"] = relecov_dashboard.utils.graphics.plotly_graphics.bar_graphic(
             data=util_data["summary"],
             col_names=["group", "bio_values"],
             legend=["Bio analysis"],
@@ -106,15 +100,15 @@ def index_dash_fields():
         )
 
     else:
-        #  ##### create metada lab analysis  ######
-        graph_gauge_percent_values(
+        #  ##### create metadata lab analysis  ######
+        relecov_dashboard.utils.graphics.plotly_graphics.graph_gauge_percent_values(
             app_name="lims_filled_values",
             value=util_data["lims_f_values"],
             label="Lab filled values %",
         )
-        # ##### Create comparation graphics #######
+        # ##### Create comparison graphics #######
         if "ERROR_ANALYSIS" in util_data:
-            graphics["grouped_fields"] = bar_graphic(
+            graphics["grouped_fields"] = relecov_dashboard.utils.graphics.plotly_graphics.bar_graphic(
                 data=util_data["summary"],
                 col_names=["group", "lab_values"],
                 legend=["Metada lab"],
@@ -122,7 +116,7 @@ def index_dash_fields():
                 options={"title": "Schema Fields Utilization", "height": 300},
             )
         else:
-            graphics["grouped_fields"] = bar_graphic(
+            graphics["grouped_fields"] = relecov_dashboard.utils.graphics.plotly_graphics.bar_graphic(
                 data=util_data["summary"],
                 col_names=["group", "lab_values", "bio_values"],
                 legend=["Metada lab", "Bio analysis"],
@@ -132,7 +126,7 @@ def index_dash_fields():
 
     if "ERROR_ANALYSIS" not in util_data:
         #  ##### create Bio info analysis  ######
-        graph_gauge_percent_values(
+        relecov_dashboard.utils.graphics.plotly_graphics.graph_gauge_percent_values(
             app_name="bio_filled_values",
             value=util_data["bio_f_values"],
             label="Bio filled values %",
@@ -145,7 +139,7 @@ def index_dash_fields():
             colors = lab_colors + bio_colors
         else:
             colors = None
-        graphics["detailed_fields"] = bar_graphic(
+        graphics["detailed_fields"] = relecov_dashboard.utils.graphics.plotly_graphics.bar_graphic(
             data=util_data["field_detail_data"],
             col_names=["field_name", "field_value"],
             legend=["metadata fields"],

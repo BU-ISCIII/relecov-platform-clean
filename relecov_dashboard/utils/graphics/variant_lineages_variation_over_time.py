@@ -1,27 +1,28 @@
+# Generic imports
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from datetime import datetime, timedelta
 
-from dash import dcc, html
 import dash_bootstrap_components as dbc
+from dash import dcc, html
 from django_plotly_dash import DjangoDash
 from dash.dependencies import Input, Output
 
-from relecov_dashboard.utils.generic_functions import get_graphic_json_data
-
-from relecov_dashboard.utils.pre_processing_data import pre_proc_variant_graphic
+# Local imports
+import relecov_dashboard.utils.generic_functions
+import relecov_dashboard.utils.pre_processing_data
 
 
 def create_lineages_variations_graphic(date_range=None):
     """Collect the pre-processed data from database"""
-    json_data = get_graphic_json_data("variant_graphic_data")
+    json_data = relecov_dashboard.utils.generic_functions.get_graphic_json_data("variant_graphic_data")
     if json_data is None:
         # Execute the pre-processed task to get the data
-        result = pre_proc_variant_graphic()
+        result = relecov_dashboard.utils.pre_processing_data.pre_proc_variant_graphic()
         if "ERROR" in result:
             return result
-        json_data = get_graphic_json_data("variant_graphic_data")
+        json_data = relecov_dashboard.utils.generic_functions.get_graphic_json_data("variant_graphic_data")
 
     data_df = pd.DataFrame(json_data)
 

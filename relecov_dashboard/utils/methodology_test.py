@@ -1,10 +1,10 @@
+# Generic imports
 import dash_daq as daq
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 from dash.dependencies import Input, Output
 from django_plotly_dash import DjangoDash
 from django.shortcuts import redirect
-
 
 def render_page_content():
     # app = dash.Dash(m_utilization, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -65,7 +65,6 @@ def render_page_content():
                 html.P(f"The pathname {pathname} was not recognised..."),
             ]
         )
-
 
 def create_gauge(value, label):
     app = DjangoDash("param_empty", external_stylesheets=[dbc.themes.BOOTSTRAP])
