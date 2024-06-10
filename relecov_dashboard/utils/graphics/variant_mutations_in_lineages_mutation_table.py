@@ -21,6 +21,7 @@ import relecov_core.utils.handling_samples
 import relecov_core.utils.handling_variant
 """
 
+
 def create_data_for_dataframe(sample_list, effect_list):
     # "B.1.1.7", "NC_045512"
     df = {}
@@ -33,16 +34,22 @@ def create_data_for_dataframe(sample_list, effect_list):
     pos_list = []
     # chromosome = "NC_045512"
     for sample_name in sample_list:
-        sample_obj = relecov_core.utils.handling_samples.get_sample_obj_from_sample_name(sample_name=sample_name)
+        sample_obj = (
+            relecov_core.utils.handling_samples.get_sample_obj_from_sample_name(
+                sample_name=sample_name
+            )
+        )
         if sample_obj is not None:
             variant_in_sample_objs = relecov_core.models.VariantInSample.objects.filter(
                 sampleID_id=sample_obj
             )
 
             for variant_in_sample_obj in variant_in_sample_objs:
-                variant_annotation_obj = relecov_core.models.VariantAnnotation.objects.filter(
-                    variantID_id=variant_in_sample_obj.get_variantID_id()
-                ).last()
+                variant_annotation_obj = (
+                    relecov_core.models.VariantAnnotation.objects.filter(
+                        variantID_id=variant_in_sample_obj.get_variantID_id()
+                    ).last()
+                )
                 effect_obj = relecov_core.models.Effect.objects.filter(
                     effect__iexact=variant_annotation_obj.get_effectID_id()
                 ).last()
@@ -51,7 +58,9 @@ def create_data_for_dataframe(sample_list, effect_list):
                     list_of_hgvs_p.append(hgvs_p)
 
                     geneID_id = variant_annotation_obj.get_geneID_id()
-                    gene_obj = relecov_core.models.Gene.objects.filter(gene_name__iexact=geneID_id).last()
+                    gene_obj = relecov_core.models.Gene.objects.filter(
+                        gene_name__iexact=geneID_id
+                    ).last()
                     gene_list.append(gene_obj.get_gene_name())
 
                     effect_obj = relecov_core.models.Effect.objects.filter(

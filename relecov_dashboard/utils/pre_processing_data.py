@@ -262,7 +262,9 @@ def pre_proc_variations_per_lineage(chromosome=None):
             )[0].get_pos()
 
             effects = (
-                relecov_core.models.VariantAnnotation.objects.filter(variantID_id__pk=variant)
+                relecov_core.models.VariantAnnotation.objects.filter(
+                    variantID_id__pk=variant
+                )
                 .values_list("effectID_id__effect", flat=True)
                 .last()
             )
@@ -273,7 +275,9 @@ def pre_proc_variations_per_lineage(chromosome=None):
                 list_of_pos.append(pos)
                 list_of_effects.append(effects)
 
-        domains = relecov_core.utils.handling_variant.get_domains_and_coordenates(chromosome)
+        domains = relecov_core.utils.handling_variant.get_domains_and_coordenates(
+            chromosome
+        )
 
         mutation_data["x"] = list_of_pos
         mutation_data["y"] = list_of_af

@@ -31,17 +31,23 @@ def mutations_in_lineage(request):
     # mutations in lineages by lineage
     def_chrom = relecov_core.utils.handling_variant.get_default_chromosome()
     lineages_list = relecov_core.utils.handling_lineage.get_lineages_list()
-    mdata, lineage = relecov_dashboard.utils.graphics.variant_mutation_in_lineages_search_by_lineage.get_variant_data_from_lineages(
-        graphic_name="variations_per_lineage", lineage=None, chromosome=def_chrom
+    mdata, lineage = (
+        relecov_dashboard.utils.graphics.variant_mutation_in_lineages_search_by_lineage.get_variant_data_from_lineages(
+            graphic_name="variations_per_lineage", lineage=None, chromosome=def_chrom
+        )
     )
 
     if not mdata:
         return render(
             request,
             "relecov_dashboard/variantMutationsInLineage.html",
-            {"ERROR": relecov_dashboard.dashboard_config.ERROR_NO_LINEAGES_ARE_DEFINED_YET},
+            {
+                "ERROR": relecov_dashboard.dashboard_config.ERROR_NO_LINEAGES_ARE_DEFINED_YET
+            },
         )
-    relecov_dashboard.utils.graphics.variant_mutation_in_lineages_search_by_lineage.create_needle_plot_graph_mutation_by_lineage(lineages_list, lineage, mdata)
+    relecov_dashboard.utils.graphics.variant_mutation_in_lineages_search_by_lineage.create_needle_plot_graph_mutation_by_lineage(
+        lineages_list, lineage, mdata
+    )
     return render(
         request,
         "relecov_dashboard/variantMutationsInLineage.html",
@@ -57,7 +63,9 @@ def spike_mutations_3d(request):
 def lineages_voc(request):
     # Draw lineage based on time
     draw_lineages = {}
-    draw_lineages["lineage_on_time"] = relecov_dashboard.utils.graphics.variant_lineages_variation_over_time.create_lineages_variations_graphic()
+    draw_lineages["lineage_on_time"] = (
+        relecov_dashboard.utils.graphics.variant_lineages_variation_over_time.create_lineages_variations_graphic()
+    )
     return render(
         request,
         "relecov_dashboard/variantLineageVoc.html",
@@ -75,18 +83,30 @@ def samples_received_over_time_graph(request):
 
 @login_required
 def samples_received_over_time_pie(request):
-    data = relecov_dashboard.utils.graphics.samples_received_over_time_pie.parse_json_file()
-    relecov_dashboard.utils.graphics.samples_received_over_time_pie.create_samples_received_over_time_per_ccaa_pieChart(data)
-    relecov_dashboard.utils.graphics.samples_received_over_time_pie.create_samples_received_over_time_per_laboratory_pieChart(data)
+    data = (
+        relecov_dashboard.utils.graphics.samples_received_over_time_pie.parse_json_file()
+    )
+    relecov_dashboard.utils.graphics.samples_received_over_time_pie.create_samples_received_over_time_per_ccaa_pieChart(
+        data
+    )
+    relecov_dashboard.utils.graphics.samples_received_over_time_pie.create_samples_received_over_time_per_laboratory_pieChart(
+        data
+    )
 
     return render(request, "relecov_dashboard/samplesReceivedOverTimePie.html")
 
 
 @login_required
 def samples_received_over_time_pie_laboratory(request):
-    data = relecov_dashboard.utils.graphics.samples_received_over_time_pie.parse_json_file()
-    relecov_dashboard.utils.graphics.samples_received_over_time_pie.create_samples_received_over_time_per_ccaa_pieChart(data)
-    relecov_dashboard.utils.graphics.samples_received_over_time_pie.create_samples_received_over_time_per_laboratory_pieChart(data)
+    data = (
+        relecov_dashboard.utils.graphics.samples_received_over_time_pie.parse_json_file()
+    )
+    relecov_dashboard.utils.graphics.samples_received_over_time_pie.create_samples_received_over_time_per_ccaa_pieChart(
+        data
+    )
+    relecov_dashboard.utils.graphics.samples_received_over_time_pie.create_samples_received_over_time_per_laboratory_pieChart(
+        data
+    )
 
     return render(
         request, "relecov_dashboard/samplesReceivedOverTimePieLaboratory.html"
@@ -100,7 +120,9 @@ def variants_mutations_in_lineages_heatmap(request):
         return render(
             request,
             "relecov_dashboard/variantsMutationsInLineagesHeatmap.html",
-            {"ERROR": relecov_core.core_config.ERROR_CHROMOSOME_NOT_DEFINED_IN_DATABASE},
+            {
+                "ERROR": relecov_core.core_config.ERROR_CHROMOSOME_NOT_DEFINED_IN_DATABASE
+            },
         )
     if len(chromesome_objs) > 1:
         chromesome_list = []
@@ -123,14 +145,18 @@ def variants_mutations_in_lineages_heatmap(request):
             "relecov_dashboard/variantsMutationsInLineagesHeatmap.html",
             {"ERROR": relecov_core.core_config.ERROR_GENE_NOT_DEFINED_IN_DATABASE},
         )
-    sample_list = relecov_core.utils.handling_variant.get_sample_in_variant_list(chromesome_objs[0])
+    sample_list = relecov_core.utils.handling_variant.get_sample_in_variant_list(
+        chromesome_objs[0]
+    )
     if len(sample_list) == 0:
         return render(
             request,
             "relecov_dashboard/variantsMutationsInLineagesHeatmap.html",
             {"ERROR": relecov_core.core_config.ERROR_VARIANT_IN_SAMPLE_NOT_DEFINED},
         )
-    relecov_dashboard.utils.graphics.variant_mutation_in_lineages_heatmap.create_heat_map(sample_list, gene_list)
+    relecov_dashboard.utils.graphics.variant_mutation_in_lineages_heatmap.create_heat_map(
+        sample_list, gene_list
+    )
     return render(request, "relecov_dashboard/variantsMutationsInLineagesHeatmap.html")
 
 
@@ -173,7 +199,9 @@ def methodology_sequencing(request):
 
 @login_required
 def methodology_sample_processing(request):
-    sample_processing = relecov_dashboard.utils.sample_processing.sample_processing_graphics()
+    sample_processing = (
+        relecov_dashboard.utils.sample_processing.sample_processing_graphics()
+    )
     if "ERROR" in sample_processing:
         return render(
             request,
