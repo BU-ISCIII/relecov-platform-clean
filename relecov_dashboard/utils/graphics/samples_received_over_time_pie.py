@@ -1,3 +1,4 @@
+# Generic imports
 import os
 import pandas as pd
 import json
@@ -5,13 +6,13 @@ import plotly.express as px
 from dash import dcc, html
 from django_plotly_dash import DjangoDash
 
-# from dash.dependencies import Input, Output
-from relecov_platform import settings
+# Local imports
+import relecov_platform.settings
 
 
 def parse_json_file():
     input_file = os.path.join(
-        settings.BASE_DIR,
+        relecov_platform.settings.BASE_DIR,
         "relecov_core",
         "docs",
         "data_for_geomap_from_ISkyLims.json",

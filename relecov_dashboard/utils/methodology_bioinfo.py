@@ -1,32 +1,29 @@
+# Generic imports
 from statistics import mean
 from collections import OrderedDict
-from relecov_dashboard.utils.graphics.plotly_graphics import (
-    box_plot_graphic,
-    line_graphic,
-)
-from relecov_dashboard.utils.generic_functions import get_graphic_json_data
-from relecov_core.models import BioinfoAnalysisValue
-from relecov_dashboard.utils.pre_processing_data import (
-    pre_proc_depth_variants,
-    pre_proc_depth_sample_run,
-)
-from relecov_dashboard.dashboard_config import ERROR_NOT_DATA_LOADED_YET
+
+# Local imports
+import relecov_dashboard.utils.graphics.plotly_graphics
+import relecov_dashboard.utils.generic_functions
+import relecov_core.models
+import relecov_dashboard.utils.pre_processing_data
+import relecov_dashboard.dashboard_config
 
 
 def bioinfo_graphics():
     def get_pre_proc_data(graphic_name):
-        json_data = get_graphic_json_data(graphic_name)
+        json_data = relecov_dashboard.utils.generic_functions.get_graphic_json_data(graphic_name)
         if json_data is None:
             # Execute the pre-processed task to get the data
             if graphic_name == "depth_variant_consensus":
-                result = pre_proc_depth_variants()
+                result = relecov_dashboard.utils.pre_processing_data.pre_proc_depth_variants()
             elif graphic_name == "depth_samples_in_run":
-                result = pre_proc_depth_sample_run()
+                result = relecov_dashboard.utils.pre_processing_data.pre_proc_depth_sample_run()
             else:
                 return {"ERROR": "pre-processing not defined"}
             if "ERROR" in result:
                 return result
-            json_data = get_graphic_json_data(graphic_name)
+            json_data = relecov_dashboard.utils.generic_functions.get_graphic_json_data(graphic_name)
         tmp_json_float = {}
         for key, values in json_data.items():
             tmp_json_float[float(key)] = values
@@ -42,11 +39,11 @@ def bioinfo_graphics():
         per_data = []
         graph_list = ["per_Ns", "per_reads_host", "per_reads_virus", "per_unmapped"]
         for graph in graph_list:
-            if BioinfoAnalysisValue.objects.filter(
+            if relecov_core.models.BioinfoAnalysisValue.objects.filter(
                 bioinfo_analysis_fieldID__property_name__exact=graph
             ).exists():
                 str_data = list(
-                    BioinfoAnalysisValue.objects.filter(
+                    relecov_core.models.BioinfoAnalysisValue.objects.filter(
                         bioinfo_analysis_fieldID__property_name__exact=graph
                     ).values_list("value", flat=True)
                 )
@@ -66,13 +63,13 @@ def bioinfo_graphics():
     bioinfo = {}
     percentage_data = get_percentage_data()
     if "ERROR" not in percentage_data:
-        bioinfo["boxplot_comparation"] = box_plot_graphic(
+        bioinfo["boxplot_comparation"] = relecov_dashboard.utils.graphics.plotly_graphics.box_plot_graphic(
             percentage_data,
             {"title": "Boxplot Percentage", "height": 400, "width": 420},
         )
     depth_variants_data = get_pre_proc_data("depth_variant_consensus")
     if "ERROR" not in depth_variants_data:
-        bioinfo["depth_variants"] = line_graphic(
+        bioinfo["depth_variants"] = relecov_dashboard.utils.graphics.plotly_graphics.line_graphic(
             depth_variants_data["depth"],
             depth_variants_data["variant"],
             {
@@ -85,7 +82,7 @@ def bioinfo_graphics():
         )
     depth_sample_run_data = get_pre_proc_data("depth_samples_in_run")
     if "ERROR" not in depth_sample_run_data:
-        bioinfo["depth_sample_run"] = line_graphic(
+        bioinfo["depth_sample_run"] = relecov_dashboard.utils.graphics.plotly_graphics.line_graphic(
             depth_sample_run_data["depth"],
             depth_sample_run_data["variant"],
             {
@@ -97,5 +94,5 @@ def bioinfo_graphics():
             },
         )
     if not bioinfo:
-        bioinfo["ERROR"] = ERROR_NOT_DATA_LOADED_YET
+        bioinfo["ERROR"] = relecov_dashboard.dashboard_config.ERROR_NOT_DATA_LOADED_YET
     return bioinfo

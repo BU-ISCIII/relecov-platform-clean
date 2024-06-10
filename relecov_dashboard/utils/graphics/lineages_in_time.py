@@ -1,15 +1,18 @@
-from datetime import datetime
+# Generic imports
+import datetime
 import os
-from time import strptime
-
 import json
-from django.conf import settings
 import pandas as pd
+
+from time import strptime
+from django.conf import settings
 from dash import dcc, html
 from django_plotly_dash import DjangoDash
 from dash.dependencies import Input, Output
 import plotly.graph_objects as go
-from relecov_core.models import DateUpdateState
+
+# Local imports
+import relecov_core.models
 
 
 def create_dataframe_from_database():
@@ -22,7 +25,7 @@ def create_dataframe_from_database():
     """
 
     # sample_objs = DateUpdateState.objects.all()
-    sample_objs = DateUpdateState.objects.filter(stateID__iexact="Defined")
+    sample_objs = relecov_core.models.DateUpdateState.objects.filter(stateID__iexact="Defined")
     date_list = []
     list_of_dates = []
     list_of_samples = []
@@ -36,7 +39,7 @@ def create_dataframe_from_database():
         year = date_list[1]
         date_list = date_list[0].split(" ")
         month = strptime(date_list[0], "%B").tm_mon
-        date_converted = datetime(int(year), month, int(date_list[1]))
+        date_converted = datetime.datetime(int(year), month, int(date_list[1]))
         list_of_dates.append(date_converted.strftime("%Y-%m-%d"))
 
     list_of_lists.append(list_of_samples)

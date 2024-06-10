@@ -1,26 +1,16 @@
+"""
+Pre-processing data for Relecov dashboard
+"""
+
+# Generic imports
 from datetime import datetime
-from relecov_dashboard.models import GraphicJsonFile
-from relecov_core.utils.handling_variant import (
-    get_domains_and_coordenates,
-)
 
-from relecov_core.utils.handling_lineage import (
-    get_lineages_list,
-)
-
-from relecov_core.models import (
-    LineageValues,
-    Sample,
-    VariantInSample,
-    VariantAnnotation,
-    BioinfoAnalysisValue,
-)
-
-from relecov_core.utils.rest_api_handling import (
-    fetch_samples_on_condition,
-    get_stats_data,
-    get_sample_parameter_data,
-)
+# Local imports
+import relecov_dashboard.models
+import relecov_core.models
+import relecov_core.utils.handling_variant
+import relecov_core.utils.handling_lineage
+import relecov_core.utils.rest_api_handling
 
 
 def pre_proc_calculation_date():
@@ -39,7 +29,7 @@ def pre_proc_calculation_date():
         """Convert the string values to datetime object to perform calculation
         dates
         """
-        # start_date is set to discard not valid dates, becuase they were
+        # start_date is set to discard not valid dates, because they were
         # mistyped by user
         start_date = datetime.strptime("2019-12-31", "%Y-%m-%d")
         if separator:
@@ -53,13 +43,12 @@ def pre_proc_calculation_date():
                 f_date = datetime.strptime(data[sample], d_format)
                 if f_date < start_date:
                     invalid_samples[sample] = True
-
                 else:
                     data[sample] = f_date
         return data, invalid_samples
 
     def calculate_days(sample_list, date_1, date_2):
-        """Function gets 2 dictionnary list. For the same sample the substract
+        """Function gets 2 dictionary lists. For the same sample the subtract
         operation date_2 - date_1 is done.
         """
         out_data = []
@@ -78,7 +67,7 @@ def pre_proc_calculation_date():
 
     # get sequencing date from sample table
     invalid_samples = {}
-    analysis_date = BioinfoAnalysisValue.objects.filter(
+    analysis_date = relecov_core.models.BioinfoAnalysisValue.objects.filter(
         bioinfo_analysis_fieldID__property_name__exact="analysis_date",
     ).values("value", "sample__collecting_lab_sample_id")
     analysis_date = convert_data_to_sample_dict(
@@ -88,7 +77,7 @@ def pre_proc_calculation_date():
         analysis_date, None, invalid_samples
     )
 
-    seq_date = Sample.objects.all().values(
+    seq_date = relecov_core.models.Sample.objects.all().values(
         "collecting_lab_sample_id", "sequencing_date"
     )
     seq_date = convert_data_to_sample_dict(
@@ -96,7 +85,9 @@ def pre_proc_calculation_date():
     )
 
     # send request to iSkyLIMS
-    collection_date = get_sample_parameter_data("collectionSampleDate")
+    collection_date = relecov_core.utils.rest_api_handling.get_sample_parameter_data(
+        "collectionSampleDate"
+    )
     collection_date = convert_data_to_sample_dict(
         collection_date, "Sample Name", "collectionSampleDate"
     )
@@ -104,7 +95,9 @@ def pre_proc_calculation_date():
         collection_date, "-", invalid_samples
     )
 
-    recorded_date = get_sample_parameter_data("sampleEntryDate")
+    recorded_date = relecov_core.utils.rest_api_handling.get_sample_parameter_data(
+        "sampleEntryDate"
+    )
     recorded_date = convert_data_to_sample_dict(
         recorded_date, "Sample Name", "sampleEntryDate"
     )
@@ -131,7 +124,7 @@ def pre_proc_calculation_date():
     )
     # json_data = json.dumps(calculation_dates)
     # Save json in database
-    GraphicJsonFile.objects.create_new_graphic_json(
+    relecov_dashboard.models.GraphicJsonFile.objects.create_new_graphic_json(
         {"graphic_name": "calculation_date", "graphic_data": calculation_dates}
     )
 
@@ -140,10 +133,12 @@ def pre_proc_calculation_date():
 
 def pre_proc_variant_graphic():
     """Collect the variant information to store them at the pre-processed
-    graphicJasonFile. Smoothing is performed before saving into database
+    GraphicJsonFile. Smoothing is performed before saving into database
     """
 
-    in_date_samples = fetch_samples_on_condition("collectionSampleDate")
+    in_date_samples = relecov_core.utils.rest_api_handling.fetch_samples_on_condition(
+        "collectionSampleDate"
+    )
     if "ERROR" in in_date_samples:
         return in_date_samples
 
@@ -156,7 +151,7 @@ def pre_proc_variant_graphic():
 
     for date, samples in date_sample.items():
         variant_samples = (
-            LineageValues.objects.filter(
+            relecov_core.models.LineageValues.objects.filter(
                 lineage_fieldID__property_name="variant_name",
                 sample__collecting_lab_sample_id__in=samples,
             )
@@ -174,32 +169,32 @@ def pre_proc_variant_graphic():
                 continue
 
             if variant_name not in date_variant[date]:
-                num_samples = Sample.objects.filter(
+                num_samples = relecov_core.models.Sample.objects.filter(
                     collecting_lab_sample_id__in=samples,
                     lineage_values__value__iexact=variant_name,
                 ).count()
                 date_variant[date][variant_name] = num_samples
 
             date_samples += num_samples
-        # Discard the variants that the number of the samples are lower that
-        # 5 % for the total number of the samples collected from specific date
+        # Discard the variants that the number of the samples are lower than
+        # 5% for the total number of the samples collected from a specific date
         min_num_samples = date_samples / 20
         for v_name, number in date_variant[date].items():
             key_to_delete = []
             if number < min_num_samples:
                 key_to_delete.append(v_name)
-        # Delete the entry date if no variant name was not identified for this
+        # Delete the entry date if no variant name was identified for this
         # date
         if len(date_variant[date]) == 0:
             date_variant.pop(date, None)
             continue
-        # Delete the variant which the number of samples are bellow the minimum
+        # Delete the variants where the number of samples is below the minimum
         # number of samples.
         for key in key_to_delete:
             date_variant[date].pop(key, None)
 
     # convert dictionary to list date, variant and samples to store in json
-    # for reading later as table to create the datafreme
+    # for reading later as table to create the dataframe
     collect_data = []
     num_samples_data = []
     variant_names = []
@@ -217,7 +212,7 @@ def pre_proc_variant_graphic():
         "graphic_name": "variant_graphic_data",
         "graphic_data": variant_var_data,
     }
-    GraphicJsonFile.objects.create_new_graphic_json(json_data)
+    relecov_dashboard.models.GraphicJsonFile.objects.create_new_graphic_json(json_data)
 
     return {"SUCCESS": "Success"}
 
@@ -228,38 +223,46 @@ def pre_proc_variations_per_lineage(chromosome=None):
     lineage_data = {}
 
     # Grab lineages matching selected lineage
-    for lineage in get_lineages_list():
+    for lineage in relecov_core.utils.handling_lineage.get_lineages_list():
         mutation_data = {}
         list_of_af = []
         list_of_pos = []
         list_of_effects = []
 
-        lineage_value_objs = LineageValues.objects.filter(value__iexact=lineage)
+        lineage_value_objs = relecov_core.models.LineageValues.objects.filter(
+            value__iexact=lineage
+        )
         # Query samples matching that lineage
-        sample_objs = Sample.objects.filter(lineage_values__in=lineage_value_objs)
-        number_samples_wlineage = Sample.objects.filter(
+        sample_objs = relecov_core.models.Sample.objects.filter(
+            lineage_values__in=lineage_value_objs
+        )
+        number_samples_wlineage = relecov_core.models.Sample.objects.filter(
             lineage_values__in=lineage_value_objs
         ).count()
-        # Query variants with AF>0.75 for samples matching desired lineage. TODO: get this from threshold af in metadata bioinfo in db.
+        # Query variants with AF>0.75 for samples matching desired lineage. TODO: get this from threshold AF in metadata bioinfo in db.
         variants = (
-            VariantInSample.objects.filter(sampleID_id__in=sample_objs, af__gt=0.75)
+            relecov_core.models.VariantInSample.objects.filter(
+                sampleID_id__in=sample_objs, af__gt=0.75
+            )
             .values_list("variantID_id", flat=True)
             .distinct()
         )
 
         for variant in variants:
             number_samples_wmutation = (
-                VariantInSample.objects.filter(
+                relecov_core.models.VariantInSample.objects.filter(
                     sampleID_id__in=sample_objs, variantID_id=variant
                 )
                 .values_list("sampleID_id", flat=True)
                 .count()
             )
             mut_freq_population = number_samples_wmutation / number_samples_wlineage
-            pos = VariantInSample.objects.filter(variantID_id=variant)[0].get_pos()
+            pos = relecov_core.models.VariantInSample.objects.filter(
+                variantID_id=variant
+            )[0].get_pos()
 
             effects = (
-                VariantAnnotation.objects.filter(variantID_id__pk=variant)
+                relecov_core.models.VariantAnnotation.objects.filter(variantID_id__pk=variant)
                 .values_list("effectID_id__effect", flat=True)
                 .last()
             )
@@ -270,7 +273,7 @@ def pre_proc_variations_per_lineage(chromosome=None):
                 list_of_pos.append(pos)
                 list_of_effects.append(effects)
 
-        domains = get_domains_and_coordenates(chromosome)
+        domains = relecov_core.utils.handling_variant.get_domains_and_coordenates(chromosome)
 
         mutation_data["x"] = list_of_pos
         mutation_data["y"] = list_of_af
@@ -279,7 +282,7 @@ def pre_proc_variations_per_lineage(chromosome=None):
 
         lineage_data[lineage] = mutation_data
 
-    GraphicJsonFile.objects.create_new_graphic_json(
+    relecov_dashboard.models.GraphicJsonFile.objects.create_new_graphic_json(
         {"graphic_name": "variations_per_lineage", "graphic_data": lineage_data}
     )
 
@@ -289,7 +292,7 @@ def pre_proc_variations_per_lineage(chromosome=None):
 # preprocessing data for Sample processing dashboard
 def pre_proc_specimen_source_pcr_1():
     """Collect the cts values when using pcr 1 and per specimen source"""
-    lims_data = get_stats_data(
+    lims_data = relecov_core.utils.rest_api_handling.get_stats_data(
         {
             "sample_project_name": "Relecov",
             "project_field": "specimen_source,diagnostic_pcr_Ct_value_1",
@@ -298,7 +301,7 @@ def pre_proc_specimen_source_pcr_1():
     if "ERROR" in lims_data:
         return lims_data
 
-    GraphicJsonFile.objects.create_new_graphic_json(
+    relecov_dashboard.models.GraphicJsonFile.objects.create_new_graphic_json(
         {"graphic_name": "specimen_source_pcr_1", "graphic_data": lims_data}
     )
 
@@ -307,7 +310,7 @@ def pre_proc_specimen_source_pcr_1():
 
 def pre_proc_extraction_protocol_pcr_1():
     """Collect the cts values when using pcr 1 and per specimen source"""
-    lims_data = get_stats_data(
+    lims_data = relecov_core.utils.rest_api_handling.get_stats_data(
         {
             "sample_project_name": "Relecov",
             "project_field": "nucleic_acid_extraction_protocol,diagnostic_pcr_Ct_value_1",
@@ -316,7 +319,7 @@ def pre_proc_extraction_protocol_pcr_1():
     if "ERROR" in lims_data:
         return lims_data
 
-    GraphicJsonFile.objects.create_new_graphic_json(
+    relecov_dashboard.models.GraphicJsonFile.objects.create_new_graphic_json(
         {"graphic_name": "extraction_protocol_pcr_1", "graphic_data": lims_data}
     )
 
@@ -326,7 +329,7 @@ def pre_proc_extraction_protocol_pcr_1():
 # preprocessing data for Sequencing dashboard
 def pre_proc_library_kit_pcr_1():
     """Collect the cts values when using pcr 1 and per library preparation kit"""
-    lims_data = get_stats_data(
+    lims_data = relecov_core.utils.rest_api_handling.get_stats_data(
         {
             "sample_project_name": "Relecov",
             "project_field": "library_preparation_kit,diagnostic_pcr_Ct_value_1",
@@ -335,7 +338,7 @@ def pre_proc_library_kit_pcr_1():
     if "ERROR" in lims_data:
         return lims_data
 
-    GraphicJsonFile.objects.create_new_graphic_json(
+    relecov_dashboard.models.GraphicJsonFile.objects.create_new_graphic_json(
         {"graphic_name": "library_kit_pcr_1", "graphic_data": lims_data}
     )
 
@@ -344,7 +347,7 @@ def pre_proc_library_kit_pcr_1():
 
 def pre_proc_based_pairs_sequenced():
     based_pairs = {}
-    pcr_ct_1_values = get_sample_parameter_data(
+    pcr_ct_1_values = relecov_core.utils.rest_api_handling.get_sample_parameter_data(
         {"sample_project_name": "relecov", "parameter": "diagnostic_pcr_Ct_value_1"}
     )
     if "ERROR" in pcr_ct_1_values:
@@ -354,7 +357,7 @@ def pre_proc_based_pairs_sequenced():
         sample_name = ct_value["Sample name"]
         # import pdb; pdb.set_trace()
         base_value = (
-            BioinfoAnalysisValue.objects.filter(
+            relecov_core.models.BioinfoAnalysisValue.objects.filter(
                 bioinfo_analysis_fieldID__property_name__exact="number_of_base_pairs_sequenced",
                 sample__collecting_lab_sample_id__exact=sample_name,
             )
@@ -370,7 +373,7 @@ def pre_proc_based_pairs_sequenced():
             based_pairs[base_value_int] = []
         based_pairs[base_value_int].append(float_base_value)
 
-    GraphicJsonFile.objects.create_new_graphic_json(
+    relecov_dashboard.models.GraphicJsonFile.objects.create_new_graphic_json(
         {
             "graphic_name": "ct_number_of_base_pairs_sequenced",
             "graphic_data": based_pairs,
@@ -382,10 +385,10 @@ def pre_proc_based_pairs_sequenced():
 
 # data preparation for methodology bioinfo dashboard
 def pre_proc_depth_variants():
-    depth_sample_list = BioinfoAnalysisValue.objects.filter(
+    depth_sample_list = relecov_core.models.BioinfoAnalysisValue.objects.filter(
         bioinfo_analysis_fieldID__property_name__exact="depth_of_coverage_value"
     ).values("value", "sample__collecting_lab_sample_id")
-    variant_sample_list = BioinfoAnalysisValue.objects.filter(
+    variant_sample_list = relecov_core.models.BioinfoAnalysisValue.objects.filter(
         bioinfo_analysis_fieldID__property_name__exact="number_of_variants_in_consensus"
     ).values("value", "sample__collecting_lab_sample_id")
     tmp_depth = {}
@@ -408,7 +411,7 @@ def pre_proc_depth_variants():
     # depth.append(tmp_depth[item["sample__collecting_lab_sample_id"]])
     # variant.append(int(item["value"]))
     # depth_variant = {"depth": depth, "variant": variant}
-    GraphicJsonFile.objects.create_new_graphic_json(
+    relecov_dashboard.models.GraphicJsonFile.objects.create_new_graphic_json(
         {
             "graphic_name": "depth_variant_consensus",
             "graphic_data": depth_variant,
@@ -418,12 +421,12 @@ def pre_proc_depth_variants():
 
 
 def pre_proc_depth_sample_run():
-    depth_sample_list = BioinfoAnalysisValue.objects.filter(
+    depth_sample_list = relecov_core.models.BioinfoAnalysisValue.objects.filter(
         bioinfo_analysis_fieldID__property_name__exact="depth_of_coverage_value"
     ).values("value", "sample__collecting_lab_sample_id")
     if len(depth_sample_list) == 0:
         return {"ERROR": "No data"}
-    sample_in_run = get_sample_parameter_data(
+    sample_in_run = relecov_core.utils.rest_api_handling.get_sample_parameter_data(
         {"sample_project_name": "relecov", "parameter": "number_of_samples_in_run"}
     )
     # return error, no connection to LIMS
@@ -445,7 +448,7 @@ def pre_proc_depth_sample_run():
             depth_sample_run[d_value] = []
         depth_sample_run[d_value].append(int(item["number_of_samples_in_run"]))
 
-    GraphicJsonFile.objects.create_new_graphic_json(
+    relecov_dashboard.models.GraphicJsonFile.objects.create_new_graphic_json(
         {
             "graphic_name": "depth_samples_in_run",
             "graphic_data": depth_sample_run,

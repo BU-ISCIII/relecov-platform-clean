@@ -6,25 +6,20 @@ Mutation table under needle plot
 - Generate auxiliar table to needle plot
 """
 
+# Generic imports
 import pandas as pd
-
 from dash.dependencies import Input, Output
 from dash import dcc, html
 from django_plotly_dash import DjangoDash
 from dash import dash_table
-from relecov_core.models import Effect, Gene, VariantAnnotation, VariantInSample
-from relecov_core.utils.handling_samples import get_sample_obj_from_sample_name
+
+# Local imports
+import relecov_core.models
+import relecov_core.utils.handling_samples
 
 """
-from relecov_core.utils.handling_variant import (
-    # get_if_chromosomes_exists,
-    # get_if_organism_exists,
-    get_position_per_sample,
-    get_alelle_frequency_per_sample,
-    # create_effect_list,
-)
+import relecov_core.utils.handling_variant
 """
-
 
 def create_data_for_dataframe(sample_list, effect_list):
     # "B.1.1.7", "NC_045512"
@@ -38,17 +33,17 @@ def create_data_for_dataframe(sample_list, effect_list):
     pos_list = []
     # chromosome = "NC_045512"
     for sample_name in sample_list:
-        sample_obj = get_sample_obj_from_sample_name(sample_name=sample_name)
+        sample_obj = relecov_core.utils.handling_samples.get_sample_obj_from_sample_name(sample_name=sample_name)
         if sample_obj is not None:
-            variant_in_sample_objs = VariantInSample.objects.filter(
+            variant_in_sample_objs = relecov_core.models.VariantInSample.objects.filter(
                 sampleID_id=sample_obj
             )
 
             for variant_in_sample_obj in variant_in_sample_objs:
-                variant_annotation_obj = VariantAnnotation.objects.filter(
+                variant_annotation_obj = relecov_core.models.VariantAnnotation.objects.filter(
                     variantID_id=variant_in_sample_obj.get_variantID_id()
                 ).last()
-                effect_obj = Effect.objects.filter(
+                effect_obj = relecov_core.models.Effect.objects.filter(
                     effect__iexact=variant_annotation_obj.get_effectID_id()
                 ).last()
                 if effect_obj.get_effect() in effect_list:
@@ -56,10 +51,10 @@ def create_data_for_dataframe(sample_list, effect_list):
                     list_of_hgvs_p.append(hgvs_p)
 
                     geneID_id = variant_annotation_obj.get_geneID_id()
-                    gene_obj = Gene.objects.filter(gene_name__iexact=geneID_id).last()
+                    gene_obj = relecov_core.models.Gene.objects.filter(gene_name__iexact=geneID_id).last()
                     gene_list.append(gene_obj.get_gene_name())
 
-                    effect_obj = Effect.objects.filter(
+                    effect_obj = relecov_core.models.Effect.objects.filter(
                         effect__iexact=variant_annotation_obj.get_effectID_id()
                     ).last()
                     effect_list_df.append(effect_obj.get_effect())

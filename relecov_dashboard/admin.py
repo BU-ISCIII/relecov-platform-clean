@@ -1,12 +1,9 @@
 from django.contrib import admin
-
-from relecov_dashboard.models import (
-    GraphicJsonFile,
-)
+import relecov_dashboard.models
 
 
 class GraphicJsonFileAdmin(admin.ModelAdmin):
     list_display = ["graphic_name"]
 
 
-admin.site.register(GraphicJsonFile, GraphicJsonFileAdmin)
+admin.site.register(relecov_dashboard.models.GraphicJsonFile, GraphicJsonFileAdmin)
