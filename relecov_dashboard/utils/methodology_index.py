@@ -3,10 +3,10 @@ from statistics import mean
 
 # Local imports
 import relecov_core.utils.handling_bioinfo_analysis
-import relecov_core.utils.schema_handling
 import relecov_core.utils.rest_api_handling
-import relecov_dashboard.utils.graphics.plotly_graphics
+import relecov_core.utils.schema_handling
 import relecov_dashboard.dashboard_config
+import relecov_dashboard.utils.graphics.plotly_graphics
 
 
 def schema_fields_utilization():

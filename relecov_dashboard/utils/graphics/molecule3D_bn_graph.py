@@ -1,16 +1,16 @@
 # Generic imports
 import os
-import pandas as pd
-import dash_bio as dashbio
-import parmed as pmd
 
-from django_plotly_dash import DjangoDash
-from dash import dash_table
+import dash_bio as dashbio
+import pandas as pd
+import parmed as pmd
+from dash import dash_table, html
 from dash.dependencies import Input, Output
-from dash import html
+from django_plotly_dash import DjangoDash
 
 # Local imports
 import relecov_platform.settings
+
 
 
 # Note: PDB parserThis module contains a class that can read PDB files and return a dictionary of structural data

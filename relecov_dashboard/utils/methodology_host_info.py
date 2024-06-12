@@ -1,11 +1,12 @@
 # Generic imports
-import pandas as pd
 from collections import OrderedDict
 
+import pandas as pd
+
 # Local imports
-import relecov_dashboard.utils.graphics.plotly_graphics
 import relecov_core.utils.rest_api_handling
 import relecov_dashboard.dashboard_config
+import relecov_dashboard.utils.graphics.plotly_graphics
 
 
 def host_info_graphics():

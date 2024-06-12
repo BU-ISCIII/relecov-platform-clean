@@ -1,13 +1,13 @@
 # Generic imports
-import pandas as pd
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 from datetime import datetime, timedelta
 
 import dash_bootstrap_components as dbc
+import pandas as pd
+import plotly.graph_objects as go
 from dash import dcc, html
-from django_plotly_dash import DjangoDash
 from dash.dependencies import Input, Output
+from django_plotly_dash import DjangoDash
+from plotly.subplots import make_subplots
 
 # Local imports
 import relecov_dashboard.utils.generic_functions

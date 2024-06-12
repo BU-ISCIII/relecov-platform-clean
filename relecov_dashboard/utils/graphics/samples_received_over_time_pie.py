@@ -1,7 +1,8 @@
 # Generic imports
-import os
-import pandas as pd
 import json
+import os
+
+import pandas as pd
 import plotly.express as px
 from dash import dcc, html
 from django_plotly_dash import DjangoDash

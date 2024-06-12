@@ -3,10 +3,10 @@ Needle plot graph mutation by sample
 """
 
 # Generic imports
-from dash import dcc, html
-from django_plotly_dash import DjangoDash
-from dash.dependencies import Input, Output
 import dash_bio as dashbio
+from dash import dcc, html
+from dash.dependencies import Input, Output
+from django_plotly_dash import DjangoDash
 
 # Local imports
 import relecov_core.utils.handling_variant

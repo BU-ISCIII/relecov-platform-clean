@@ -8,10 +8,9 @@ Mutation table under needle plot
 
 # Generic imports
 import pandas as pd
+from dash import dash_table, dcc, html
 from dash.dependencies import Input, Output
-from dash import dcc, html
 from django_plotly_dash import DjangoDash
-from dash import dash_table
 
 # Local imports
 import relecov_core.models

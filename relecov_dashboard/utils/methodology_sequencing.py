@@ -1,12 +1,13 @@
 # Generic imports
-import pandas as pd
 from statistics import mean
+
+import pandas as pd
 
 # Local imports
 import relecov_core.utils.rest_api_handling
 import relecov_core.utils.schema_handling
-import relecov_dashboard.utils.graphics.plotly_graphics
 import relecov_dashboard.utils.generic_functions
+import relecov_dashboard.utils.graphics.plotly_graphics
 import relecov_dashboard.utils.pre_processing_data
 
 

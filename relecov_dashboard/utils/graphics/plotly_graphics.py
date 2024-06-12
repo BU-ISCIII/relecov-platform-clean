@@ -1,10 +1,10 @@
-from plotly.offline import plot
-import plotly.graph_objects as go
-
+# Generic imports
 import dash_bootstrap_components as dbc
-from dash import html
 import dash_daq as daq
+import plotly.graph_objects as go
+from dash import html
 from django_plotly_dash import DjangoDash
+from plotly.offline import plot
 
 
 def graph_gauge_percent_values(app_name, value, label, size=180):

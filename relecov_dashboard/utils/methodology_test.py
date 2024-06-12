@@ -1,10 +1,10 @@
 # Generic imports
-import dash_daq as daq
 import dash_bootstrap_components as dbc
+import dash_daq as daq
 from dash import dcc, html
 from dash.dependencies import Input, Output
-from django_plotly_dash import DjangoDash
 from django.shortcuts import redirect
+from django_plotly_dash import DjangoDash
 
 
 def render_page_content():
