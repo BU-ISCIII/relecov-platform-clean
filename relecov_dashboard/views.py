@@ -1,23 +1,23 @@
 # Generic imports
-from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 
 # Local imports
-import relecov_core.utils.handling_variant
-import relecov_core.utils.handling_lineage
 import relecov_core.core_config
+import relecov_core.utils.handling_lineage
+import relecov_core.utils.handling_variant
+import relecov_dashboard.dashboard_config
 import relecov_dashboard.utils.graphics.lineages_in_time
-import relecov_dashboard.utils.graphics.variant_mutation_in_lineages_search_by_lineage
 import relecov_dashboard.utils.graphics.molecule3D_bn_graph
-import relecov_dashboard.utils.graphics.variant_mutation_in_lineages_heatmap
-import relecov_dashboard.utils.graphics.variant_lineages_variation_over_time
 import relecov_dashboard.utils.graphics.samples_received_over_time_pie
-import relecov_dashboard.utils.methodology_index
-import relecov_dashboard.utils.methodology_host_info
+import relecov_dashboard.utils.graphics.variant_lineages_variation_over_time
+import relecov_dashboard.utils.graphics.variant_mutation_in_lineages_heatmap
+import relecov_dashboard.utils.graphics.variant_mutation_in_lineages_search_by_lineage
 import relecov_dashboard.utils.methodology_bioinfo
+import relecov_dashboard.utils.methodology_host_info
+import relecov_dashboard.utils.methodology_index
 import relecov_dashboard.utils.methodology_sequencing
 import relecov_dashboard.utils.sample_processing
-import relecov_dashboard.dashboard_config
 
 
 # dashboard/variants

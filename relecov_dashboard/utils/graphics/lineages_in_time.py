@@ -1,15 +1,15 @@
 # Generic imports
 import datetime
-import os
 import json
-import pandas as pd
-
+import os
 from time import strptime
-from django.conf import settings
-from dash import dcc, html
-from django_plotly_dash import DjangoDash
-from dash.dependencies import Input, Output
+
+import pandas as pd
 import plotly.graph_objects as go
+from dash import dcc, html
+from dash.dependencies import Input, Output
+from django.conf import settings
+from django_plotly_dash import DjangoDash
 
 # Local imports
 import relecov_core.models

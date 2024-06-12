@@ -9,17 +9,16 @@ Mutation heatmap
     - Color represents allele frequency
 
 """
-
 # Generic imports
-from django_plotly_dash import DjangoDash
-from dash.dependencies import Input, Output
-from dash import dcc, html
-import plotly.express as px
 import pandas as pd
+import plotly.express as px
+from dash import dcc, html
+from dash.dependencies import Input, Output
+from django_plotly_dash import DjangoDash
 
 # Local imports
-import relecov_core.utils.handling_samples
 import relecov_core.models
+import relecov_core.utils.handling_samples
 
 
 def create_data_for_dataframe(sample_list, gene_list):

@@ -1,8 +1,11 @@
+# Generc imports
 import pandas
-import relecov_dashboard.utils.pre_processing_data
+
+# Local imports
 import relecov_core.utils.rest_api_handling
 import relecov_dashboard.utils.generic_functions
 import relecov_dashboard.utils.graphics.plotly_graphics
+import relecov_dashboard.utils.pre_processing_data
 
 
 def sample_processing_graphics():

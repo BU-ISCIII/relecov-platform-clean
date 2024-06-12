@@ -1,13 +1,13 @@
 # Generic imports
-from statistics import mean
 from collections import OrderedDict
+from statistics import mean
 
 # Local imports
-import relecov_dashboard.utils.graphics.plotly_graphics
-import relecov_dashboard.utils.generic_functions
 import relecov_core.models
-import relecov_dashboard.utils.pre_processing_data
 import relecov_dashboard.dashboard_config
+import relecov_dashboard.utils.generic_functions
+import relecov_dashboard.utils.graphics.plotly_graphics
+import relecov_dashboard.utils.pre_processing_data
 
 
 def bioinfo_graphics():

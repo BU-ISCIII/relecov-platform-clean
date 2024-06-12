@@ -1,18 +1,19 @@
 # Generic imports
-from statistics import mean
-import urllib.request as urlreq
 import json
+import urllib.request as urlreq
+from statistics import mean
 
-import dash_bootstrap_components as dbc
-from dash import dcc, html
-from django_plotly_dash import DjangoDash
-from dash.dependencies import Input, Output
 import dash_bio as dashbio
+import dash_bootstrap_components as dbc
 import dash_daq as daq
+from dash import dcc, html
+from dash.dependencies import Input, Output
+from django_plotly_dash import DjangoDash
 
 # Local imports
-import relecov_core.utils.handling_bioinfo_analysis
+
 import relecov_core.models
+import relecov_core.utils.handling_bioinfo_analysis
 
 
 def graph_not_empty_fields(value, label):

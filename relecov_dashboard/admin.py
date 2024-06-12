@@ -1,4 +1,7 @@
+# Generic imports
 from django.contrib import admin
+
+# Local imports
 import relecov_dashboard.models
 
 

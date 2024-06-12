@@ -1,16 +1,12 @@
-"""
-Pre-processing data for Relecov dashboard
-"""
-
 # Generic imports
 from datetime import datetime
 
 # Local imports
-import relecov_dashboard.models
 import relecov_core.models
-import relecov_core.utils.handling_variant
 import relecov_core.utils.handling_lineage
+import relecov_core.utils.handling_variant
 import relecov_core.utils.rest_api_handling
+import relecov_dashboard.models
 
 
 def pre_proc_calculation_date():

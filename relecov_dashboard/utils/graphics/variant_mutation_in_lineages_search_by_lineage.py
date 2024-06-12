@@ -1,13 +1,13 @@
 # Generic imports
-from dash import dcc, html
-from django_plotly_dash import DjangoDash
-from dash.dependencies import Input, Output
 import dash_bio as dashbio
+from dash import dcc, html
+from dash.dependencies import Input, Output
+from django_plotly_dash import DjangoDash
 
 # Local imports
+import relecov_core.models
 import relecov_dashboard.utils.generic_functions
 import relecov_dashboard.utils.pre_processing_data
-import relecov_core.models
 
 
 def get_variant_data_from_lineages(graphic_name=None, lineage=None, chromosome=None):
