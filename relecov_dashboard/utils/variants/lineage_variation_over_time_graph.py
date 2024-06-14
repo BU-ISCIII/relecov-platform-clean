@@ -10,21 +10,22 @@ from django_plotly_dash import DjangoDash
 from plotly.subplots import make_subplots
 
 # Local imports
-import relecov_dashboard.utils.generic_functions
-import relecov_dashboard.utils.pre_processing_data
+import relecov_dashboard.utils.generic
+import relecov_dashboard.utils.process_data
 
-
+# TODO: mv to graphics
+# TODO: rename to create_lineage_variation_graph()
 def create_lineages_variations_graphic(date_range=None):
     """Collect the pre-processed data from database"""
-    json_data = relecov_dashboard.utils.generic_functions.get_graphic_json_data(
+    json_data = relecov_dashboard.utils.generic.get_graphic_json_data(
         "variant_graphic_data"
     )
     if json_data is None:
         # Execute the pre-processed task to get the data
-        result = relecov_dashboard.utils.pre_processing_data.pre_proc_variant_graphic()
+        result = relecov_dashboard.utils.process_data.pre_proc_variant_graphic()
         if "ERROR" in result:
             return result
-        json_data = relecov_dashboard.utils.generic_functions.get_graphic_json_data(
+        json_data = relecov_dashboard.utils.generic.get_graphic_json_data(
             "variant_graphic_data"
         )
 

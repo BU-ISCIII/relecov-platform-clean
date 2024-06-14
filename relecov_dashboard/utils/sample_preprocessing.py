@@ -3,39 +3,40 @@ import pandas
 
 # Local imports
 import relecov_core.utils.rest_api_handling
-import relecov_dashboard.utils.generic_functions
+import relecov_dashboard.utils.generic
 import relecov_dashboard.utils.graphics.plotly_graphics
-import relecov_dashboard.utils.pre_processing_data
+import relecov_dashboard.utils.process_data
 
-
+# TODO: rename to sample_graphics()
 def sample_processing_graphics():
+    # TODO: rename to get_data()
     def get_pre_proc_data(graphic_name):
         """Get the pre-processed data for the graphic name.
         If there is no data stored for the graphic, it will query to store
         them before calling for the second time
         """
-        json_data = relecov_dashboard.utils.generic_functions.get_graphic_json_data(
+        json_data = relecov_dashboard.utils.generic.get_graphic_json_data(
             graphic_name
         )
         if json_data is None:
             # Execute the pre-processed task to get the data
             if graphic_name == "specimen_source_pcr_1":
                 result = (
-                    relecov_dashboard.utils.pre_processing_data.pre_proc_specimen_source_pcr_1()
+                    relecov_dashboard.utils.process_data.pre_proc_specimen_source_pcr_1()
                 )
             elif graphic_name == "extraction_protocol_pcr_1":
                 result = (
-                    relecov_dashboard.utils.pre_processing_data.pre_proc_extraction_protocol_pcr_1()
+                    relecov_dashboard.utils.process_data.pre_proc_extraction_protocol_pcr_1()
                 )
             elif graphic_name == "calculation_date":
                 result = (
-                    relecov_dashboard.utils.pre_processing_data.pre_proc_calculation_date()
+                    relecov_dashboard.utils.process_data.pre_proc_calculation_date()
                 )
             else:
                 return {"ERROR": "pre-processing not defined"}
             if "ERROR" in result:
                 return result
-            json_data = relecov_dashboard.utils.generic_functions.get_graphic_json_data(
+            json_data = relecov_dashboard.utils.generic.get_graphic_json_data(
                 graphic_name
             )
         # Convert string to float values
@@ -53,7 +54,7 @@ def sample_processing_graphics():
                 tmp_data += [float_val] * numbers
             data.append({key: tmp_data})
         return data
-
+    # TODO: rename to fetch_data()
     def fetching_data_for_sample_processing(project_field, columns):
         # get stats utilization fields from LIMS about nucleic acid extraction protocol
         lims_data = relecov_core.utils.rest_api_handling.get_stats_data(

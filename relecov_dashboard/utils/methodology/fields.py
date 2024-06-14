@@ -11,7 +11,6 @@ from dash.dependencies import Input, Output
 from django_plotly_dash import DjangoDash
 
 # Local imports
-
 import relecov_core.models
 import relecov_core.utils.handling_bioinfo_analysis
 
