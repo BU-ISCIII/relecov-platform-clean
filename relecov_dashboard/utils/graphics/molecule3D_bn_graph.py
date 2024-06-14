@@ -90,7 +90,7 @@ def create_model3D_bn():
         os.path.join(
             relecov_platform.settings.BASE_DIR,
             "relecov_dashboard",
-            "utils",
+            "assets",
             "pdb_files",
             "7dwz.pdb",
         )
