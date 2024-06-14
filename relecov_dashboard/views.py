@@ -7,17 +7,17 @@ import relecov_core.core_config
 import relecov_core.utils.handling_lineage
 import relecov_core.utils.handling_variant
 import relecov_dashboard.dashboard_config
-import relecov_dashboard.utils.graphics.lineages_in_time
+import relecov_dashboard.utils.variants.lineages_in_time
 import relecov_dashboard.utils.graphics.molecule3D_bn_graph
 import relecov_dashboard.utils.graphics.samples_received_over_time_pie
-import relecov_dashboard.utils.graphics.variant_lineages_variation_over_time
-import relecov_dashboard.utils.graphics.variant_mutation_in_lineages_heatmap
-import relecov_dashboard.utils.graphics.variant_mutation_in_lineages_search_by_lineage
-import relecov_dashboard.utils.methodology_bioinfo
-import relecov_dashboard.utils.methodology_host_info
-import relecov_dashboard.utils.methodology_index
-import relecov_dashboard.utils.methodology_sequencing
-import relecov_dashboard.utils.sample_processing
+import relecov_dashboard.utils.variants.lineage_variation_over_time_graph
+import relecov_dashboard.utils.variants.heatmap_mutation_graph_by_lineage
+import relecov_dashboard.utils.variants.needle_mutation_graph_by_lineage
+import relecov_dashboard.utils.methodology.bioinfo
+import relecov_dashboard.utils.methodology.host_info
+import relecov_dashboard.utils.methodology.index
+import relecov_dashboard.utils.methodology.sequencing
+import relecov_dashboard.utils.sample_preprocessing
 
 
 # dashboard/variants
@@ -32,7 +32,7 @@ def mutations_in_lineage(request):
     def_chrom = relecov_core.utils.handling_variant.get_default_chromosome()
     lineages_list = relecov_core.utils.handling_lineage.get_lineages_list()
     mdata, lineage = (
-        relecov_dashboard.utils.graphics.variant_mutation_in_lineages_search_by_lineage.get_variant_data_from_lineages(
+        relecov_dashboard.utils.variants.needle_mutation_graph_by_lineage.get_variant_data_from_lineages(
             graphic_name="variations_per_lineage", lineage=None, chromosome=def_chrom
         )
     )
@@ -45,7 +45,7 @@ def mutations_in_lineage(request):
                 "ERROR": relecov_dashboard.dashboard_config.ERROR_NO_LINEAGES_ARE_DEFINED_YET
             },
         )
-    relecov_dashboard.utils.graphics.variant_mutation_in_lineages_search_by_lineage.create_needle_plot_graph_mutation_by_lineage(
+    relecov_dashboard.utils.variants.needle_mutation_graph_by_lineage.create_needle_plot_graph_mutation_by_lineage(
         lineages_list, lineage, mdata
     )
     return render(
@@ -64,7 +64,7 @@ def lineages_voc(request):
     # Draw lineage based on time
     draw_lineages = {}
     draw_lineages["lineage_on_time"] = (
-        relecov_dashboard.utils.graphics.variant_lineages_variation_over_time.create_lineages_variations_graphic()
+        relecov_dashboard.utils.variants.lineage_variation_over_time_graph.create_lineages_variations_graphic()
     )
     return render(
         request,
@@ -75,8 +75,8 @@ def lineages_voc(request):
 
 @login_required
 def samples_received_over_time_graph(request):
-    df = relecov_dashboard.utils.graphics.lineages_in_time.create_dataframe_from_json()
-    relecov_dashboard.utils.graphics.lineages_in_time.create_samples_over_time_graph(df)
+    df = relecov_dashboard.utils.variants.lineages_in_time.create_dataframe_from_json()
+    relecov_dashboard.utils.variants.lineages_in_time.create_samples_over_time_graph(df)
 
     return render(request, "relecov_dashboard/samplesReceivedOverTimeGraph.html")
 
@@ -154,7 +154,7 @@ def variants_mutations_in_lineages_heatmap(request):
             "relecov_dashboard/variantsMutationsInLineagesHeatmap.html",
             {"ERROR": relecov_core.core_config.ERROR_VARIANT_IN_SAMPLE_NOT_DEFINED},
         )
-    relecov_dashboard.utils.graphics.variant_mutation_in_lineages_heatmap.create_heat_map(
+    relecov_dashboard.utils.variants.heatmap_mutation_graph_by_lineage.create_heat_map(
         sample_list, gene_list
     )
     return render(request, "relecov_dashboard/variantsMutationsInLineagesHeatmap.html")
@@ -163,7 +163,7 @@ def variants_mutations_in_lineages_heatmap(request):
 # dashboard/methodology
 @login_required
 def methodology_index(request):
-    graphics = relecov_dashboard.utils.methodology_index.index_dash_fields()
+    graphics = relecov_dashboard.utils.methodology.index.index_dash_fields()
     return render(
         request, "relecov_dashboard/methodologyIndex.html", {"graphics": graphics}
     )
@@ -171,7 +171,7 @@ def methodology_index(request):
 
 @login_required
 def methodology_host_info(request):
-    host_info = relecov_dashboard.utils.methodology_host_info.host_info_graphics()
+    host_info = relecov_dashboard.utils.methodology.host_info.host_info_graphics()
     if "ERROR" in host_info:
         return render(
             request, "relecov_dashboard/methodologyHostInfo.html", {"ERROR": host_info}
@@ -183,7 +183,7 @@ def methodology_host_info(request):
 
 @login_required
 def methodology_sequencing(request):
-    sequencing = relecov_dashboard.utils.methodology_sequencing.sequencing_graphics()
+    sequencing = relecov_dashboard.utils.methodology.sequencing.sequencing_graphics()
     if "ERROR" in sequencing:
         return render(
             request,
@@ -200,7 +200,7 @@ def methodology_sequencing(request):
 @login_required
 def methodology_sample_processing(request):
     sample_processing = (
-        relecov_dashboard.utils.sample_processing.sample_processing_graphics()
+        relecov_dashboard.utils.sample_preprocessing.sample_processing_graphics()
     )
     if "ERROR" in sample_processing:
         return render(
@@ -217,7 +217,7 @@ def methodology_sample_processing(request):
 
 @login_required
 def methodology_bioinfo(request):
-    bioinfo = relecov_dashboard.utils.methodology_bioinfo.bioinfo_graphics()
+    bioinfo = relecov_dashboard.utils.methodology.bioinfo.bioinfo_graphics()
     return render(
         request, "relecov_dashboard/methodologyBioinfo.html", {"bioinfo": bioinfo}
     )

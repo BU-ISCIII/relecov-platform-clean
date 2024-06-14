@@ -5,31 +5,31 @@ from statistics import mean
 # Local imports
 import relecov_core.models
 import relecov_dashboard.dashboard_config
-import relecov_dashboard.utils.generic_functions
+import relecov_dashboard.utils.generic
 import relecov_dashboard.utils.graphics.plotly_graphics
-import relecov_dashboard.utils.pre_processing_data
+import relecov_dashboard.utils.process_data
 
 
 def bioinfo_graphics():
     def get_pre_proc_data(graphic_name):
-        json_data = relecov_dashboard.utils.generic_functions.get_graphic_json_data(
+        json_data = relecov_dashboard.utils.generic.get_graphic_json_data(
             graphic_name
         )
         if json_data is None:
             # Execute the pre-processed task to get the data
             if graphic_name == "depth_variant_consensus":
                 result = (
-                    relecov_dashboard.utils.pre_processing_data.pre_proc_depth_variants()
+                    relecov_dashboard.utils.process_data.pre_proc_depth_variants()
                 )
             elif graphic_name == "depth_samples_in_run":
                 result = (
-                    relecov_dashboard.utils.pre_processing_data.pre_proc_depth_sample_run()
+                    relecov_dashboard.utils.process_data.pre_proc_depth_sample_run()
                 )
             else:
                 return {"ERROR": "pre-processing not defined"}
             if "ERROR" in result:
                 return result
-            json_data = relecov_dashboard.utils.generic_functions.get_graphic_json_data(
+            json_data = relecov_dashboard.utils.generic.get_graphic_json_data(
                 graphic_name
             )
         tmp_json_float = {}

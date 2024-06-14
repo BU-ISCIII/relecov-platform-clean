@@ -6,35 +6,36 @@ import pandas as pd
 # Local imports
 import relecov_core.utils.rest_api_handling
 import relecov_core.utils.schema_handling
-import relecov_dashboard.utils.generic_functions
+import relecov_dashboard.utils.generic
 import relecov_dashboard.utils.graphics.plotly_graphics
-import relecov_dashboard.utils.pre_processing_data
+import relecov_dashboard.utils.process_data
 
-
+# TODO: rename funciton to generate_sequencing_plots()
 def sequencing_graphics():
+    # TODO: rename funciton to fetch_preprocessed_data()
     def get_pre_proc_data(graphic_name, out_format):
         """Get the pre-processed data for the graphic name.
         If there is not data stored for the graphic, it will query to store
         them before calling for the second time
         """
-        json_data = relecov_dashboard.utils.generic_functions.get_graphic_json_data(
+        json_data = relecov_dashboard.utils.generic.get_graphic_json_data(
             graphic_name
         )
         if json_data is None:
             # Execute the pre-processed task to get the data
             if graphic_name == "library_kit_pcr_1":
                 result = (
-                    relecov_dashboard.utils.pre_processing_data.pre_proc_library_kit_pcr_1()
+                    relecov_dashboard.utils.process_data.pre_proc_library_kit_pcr_1()
                 )
             elif graphic_name == "ct_number_of_base_pairs_sequenced":
                 result = (
-                    relecov_dashboard.utils.pre_processing_data.pre_proc_based_pairs_sequenced()
+                    relecov_dashboard.utils.process_data.pre_proc_based_pairs_sequenced()
                 )
             else:
                 return {"ERROR": "pre-processing not defined"}
             if "ERROR" in result:
                 return result
-            json_data = relecov_dashboard.utils.generic_functions.get_graphic_json_data(
+            json_data = relecov_dashboard.utils.generic.get_graphic_json_data(
                 graphic_name
             )
         if out_format == "list_of_dict":
@@ -55,7 +56,8 @@ def sequencing_graphics():
                 data["based"].append(int(key))
                 data["cts"].append(mean(values))
         return data
-
+    
+    # TODO: fetch_sequencing_data()
     def fetching_data_for_sequencing_data(project_field, columns):
         # get stats utilization fields from LIMS
         lims_data = relecov_core.utils.rest_api_handling.get_stats_data(

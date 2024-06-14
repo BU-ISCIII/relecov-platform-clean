@@ -20,7 +20,7 @@ from django_plotly_dash import DjangoDash
 import relecov_core.models
 import relecov_core.utils.handling_samples
 
-
+# TODO: rename to generate_dataframe()
 def create_data_for_dataframe(sample_list, gene_list):
     df = {}
     list_of_hgvs_p = []
@@ -80,7 +80,6 @@ def create_data_for_dataframe(sample_list, gene_list):
 
     return pandas_df
 
-
 def get_figure(data: pd.DataFrame, sample_ids: list, genes: list):
     # Order by position
     data = data.sort_values(by=["POS"])
@@ -116,7 +115,7 @@ def get_figure(data: pd.DataFrame, sample_ids: list, genes: list):
 
     return fig
 
-
+# TODO: rename to create_heatmap_graph()
 def create_heat_map(sample_list, gene_list):
     df = create_data_for_dataframe(sample_list=sample_list, gene_list=gene_list)
     get_figure(df, sample_list, genes=gene_list)
