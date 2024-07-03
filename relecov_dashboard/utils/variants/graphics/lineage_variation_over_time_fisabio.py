@@ -15,6 +15,7 @@ from plotly.subplots import make_subplots
 
 
 # FIXME: This file contains harcoded paths.
+# FIXME: This file is not accessed.
 def select_range_date(start_date, end_date, df):
     """ "
     Select range date
@@ -26,7 +27,6 @@ def select_range_date(start_date, end_date, df):
     df2 = df.loc[mask]
     return df2
 
-# TODO: rename to create_
 def make_lineage_variaton_plot(data, start_date, end_date, select_range, windowSize):
     """
     We are sliding a time window of X days to collect the frequency and relative percentage of the lineages. We record

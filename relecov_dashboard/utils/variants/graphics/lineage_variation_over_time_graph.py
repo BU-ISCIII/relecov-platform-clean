@@ -13,8 +13,6 @@ from plotly.subplots import make_subplots
 import relecov_dashboard.utils.generic
 import relecov_dashboard.utils.process_data
 
-# TODO: mv to graphics
-# TODO: rename to create_lineage_variation_graph()
 def create_lineages_variations_graphic(date_range=None):
     """Collect the pre-processed data from database"""
     json_data = relecov_dashboard.utils.generic.get_graphic_json_data(

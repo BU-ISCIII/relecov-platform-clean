@@ -14,7 +14,7 @@ from django_plotly_dash import DjangoDash
 import relecov_core.models
 import relecov_core.utils.handling_bioinfo_analysis
 
-
+# FIXME: This file is not accessed.
 def graph_not_empty_fields(value, label):
     """Create Dashboard application for showing a gauge graphic for the not
     empty fields values
