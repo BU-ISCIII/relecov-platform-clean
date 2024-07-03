@@ -99,7 +99,6 @@ def create_samples_over_time_graph(df):
         df = create_dataframe_from_json()
         create_samples_received_over_time(df)
 
-# TODO: mv to graphics
 def create_samples_received_over_time(df):
     dates_unique = df["DATE"].unique()
     fig = update_figure(df)

@@ -20,7 +20,7 @@ import relecov_core.utils.handling_samples
 import relecov_core.utils.handling_variant
 """
 
-# TODO: rename to generate_dataframe()
+# FIXME: This file is not accessed.
 def create_data_for_dataframe(sample_list, effect_list):
     # "B.1.1.7", "NC_045512"
     df = {}
@@ -83,7 +83,6 @@ def create_data_for_dataframe(sample_list, effect_list):
     df_pandas = pd.DataFrame.from_dict(df)
     return df_pandas
 
-# TODO: rename to create_table()
 def create_mutation_table(sample_list, effect_list):
     df = create_data_for_dataframe(sample_list=sample_list, effect_list=effect_list)
     all_effects = list(df["EFFECT"].unique())
