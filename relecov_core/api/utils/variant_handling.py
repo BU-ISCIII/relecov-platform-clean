@@ -19,7 +19,7 @@ from relecov_core.models import (
     VariantAnnotation,
 )
 
-from relecov_core.utils.handling_variant import (
+from relecov_core.utils.variants import (
     get_if_chromosomes_exists,
     get_gene_obj_from_gene_name,
 )

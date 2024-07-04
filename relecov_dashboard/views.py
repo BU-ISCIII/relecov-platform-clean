@@ -2,16 +2,8 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
 # import fucntions from core
-from relecov_core.utils.handling_variant import (
-    get_all_chromosome_objs,
-    get_gene_list,
-    get_sample_in_variant_list,
-    get_default_chromosome,
-)
-
-from relecov_core.utils.handling_lineage import (
-    get_lineages_list,
-)
+import relecov_core.utils.variants
+import relecov_core.utils.lineage
 
 from relecov_core.core_config import (
     ERROR_CHROMOSOME_NOT_DEFINED_IN_DATABASE,
@@ -69,8 +61,8 @@ def variants_index(request):
 @login_required
 def mutations_in_lineage(request):
     # mutations in lineages by lineage
-    def_chrom = get_default_chromosome()
-    lineages_list = get_lineages_list()
+    def_chrom = relecov_core.utils.variants.get_default_chromosome()
+    lineages_list = relecov_core.utils.lineage.get_lineages_list()
     mdata, lineage = get_variant_data_from_lineages(
         graphic_name="variations_per_lineage", lineage=None, chromosome=def_chrom
     )
@@ -135,7 +127,7 @@ def samples_received_over_time_pie_laboratory(request):
 
 @login_required
 def variants_mutations_in_lineages_heatmap(request):
-    chromesome_objs = get_all_chromosome_objs()
+    chromesome_objs = relecov_core.utils.variants.get_all_chromosome_objs()
     if chromesome_objs is None:
         return render(
             request,
@@ -156,14 +148,14 @@ def variants_mutations_in_lineages_heatmap(request):
             "relecov_dashboard/variantsMutationsInLineagesHeatmap.html",
             {"ORGANISM": chromesome_list},
         )
-    gene_list = get_gene_list(chromesome_objs[0])
+    gene_list = relecov_core.utils.variants.get_gene_list(chromesome_objs[0])
     if len(gene_list) == 0:
         return render(
             request,
             "relecov_dashboard/variantsMutationsInLineagesHeatmap.html",
             {"ERROR": ERROR_GENE_NOT_DEFINED_IN_DATABASE},
         )
-    sample_list = get_sample_in_variant_list(chromesome_objs[0])
+    sample_list = relecov_core.utils.variants.get_sample_in_variant_list(chromesome_objs[0])
     if len(sample_list) == 0:
         return render(
             request,

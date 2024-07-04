@@ -1,13 +1,12 @@
 import os
 import pandas as pd
 import json
-import plotly.express as px
-
+from plotly.express import choropleth_mapbox
 from dash import dcc, html
 from django_plotly_dash import DjangoDash
 
 from relecov_platform import settings
-from relecov_core.utils.rest_api_handling import get_summarize_data
+import relecov_core.utils.rest_api_handling
 
 
 def create_samples_received_map():
@@ -18,7 +17,7 @@ def create_samples_received_map():
         "map",
         "spain-communities.geojson",
     )
-    raw_data = get_summarize_data("")
+    raw_data = relecov_core.utils.rest_api_handling.get_summarize_data("")
     if "ERROR" in raw_data:
         return raw_data
 
@@ -36,7 +35,7 @@ def create_samples_received_map():
             data["samples"].append("0")
     ldata = pd.DataFrame(data)
 
-    fig = px.choropleth_mapbox(
+    fig = choropleth_mapbox(
         ldata,
         geojson=counties,
         locations=ldata.ccaa_id,

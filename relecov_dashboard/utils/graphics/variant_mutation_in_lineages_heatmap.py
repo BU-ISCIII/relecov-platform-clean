@@ -15,7 +15,7 @@ from dash.dependencies import Input, Output
 from dash import dcc, html
 import plotly.express as px
 import pandas as pd
-from relecov_core.utils.handling_samples import get_sample_obj_from_sample_name
+from relecov_core.utils.samples import get_sample_obj_from_sample_name
 from relecov_core.models import Effect, Gene, VariantAnnotation, VariantInSample
 
 """

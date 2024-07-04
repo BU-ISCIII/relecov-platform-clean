@@ -1,15 +1,11 @@
-from relecov_core.utils.plotly_graphics import (
-    line_graphic,
-    bar_graphic,
-)
-
-from relecov_core.utils.rest_api_handling import get_summarize_data
-from relecov_core.utils.handling_samples import get_all_recieved_samples_with_dates
+import relecov_core.utils.plotly_graphics
+import relecov_core.utils.rest_api_handling
+from relecov_core.utils.samples import get_all_recieved_samples_with_dates
 
 
-def display_received_per_ccaa():
+def received_per_ccaa():
     """Fetch the data from LIMS and show them in a graphic bar"""
-    raw_data = get_summarize_data("")
+    raw_data = relecov_core.utils.rest_api_handling.get_summarize_data("")
     if "ERROR" in raw_data:
         return raw_data
 
@@ -18,7 +14,7 @@ def display_received_per_ccaa():
         data["x"].append(key)
         data["y"].append(value)
 
-    return bar_graphic(
+    return relecov_core.utils.plotly_graphics.bar_graphic(
         data=data,
         col_names=["x", "y"],
         legend=[""],
@@ -27,9 +23,9 @@ def display_received_per_ccaa():
     )
 
 
-def display_received_per_lab():
+def received_per_lab():
     """Fetch the data from LIMS and show them in a graphic bar"""
-    raw_data = get_summarize_data("")
+    raw_data = relecov_core.utils.rest_api_handling.get_summarize_data("")
     if "ERROR" in raw_data:
         return raw_data
 
@@ -38,7 +34,7 @@ def display_received_per_lab():
         data["x"].append(key)
         data["y"].append(value)
 
-    return bar_graphic(
+    return relecov_core.utils.plotly_graphics.bar_graphic(
         data=data,
         col_names=["x", "y"],
         legend=[""],
@@ -47,7 +43,7 @@ def display_received_per_lab():
     )
 
 
-def display_received_samples_graph():
+def received_samples_graph():
     """Fetch the number of samples received in the plaftorm and show them"""
     r_data = get_all_recieved_samples_with_dates(accumulated=True)
     data = {"x": [], "y": []}
@@ -65,4 +61,4 @@ def display_received_samples_graph():
         "y_title": "Number of samples",
         "title": "",
     }
-    return line_graphic(data["x"], data["y"], options)
+    return relecov_core.utils.plotly_graphics.line_graphic(data["x"], data["y"], options)

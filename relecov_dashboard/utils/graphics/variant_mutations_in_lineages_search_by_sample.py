@@ -3,7 +3,7 @@ from django_plotly_dash import DjangoDash
 from dash.dependencies import Input, Output
 import dash_bio as dashbio
 
-from relecov_core.utils.handling_variant import create_dataframe
+from relecov_core.utils.variants import create_dataframe
 
 
 def create_needle_plot_graph_mutation_by_sample(sample_name, mdata):

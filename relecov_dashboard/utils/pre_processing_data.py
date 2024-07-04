@@ -1,10 +1,10 @@
 from datetime import datetime
 from relecov_dashboard.models import GraphicJsonFile
-from relecov_core.utils.handling_variant import (
+from relecov_core.utils.variants import (
     get_domains_and_coordenates,
 )
 
-from relecov_core.utils.handling_lineage import (
+from relecov_core.utils.lineage import (
     get_lineages_list,
 )
 

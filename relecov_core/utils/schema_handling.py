@@ -3,18 +3,9 @@ import re
 import os
 from django.db import DataError
 from django.conf import settings
-from relecov_core.models import (
-    BioinfoAnalysisField,
-    # Classification,
-    LineageFields,
-    MetadataVisualization,
-    PropertyOptions,
-    PublicDatabaseFields,
-    PublicDatabaseType,
-    Schema,
-    SchemaProperties,
-)
-from relecov_core.utils.generic_functions import store_file, get_configuration_value
+
+import relecov_core.models
+import relecov_core.utils.generic_functions
 from relecov_core.core_config import (
     SCHEMAS_UPLOAD_FOLDER,
     ERROR_INVALID_JSON,
@@ -34,17 +25,17 @@ def fetch_info_meta_visualization(schema_obj):
     the fields selected and split in 2 the ones for samples and the one for
     batch
     """
-    if not MetadataVisualization.objects.all().exists():
+    if not relecov_core.models.MetadataVisualization.objects.all().exists():
         return None
     m_fields = {"sample": [], "batch": []}
-    m_v_sample_objs = MetadataVisualization.objects.filter(
+    m_v_sample_objs = relecov_core.models.MetadataVisualization.objects.filter(
         fill_mode__exact="sample"
     ).order_by("order")
     for m_v_sample_obj in m_v_sample_objs:
         m_fields["sample"].append(
             [m_v_sample_obj.get_label(), m_v_sample_obj.get_order()]
         )
-    m_v_batch_objs = MetadataVisualization.objects.filter(
+    m_v_batch_objs = relecov_core.models.MetadataVisualization.objects.filter(
         fill_mode__exact="batch"
     ).order_by("order")
     for m_v_batch_obj in m_v_batch_objs:
@@ -58,7 +49,7 @@ def get_fields_if_template():
     Return a list with the labels or None if setting is false or file does not
     exists
     """
-    if get_configuration_value("USE_TEMPLATE_FOR_METADATA_FORM") == "TRUE":
+    if relecov_core.utils.generic_functions.get_configuration_value("USE_TEMPLATE_FOR_METADATA_FORM") == "TRUE":
         temp_file_path = os.path.join(
             settings.BASE_DIR, "conf", "template_for_metadata_form.txt"
         )
@@ -84,7 +75,7 @@ def get_fields_from_schema(schema_obj):
     data = {}
     schema_list = []
     data["schema_id"] = schema_obj.get_schema_id()
-    prop_objs = SchemaProperties.objects.filter(schemaID=schema_obj).order_by("label")
+    prop_objs = relecov_core.models.SchemaProperties.objects.filter(schemaID=schema_obj).order_by("label")
     for prop_obj in prop_objs:
         label = prop_obj.get_label()
         fill_mode = prop_obj.get_fill_mode()
@@ -101,12 +92,12 @@ def get_fields_from_schema(schema_obj):
 
 def get_latest_schema(schema_name, apps_name):
     """Get the latest schema that is defined in database"""
-    if Schema.objects.filter(
+    if relecov_core.models.Schema.objects.filter(
         schema_name__icontains=schema_name,
         schema_apps_name__exact=apps_name,
         schema_default=True,
     ).exists():
-        return Schema.objects.filter(
+        return relecov_core.models.Schema.objects.filter(
             schema_name__icontains=schema_name,
             schema_apps_name__exact=apps_name,
             schema_default=True,
@@ -120,8 +111,8 @@ def get_schema_display_data(schema_id):
     if schema_obj is None:
         return {"ERROR": ERROR_SCHEMA_ID_NOT_DEFINED}
     schema_data = {"s_data": []}
-    if SchemaProperties.objects.filter(schemaID=schema_obj).exists():
-        s_prop_objs = SchemaProperties.objects.filter(schemaID=schema_obj).order_by(
+    if relecov_core.models.SchemaProperties.objects.filter(schemaID=schema_obj).exists():
+        s_prop_objs = relecov_core.models.SchemaProperties.objects.filter(schemaID=schema_obj).order_by(
             "property"
         )
         schema_data["heading"] = HEADING_SCHEMA_DISPLAY
@@ -133,8 +124,8 @@ def get_schema_display_data(schema_id):
 def get_schemas_loaded(apps_name):
     """Return the definded schemas"""
     s_data = []
-    if Schema.objects.filter(schema_apps_name__exact=apps_name).exists():
-        schema_objs = Schema.objects.filter(schema_apps_name__exact=apps_name).order_by(
+    if relecov_core.models.Schema.objects.filter(schema_apps_name__exact=apps_name).exists():
+        schema_objs = relecov_core.models.Schema.objects.filter(schema_apps_name__exact=apps_name).order_by(
             "schema_name"
         )
         for schema_obj in schema_objs:
@@ -144,8 +135,8 @@ def get_schemas_loaded(apps_name):
 
 def get_schema_obj_from_id(schema_id):
     """Get the schema instance from id"""
-    if Schema.objects.filter(pk__exact=schema_id).exists():
-        return Schema.objects.filter(pk__exact=schema_id).last()
+    if relecov_core.models.Schema.objects.filter(pk__exact=schema_id).exists():
+        return relecov_core.models.Schema.objects.filter(pk__exact=schema_id).last()
     return None
 
 
@@ -156,7 +147,7 @@ def load_schema(json_file):
         data["full_schema"] = json.load(json_file)
     except json.decoder.JSONDecodeError:
         return {"ERROR": ERROR_INVALID_JSON}
-    data["file_name"] = store_file(json_file, SCHEMAS_UPLOAD_FOLDER)
+    data["file_name"] = relecov_core.utils.generic_functions.store_file(json_file, SCHEMAS_UPLOAD_FOLDER)
     return data
 
 
@@ -172,15 +163,15 @@ def check_heading_valid_json(schema_data, m_structure):
 
 def get_default_schema():
     """Return the default schema used for relecov"""
-    if Schema.objects.filter(schema_default=True).exists():
-        return Schema.objects.filter(schema_default=True).last()
+    if relecov_core.models.Schema.objects.filter(schema_default=True).exists():
+        return relecov_core.models.Schema.objects.filter(schema_default=True).last()
     return None
 
 
 def del_metadata_visualization():
     """Delete previous metadata visualization if already exists"""
-    if MetadataVisualization.objects.all().exists():
-        m_vis_objs = MetadataVisualization.objects.all()
+    if relecov_core.models.MetadataVisualization.objects.all().exists():
+        m_vis_objs = relecov_core.models.MetadataVisualization.objects.all()
         for m_vis_obj in m_vis_objs:
             m_vis_obj.delete()
     return None
@@ -189,8 +180,8 @@ def del_metadata_visualization():
 def get_schema_properties(schema):
     """Fetch the list of the properties"""
     s_prop_dict = {}
-    if SchemaProperties.objects.filter(schemaID=schema).exists():
-        s_prop_objs = SchemaProperties.objects.filter(schemaID=schema)
+    if relecov_core.models.SchemaProperties.objects.filter(schemaID=schema).exists():
+        s_prop_objs = relecov_core.models.SchemaProperties.objects.filter(schemaID=schema)
         for s_prop_obj in s_prop_objs:
             p_name = s_prop_obj.get_property_name()
             s_prop_dict[p_name] = {}
@@ -213,7 +204,7 @@ def store_fields_metadata_visualization(data):
         m_data = {"schema_id": schema_obj}
         for idx in range(len(fields)):
             m_data[fields[idx]] = row[idx]
-        MetadataVisualization.objects.create_metadata_visualization(m_data)
+        relecov_core.models.MetadataVisualization.objects.create_metadata_visualization(m_data)
         entry_num += 1
     if entry_num == 0:
         return {"ERROR": NO_SELECTED_LABEL_WAS_DONE}
@@ -231,7 +222,7 @@ def store_schema_properties(schema_obj, s_properties, required):
         if "enum" in data:
             data["options"] = True
         try:
-            new_property = SchemaProperties.objects.create_new_property(data)
+            new_property = relecov_core.models.SchemaProperties.objects.create_new_property(data)
         except (KeyError, DataError) as e:
             print(prop_key, " error ", e)
             # schema_obj.delete()
@@ -245,7 +236,7 @@ def store_schema_properties(schema_obj, s_properties, required):
                     e_data = {"enum": item, "ontology": None}
                 e_data["propertyID"] = new_property
                 try:
-                    PropertyOptions.objects.create_property_options(e_data)
+                    relecov_core.models.PropertyOptions.objects.create_property_options(e_data)
                 except (KeyError, DataError) as e:
                     print(prop_key, " enum ", e)
                     # schema_obj.delete()
@@ -271,7 +262,7 @@ def store_bioinfo_fields(schema_obj, s_properties):
             # fields["classificationID"] = class_obj
             fields["property_name"] = prop_key
             fields["label_name"] = data["label"]
-            n_field = BioinfoAnalysisField.objects.create_new_field(fields)
+            n_field = relecov_core.models.BioinfoAnalysisField.objects.create_new_field(fields)
             n_field.schemaID.add(schema_obj)
     return {"SUCCESS": ""}
 
@@ -284,7 +275,7 @@ def store_lineage_fields(schema_obj, s_properties):
             fields = {}
             fields["property_name"] = prop_key
             fields["label_name"] = data["label"]
-            l_field = LineageFields.objects.create_new_field(fields)
+            l_field = relecov_core.models.LineageFields.objects.create_new_field(fields)
             l_field.schemaID.add(schema_obj)
     return {"SUCCESS": ""}
 
@@ -298,26 +289,26 @@ def store_public_data_fields(schema_obj, s_properties):
             fields["property_name"] = prop_key
             fields["label_name"] = data["label"]
             # find out the public database type
-            database_types = PublicDatabaseType.objects.values_list(
+            database_types = relecov_core.models.PublicDatabaseType.objects.values_list(
                 "public_type_name", flat=True
             ).distinct()
             for database_type in database_types:
                 if database_type in prop_key:
                     break
-            p_database_type_obj = PublicDatabaseType.objects.filter(
+            p_database_type_obj = relecov_core.models.PublicDatabaseType.objects.filter(
                 public_type_name__exact=database_type
             ).last()
             fields["database_type"] = p_database_type_obj
-            p_field = PublicDatabaseFields.objects.create_new_field(fields)
+            p_field = relecov_core.models.PublicDatabaseFields.objects.create_new_field(fields)
             p_field.schemaID.add(schema_obj)
 
 
 def remove_existing_default_schema(schema_name, apps_name):
     """Remove the tag for default schema for the given schema name"""
-    if Schema.objects.filter(
+    if relecov_core.models.Schema.objects.filter(
         schema_name__iexact=schema_name, schema_apps_name=apps_name, schema_default=True
     ).exists():
-        schema_obj = Schema.objects.filter(
+        schema_obj = relecov_core.models.Schema.objects.filter(
             schema_name__iexact=schema_name,
             schema_apps_name=apps_name,
             schema_default=True,
@@ -341,7 +332,7 @@ def process_schema_file(json_file, default, user, apps_name):
         default = True
     else:
         default = False
-    if Schema.objects.filter(
+    if relecov_core.models.Schema.objects.filter(
         schema_name__iexact=schema_name,
         schema_version__iexact=version,
         schema_apps_name__exact=apps_name,
@@ -355,7 +346,7 @@ def process_schema_file(json_file, default, user, apps_name):
         "schema_app_name": apps_name,
         "user_name": user,
     }
-    new_schema = Schema.objects.create_new_schema(data)
+    new_schema = relecov_core.models.Schema.objects.create_new_schema(data)
     result = store_schema_properties(
         new_schema,
         schema_data["full_schema"]["properties"],

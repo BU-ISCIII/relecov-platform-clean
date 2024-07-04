@@ -13,7 +13,7 @@ from dash import dcc, html
 from django_plotly_dash import DjangoDash
 from dash import dash_table
 from relecov_core.models import Effect, Gene, VariantAnnotation, VariantInSample
-from relecov_core.utils.handling_samples import get_sample_obj_from_sample_name
+from relecov_core.utils.samples import get_sample_obj_from_sample_name
 
 """
 from relecov_core.utils.handling_variant import (

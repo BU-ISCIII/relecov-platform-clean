@@ -2,7 +2,7 @@ from datetime import datetime
 from relecov_core.core_config import ERROR_INTIAL_SETTINGS_NOT_DEFINED
 from relecov_core.models import SampleState, Sample
 
-from relecov_core.utils.handling_samples import (
+from relecov_core.utils.samples import (
     increase_unique_value,
     get_user_id_from_collecting_institution,
 )

@@ -34,7 +34,7 @@ from relecov_core.models import SampleState, Error
 from relecov_core.api.utils.sample_handling import (
     split_sample_data,
 )
-from relecov_core.utils.handling_samples import get_sample_obj_from_sample_name
+from relecov_core.utils.samples import get_sample_obj_from_sample_name
 
 from relecov_core.api.utils.bioinfo_metadata_handling import (
     split_bioinfo_data,

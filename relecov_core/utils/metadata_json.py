@@ -2,11 +2,8 @@ import json
 
 # import re
 from django.db import DataError
-from relecov_core.models import (
-    Metadata,
-    MetadataProperties,
-)
-from relecov_core.utils.generic_functions import store_file
+import relecov_core.models
+import relecov_core.utils.generic_functions
 from relecov_core.core_config import (
     METADATA_JSON_SUCCESSFUL_LOAD,
     METADATA_JSON_UPLOAD_FOLDER,
@@ -19,13 +16,13 @@ from relecov_core.core_config import (
 
 
 def get_metadata_json_data(metadata_id):
-    """Get the properties define for the schema"""
+    """Get the properties defined for the schema"""
     metadata_obj = get_metadata_obj_from_id(metadata_id)
     if metadata_obj is None:
         return {"ERROR": ERROR_SCHEMA_ID_NOT_DEFINED}
     metadata_data = {"s_data": []}
-    if MetadataProperties.objects.filter(metadataID=metadata_obj).exists():
-        s_prop_objs = MetadataProperties.objects.filter(
+    if relecov_core.models.MetadataProperties.objects.filter(metadataID=metadata_obj).exists():
+        s_prop_objs = relecov_core.models.MetadataProperties.objects.filter(
             metadataID=metadata_obj
         ).order_by("property")
         metadata_data["heading"] = HEADING_SCHEMA_DISPLAY
@@ -35,10 +32,10 @@ def get_metadata_json_data(metadata_id):
 
 
 def get_metadata_json_loaded(apps_name):
-    """Return the definded metadata"""
+    """Return the defined metadata"""
     s_data = []
-    if Metadata.objects.filter(metadata_apps_name__exact=apps_name).exists():
-        metadata_objs = Metadata.objects.filter(
+    if relecov_core.models.Metadata.objects.filter(metadata_apps_name__exact=apps_name).exists():
+        metadata_objs = relecov_core.models.Metadata.objects.filter(
             metadata_apps_name__exact=apps_name
         ).order_by("metadata_name")
         for metadata_obj in metadata_objs:
@@ -48,8 +45,8 @@ def get_metadata_json_loaded(apps_name):
 
 def get_metadata_obj_from_id(metadata_id):
     """Get the metadata instance from id"""
-    if Metadata.objects.filter(pk__exact=metadata_id).exists():
-        return Metadata.objects.filter(pk__exact=metadata_id).last()
+    if relecov_core.models.Metadata.objects.filter(pk__exact=metadata_id).exists():
+        return relecov_core.models.Metadata.objects.filter(pk__exact=metadata_id).last()
     return None
 
 
@@ -60,7 +57,7 @@ def load_metadata_json(json_file):
         data["full_metadata_json"] = json.load(json_file)
     except json.decoder.JSONDecodeError:
         return {"ERROR": ERROR_INVALID_JSON}
-    data["file_name"] = store_file(json_file, METADATA_JSON_UPLOAD_FOLDER)
+    data["file_name"] = relecov_core.utils.generic_functions.store_file(json_file, METADATA_JSON_UPLOAD_FOLDER)
     return data
 
 
@@ -80,46 +77,21 @@ def store_metadata_properties(metadata_obj, s_properties):
         data = dict(s_properties[prop_key])
         data["metadataID"] = metadata_obj
         data["property"] = prop_key
-        """
-        if prop_key in required:
-            data["required"] = True
-        if "Enums" in data:
-            data["options"] = True
-        """
         try:
-            MetadataProperties.objects.create_new_property(data)
+            relecov_core.models.MetadataProperties.objects.create_new_property(data)
         except (KeyError, DataError) as e:
             print(prop_key, " error ", e)
-            # schema_obj.delete()
-            # return {"ERROR": e}
-        """
-        if "options" in data:
-            for item in s_properties[prop_key]["Enums"]:
-                enum = re.search(r"(.+) \[(.*)\]", item)
-                if enum:
-                    e_data = {"enums": enum.group(1), "ontology": enum.group(2)}
-                else:
-                    e_data = {"enums": item, "ontology": None}
-                e_data["propertyID"] = new_property
-                try:
-                    PropertyOptions.objects.create_property_options(e_data)
-                except (KeyError, DataError) as e:
-                    print(prop_key, " enum ", e)
-                    # schema_obj.delete()
-                    # return {"ERROR": e}
-        """
-
     return {"SUCCESS": ""}
 
 
 def remove_existing_default_metadata(metadata_name, apps_name):
     """Remove the tag for default schema for the given schema name"""
-    if Metadata.objects.filter(
+    if relecov_core.models.Metadata.objects.filter(
         metadata_name__iexact=metadata_name,
         metadata_apps_name=apps_name,
         metadata_default=True,
     ).exists():
-        metadata_obj = Metadata.objects.filter(
+        metadata_obj = relecov_core.models.Metadata.objects.filter(
             metadata_name__iexact=metadata_name,
             metadata_apps_name=apps_name,
             metadata_default=True,
@@ -151,7 +123,7 @@ def process_metadata_json_file(json_file, version, default, user, apps_name):
     else:
         default = False
 
-    if Metadata.objects.filter(
+    if relecov_core.models.Metadata.objects.filter(
         metadata_name__iexact=metadata_name,
         metadata_version__iexact=version,
         metadata_apps_name__exact=apps_name,
@@ -167,7 +139,7 @@ def process_metadata_json_file(json_file, version, default, user, apps_name):
         "metadata_app_name": apps_name,
         "user_name": user,
     }
-    new_metadata = Metadata.objects.create_new_metadata(data)
+    new_metadata = relecov_core.models.Metadata.objects.create_new_metadata(data)
 
     result = store_metadata_properties(
         new_metadata,

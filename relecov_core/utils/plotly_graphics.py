@@ -1,11 +1,14 @@
 from plotly.offline import plot
-
-import plotly.graph_objects as go
-import plotly.express as px
-import plotly.figure_factory as ff
-
-import dash_bio as dashbio
-
+from plotly.graph_objects import (
+    Figure,
+    Bar,
+    Scatter,
+    Indicator,
+    Pie
+)
+from plotly.express import bar
+from plotly.figure_factory import create_bullet
+from dash_bio import NeedlePlot
 from dash import dcc, html
 from django_plotly_dash import DjangoDash
 from dash.dependencies import Input, Output
@@ -17,10 +20,10 @@ def bar_graphic(data, col_names, legend, yaxis, options):
         colors = options["colors"]
     else:
         colors = ["#0099ff", "#1aff8c", "#ffad33", "#ff7733", "#66b3ff", "#66ffcc"]
-    fig = go.Figure()
+    fig = Figure()
     for idx in range(1, len(col_names)):
         fig.add_trace(
-            go.Bar(
+            Bar(
                 x=data[col_names[0]],
                 y=data[col_names[idx]],
                 name=legend[idx - 1],
@@ -55,8 +58,8 @@ def bar_graphic(data, col_names, legend, yaxis, options):
 
 def line_graphic(x_data, y_data, options):
     # Create line
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=x_data, y=y_data, mode="lines", name="lines"))
+    fig = Figure()
+    fig.add_trace(Scatter(x=x_data, y=y_data, mode="lines", name="lines"))
 
     fig.update_layout(
         height=options["height"],
@@ -75,7 +78,7 @@ def line_graphic(x_data, y_data, options):
 
 
 def histogram_graphic(data, col_names, options):
-    graph = px.bar(
+    graph = bar(
         data, y=col_names[1], x=col_names[0], text_auto=True, width=options["width"]
     )
     # Customize aspect
@@ -98,8 +101,8 @@ def histogram_graphic(data, col_names, options):
 
 
 def gauge_graphic(data):
-    graph = go.Figure(
-        go.Indicator(
+    graph = Figure(
+        Indicator(
             mode="gauge+number",
             value=data["value"],
             number={"suffix": "%"},
@@ -126,7 +129,7 @@ def bullet_graphic(value, title):
     ]
 
     measure_colors = ["rgb(68, 107, 162)", "rgb(0, 153, 0)"]
-    fig = ff.create_bullet(
+    fig = create_bullet(
         data,
         titles="label",
         title="",
@@ -158,8 +161,8 @@ def pie_graphic(data, names, title, show_legend=False):
         "darkorange",
         "turquoise",
     ]
-    fig = go.Figure(
-        data=go.Pie(
+    fig = Figure(
+        data=Pie(
             labels=names,
             values=data,
         )
@@ -193,7 +196,7 @@ def needle_plot(m_data):
                 value=1,
                 style={"width": "400px"},
             ),
-            dashbio.NeedlePlot(
+            NeedlePlot(
                 id="dashbio-default-needleplot",
                 mutationData=m_data,
                 height=950,

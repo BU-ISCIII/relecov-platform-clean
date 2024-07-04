@@ -1,6 +1,6 @@
 # import pandas as pd
 from statistics import mean
-from relecov_core.utils.handling_bioinfo_analysis import (
+from relecov_core.utils.bioinfo_analysis import (
     get_bioinfo_analyis_fields_utilization,
 )
 
