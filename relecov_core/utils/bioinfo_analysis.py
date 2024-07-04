@@ -10,15 +10,17 @@ def get_bio_analysis_stats_from_lab(lab_name=None):
     bio_stats = {}
     if lab_name is None:
         # get stats from all lab
-        bioqry = relecov_core.models.DateUpdateState.objects.filter(stateID__state__iexact="Bioinfo")
-        bio_stats["analized"] = (bioqry.values("sampleID").distinct().count())
+        bioqry = relecov_core.models.DateUpdateState.objects.filter(
+            stateID__state__iexact="Bioinfo"
+        )
+        bio_stats["analized"] = bioqry.values("sampleID").distinct().count()
         bio_stats["received"] = relecov_core.models.Sample.objects.all().count()
     else:
         sample_objs = relecov_core.models.Sample.objects.filter(
             collecting_institution__iexact=lab_name
         )
         samples_bioquery = bioqry.filter(sampleID__in=sample_objs)
-        bio_stats["analized"] = (samples_bioquery.values("sampleID").distinct().count())
+        bio_stats["analized"] = samples_bioquery.values("sampleID").distinct().count()
         bio_stats["received"] = len(sample_objs)
     return bio_stats
 
@@ -31,7 +33,9 @@ def get_bioinfo_analysis_data_from_sample(sample_id):
     # Get the schema ID for filtering Fields
     schema_obj = sample_obj.get_schema_obj()
     bio_anlys_data = []
-    bioan_fields = relecov_core.models.BioinfoAnalysisField.objects.filter(schemaID=schema_obj)
+    bioan_fields = relecov_core.models.BioinfoAnalysisField.objects.filter(
+        schemaID=schema_obj
+    )
     if not bioan_fields.exists():
         return None
     for bio_field in bioan_fields:
@@ -39,7 +43,7 @@ def get_bioinfo_analysis_data_from_sample(sample_id):
             bioinfo_analysis_fieldID=bio_field, sample=sample_obj
         )
         if samples_bio.exists():
-            value = (samples_bio.last().get_value())
+            value = samples_bio.last().get_value()
         else:
             value = ""
         bio_anlys_data.append([bio_field.get_label(), value])
@@ -55,7 +59,9 @@ def get_bioinfo_analyis_fields_utilization(schema_obj=None):
         schema_obj = relecov_core.utils.schema_handling.get_default_schema()
 
     # get field names
-    b_field_objs = relecov_core.models.BioinfoAnalysisField.objects.filter(schemaID=schema_obj)
+    b_field_objs = relecov_core.models.BioinfoAnalysisField.objects.filter(
+        schemaID=schema_obj
+    )
     if not b_field_objs.exists():
         return b_data
 
@@ -80,7 +86,7 @@ def get_bioinfo_analyis_fields_utilization(schema_obj=None):
             b_data["fields_value"][f_name] = 0
             continue
         # b_data[schema_name][f_name] = [count]
-        count_not_empty = (b_field_obj_info.exclude(value__in=["None", ""]).count())
+        count_not_empty = b_field_obj_info.exclude(value__in=["None", ""]).count()
         b_data["fields_value"][f_name] = count_not_empty
         if count_not_empty == 0:
             b_data["always_none"].append(f_name)

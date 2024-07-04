@@ -15,9 +15,8 @@ import relecov_core.core_config as core_config
 import relecov_core.utils.labs
 import relecov_core.utils.plotly_graphics
 import relecov_core.utils.rest_api_handling
-import relecov_core.utils.generic_functions 
+import relecov_core.utils.generic_functions
 import relecov_core.models
-
 
 
 def analyze_input_samples(request):
@@ -27,7 +26,11 @@ def analyze_input_samples(request):
     s_incomplete = []
     s_json_data = json.loads(request.POST["table_data"])
     heading_in_form = request.POST["heading"].split(",")
-    user_lab = relecov_core.models.Profile.objects.filter(user=request.user).last().get_lab_name()
+    user_lab = (
+        relecov_core.models.Profile.objects.filter(user=request.user)
+        .last()
+        .get_lab_name()
+    )
     submmit_institution = relecov_core.utils.generic_functions.get_configuration_value(
         "SUBMITTING_INSTITUTION"
     )
@@ -43,7 +46,9 @@ def analyze_input_samples(request):
         sample_name = row[idx_sample]
         if sample_name == "":
             continue
-        if relecov_core.models.relecov_core.models.Sample.objects.filter(sequencing_sample_id__iexact=sample_name).exists():
+        if relecov_core.models.relecov_core.models.Sample.objects.filter(
+            sequencing_sample_id__iexact=sample_name
+        ).exists():
             s_already_record.append(sample_name)
             continue
         for idx in range(len(heading_in_form)):
@@ -69,12 +74,16 @@ def analyze_input_samples(request):
 def assign_samples_to_new_user(data):
     """Assign all samples from a laboratory to a new userID"""
     user_obj = User.objects.filter(pk__exact=data["userName"])
-    if relecov_core.models.relecov_core.models.Sample.objects.filter(collecting_institution__iexact=data["lab"]).exists():
-        relecov_core.models.relecov_core.models.Sample.objects.filter(collecting_institution__iexact=data["lab"]).update(
-            user=user_obj[0]
-        )
+    if relecov_core.models.relecov_core.models.Sample.objects.filter(
+        collecting_institution__iexact=data["lab"]
+    ).exists():
+        relecov_core.models.relecov_core.models.Sample.objects.filter(
+            collecting_institution__iexact=data["lab"]
+        ).update(user=user_obj[0])
         return {"Success": "Success"}
-    return {"ERROR": core_config.ERROR_NO_SAMPLES_ARE_ASSIGNED_TO_LAB + " " + data["lab"]}
+    return {
+        "ERROR": core_config.ERROR_NO_SAMPLES_ARE_ASSIGNED_TO_LAB + " " + data["lab"]
+    }
 
 
 def count_handled_samples():
@@ -82,7 +91,9 @@ def count_handled_samples():
     data = {}
     process = ["Defined", "Gisaid", "Ena", "Bioinfo"]
     for proc in process:
-        data[proc] = relecov_core.models.DateUpdateState.objects.filter(stateID__state__iexact=proc).count()
+        data[proc] = relecov_core.models.DateUpdateState.objects.filter(
+            stateID__state__iexact=proc
+        ).count()
     return data
 
 
@@ -103,7 +114,9 @@ def create_form_for_batch(schema_obj, user_obj):
     """
     schema_name = schema_obj.get_schema_name()
     try:
-        iskylims_sample_raw = relecov_core.utils.rest_api_handling.get_sample_fields_data()
+        iskylims_sample_raw = (
+            relecov_core.utils.rest_api_handling.get_sample_fields_data()
+        )
     except AttributeError:
         return {"ERROR": core_config.ERROR_ISKYLIMS_NOT_REACHEABLE}
     if "ERROR" in iskylims_sample_raw:
@@ -111,7 +124,9 @@ def create_form_for_batch(schema_obj, user_obj):
     # Remove the characters "schema" if exist in the name of the schema
     if "schema" in schema_name:
         schema_name = schema_name.replace("schema", "").strip()
-    i_sam_proj_raw = relecov_core.utils.rest_api_handling.get_sample_project_fields_data(schema_name)
+    i_sam_proj_raw = (
+        relecov_core.utils.rest_api_handling.get_sample_project_fields_data(schema_name)
+    )
     i_sam_proj_data = {}
     # Create the structure from the sample project fields get from iSkyLIMS
     for item in i_sam_proj_raw:
@@ -122,11 +137,13 @@ def create_form_for_batch(schema_obj, user_obj):
             i_sam_proj_data[key]["options"] = []
             for opt in item["sampleProjectOptionList"]:
                 i_sam_proj_data[key]["options"].append(opt["optionValue"])
-    if not relecov_core.models.MetadataVisualization.objects.filter(fill_mode="sample").exists():
+    if not relecov_core.models.MetadataVisualization.objects.filter(
+        fill_mode="sample"
+    ).exists():
         return {"ERROR": core_config.ERROR_FIELDS_FOR_METADATA_ARE_NOT_DEFINED}
-    m_batch_objs = relecov_core.models.MetadataVisualization.objects.filter(fill_mode="batch").order_by(
-        "order"
-    )
+    m_batch_objs = relecov_core.models.MetadataVisualization.objects.filter(
+        fill_mode="batch"
+    ).order_by("order")
 
     m_batch_form = {}
     field_data = {}
@@ -143,9 +160,7 @@ def create_form_for_batch(schema_obj, user_obj):
 
     m_batch_form["fields"] = field_data
     m_batch_form["username"] = user_obj.username
-    m_batch_form["lab_name"] = relecov_core.utils.labs.get_lab_name_from_user(
-        user_obj
-    )
+    m_batch_form["lab_name"] = relecov_core.utils.labs.get_lab_name_from_user(user_obj)
 
     return m_batch_form
 
@@ -158,14 +173,18 @@ def create_form_for_sample(schema_obj):
     f_data = {}
     l_iskylims = []  # variable name in iSkyLIMS
     l_metadata = []  # label in the form
-    if not relecov_core.models.MetadataVisualization.objects.filter(fill_mode="sample").exists():
+    if not relecov_core.models.MetadataVisualization.objects.filter(
+        fill_mode="sample"
+    ).exists():
         return {"ERROR": core_config.ERROR_FIELDS_FOR_METADATA_ARE_NOT_DEFINED}
-    m_sam_objs = relecov_core.models.MetadataVisualization.objects.filter(fill_mode="sample").order_by(
-        "order"
-    )
+    m_sam_objs = relecov_core.models.MetadataVisualization.objects.filter(
+        fill_mode="sample"
+    ).order_by("order")
     schema_name = schema_obj.get_schema_name()
     # Get the properties in schema for mapping
-    s_prop_objs = relecov_core.models.SchemaProperties.objects.filter(schemaID=schema_obj)
+    s_prop_objs = relecov_core.models.SchemaProperties.objects.filter(
+        schemaID=schema_obj
+    )
     s_prop_dict = {}
     for s_prop_obj in s_prop_objs:
         if s_prop_obj.get_ontology() == "0":
@@ -177,7 +196,9 @@ def create_form_for_sample(schema_obj):
 
     # get the sample fields and sample project fields from iSkyLIMS
     try:
-        iskylims_sample_raw = relecov_core.utils.rest_api_handling.get_sample_fields_data()
+        iskylims_sample_raw = (
+            relecov_core.utils.rest_api_handling.get_sample_fields_data()
+        )
     except AttributeError:
         return {"ERROR": core_config.ERROR_ISKYLIMS_NOT_REACHEABLE}
     if "ERROR" in iskylims_sample_raw:
@@ -186,10 +207,14 @@ def create_form_for_sample(schema_obj):
     # Remove the characters "schema" if exist in the name of the schema
     if "schema" in schema_name:
         schema_name = schema_name.replace("schema", "").strip()
-    i_sam_proj_raw = relecov_core.utils.rest_api_handling.get_sample_project_fields_data(schema_name)
+    i_sam_proj_raw = (
+        relecov_core.utils.rest_api_handling.get_sample_project_fields_data(schema_name)
+    )
     if "ERROR" in i_sam_proj_raw:
         return {
-            "ERROR": core_config.ERROR_UNABLE_FETCH_SAMPLE_PROJECT_FIELDS + "for " + schema_name
+            "ERROR": core_config.ERROR_UNABLE_FETCH_SAMPLE_PROJECT_FIELDS
+            + "for "
+            + schema_name
         }
     i_sam_proj_data = {}
     # Format the information from sample Project to have label as key
@@ -259,9 +284,7 @@ def create_metadata_form(schema_obj, user_obj):
     if "ERROR" in m_form["sample"]:
         return m_form["sample"]
     m_form["username"] = user_obj.username
-    m_form["lab_name"] = relecov_core.utils.labs.get_lab_name_from_user(
-        user_obj
-    )
+    m_form["lab_name"] = relecov_core.utils.labs.get_lab_name_from_user(user_obj)
     return m_form
 
 
@@ -309,9 +332,15 @@ def get_lab_last_actions(lab_name=None):
     action_list = ["Defined", "Analysis", "Gisaid", "Ena"]
     if lab_name is None:
         lab_actions = []
-        labs = relecov_core.models.relecov_core.models.Sample.objects.all().values_list("collecting_institution").distinct()
+        labs = (
+            relecov_core.models.relecov_core.models.Sample.objects.all()
+            .values_list("collecting_institution")
+            .distinct()
+        )
         for lab in labs:
-            sam_obj = relecov_core.models.relecov_core.models.Sample.objects.filter(collecting_institution__exact=lab[0]).last()
+            sam_obj = relecov_core.models.relecov_core.models.Sample.objects.filter(
+                collecting_institution__exact=lab[0]
+            ).last()
             lab_data = [lab[0]]
             for action in action_list:
                 if relecov_core.models.DateUpdateState.objects.filter(
@@ -333,7 +362,9 @@ def get_lab_last_actions(lab_name=None):
         last_sample_obj = relecov_core.models.relecov_core.models.Sample.objects.filter(
             collecting_institution__iexact=lab_name
         ).last()
-        action_objs = relecov_core.models.DateUpdateState.objects.filter(sampleID=last_sample_obj)
+        action_objs = relecov_core.models.DateUpdateState.objects.filter(
+            sampleID=last_sample_obj
+        )
         for action_obj in action_objs:
             s_state = action_obj.get_state_name()
             if s_state in action_list:
@@ -354,7 +385,7 @@ def get_gisaid_info(sample_obj, schema_obj):
             public_database_fieldID=field_obj, sampleID=sample_obj
         )
         if gisaid_fields.exists():
-            value = (gisaid_fields.last().get_value())
+            value = gisaid_fields.last().get_value()
         gisaid_info.append([label, value])
     return gisaid_info
 
@@ -381,12 +412,17 @@ def get_sample_display_data(sample_id, user):
     group = Group.objects.get(name="RelecovManager")
     if group not in user.groups.all():
         lab_name = sample_obj.get_collecting_institution()
-        if not relecov_core.models.Profile.objects.filter(user=user, laboratory__iexact=lab_name).exists():
+        if not relecov_core.models.Profile.objects.filter(
+            user=user, laboratory__iexact=lab_name
+        ).exists():
             return {"ERROR": core_config.ERROR_NOT_ALLOWED_TO_SEE_THE_SAMPLE}
 
     s_data = {}
     s_data["basic"] = list(
-        zip(core_config.HEADING_FOR_BASIC_SAMPLE_DATA, sample_obj.get_sample_basic_data())
+        zip(
+            core_config.HEADING_FOR_BASIC_SAMPLE_DATA,
+            sample_obj.get_sample_basic_data(),
+        )
     )
     s_data["fastq"] = list(
         zip(core_config.HEADING_FOR_FASTQ_SAMPLE_DATA, sample_obj.get_fastq_data())
@@ -406,7 +442,9 @@ def get_sample_display_data(sample_id, user):
     lab_sample = sample_obj.get_collecting_lab_sample_id()
     # Fetch information from iSkyLIMS
     if lab_sample != "":
-        iskylims_data = relecov_core.utils.rest_api_handling.get_sample_information(lab_sample)
+        iskylims_data = relecov_core.utils.rest_api_handling.get_sample_information(
+            lab_sample
+        )
         if "ERROR" not in iskylims_data:
             s_data["iskylims_basic"] = []
             s_data["iskylims_p_data"] = []
@@ -422,8 +460,12 @@ def get_sample_display_data(sample_id, user):
 
 def get_sample_obj_from_sample_name(sample_name):
     """Return the sample instance from its name"""
-    if relecov_core.models.Sample.objects.filter(sequencing_sample_id__iexact=sample_name).exists():
-        return relecov_core.models.Sample.objects.filter(sequencing_sample_id__iexact=sample_name).last()
+    if relecov_core.models.Sample.objects.filter(
+        sequencing_sample_id__iexact=sample_name
+    ).exists():
+        return relecov_core.models.Sample.objects.filter(
+            sequencing_sample_id__iexact=sample_name
+        ).last()
     return None
 
 
@@ -436,7 +478,9 @@ def get_sample_obj_from_id(sample_id):
 
 def get_samples_count_per_schema(schema_name):
     """Get the number of samples that are stored in the schema"""
-    return relecov_core.models.Sample.objects.filter(schema_obj__schema_name__iexact=schema_name).count()
+    return relecov_core.models.Sample.objects.filter(
+        schema_obj__schema_name__iexact=schema_name
+    ).count()
 
 
 def get_sample_per_date_per_all_lab(detailed=None):
@@ -467,7 +511,9 @@ def get_sample_per_date_per_all_lab(detailed=None):
         lab_list = get_all_lab_list()
         for lab in lab_list:
             date_list = (
-                relecov_core.models.Sample.objects.filter(collecting_institution__iexact=lab)
+                relecov_core.models.Sample.objects.filter(
+                    collecting_institution__iexact=lab
+                )
                 .values_list("sequencing_date", flat=True)
                 .distinct()
                 .order_by("sequencing_date")
@@ -493,7 +539,9 @@ def get_sample_per_date_per_lab(lab_name):
     samples_per_date = OrderedDict()
 
     s_dates = (
-        relecov_core.models.Sample.objects.filter(collecting_institution__iexact=lab_name)
+        relecov_core.models.Sample.objects.filter(
+            collecting_institution__iexact=lab_name
+        )
         .values_list("sequencing_date", flat=True)
         .distinct()
         .order_by("sequencing_date")
@@ -508,7 +556,9 @@ def get_sample_per_date_per_lab(lab_name):
 
 def get_sample_objs_per_lab(lab_name):
     """Get all sample instance for the lab who the user is responsible"""
-    return relecov_core.models.Sample.objects.filter(collecting_institution__iexact=lab_name)
+    return relecov_core.models.Sample.objects.filter(
+        collecting_institution__iexact=lab_name
+    )
 
 
 def get_search_data(user_obj):
@@ -516,7 +566,9 @@ def get_search_data(user_obj):
     s_data = {}
     if relecov_core.models.Sample.objects.count() == 0:
         return {"ERROR": core_config.ERROR_NOT_SAMPLES_HAVE_BEEN_DEFINED}
-    s_data["s_state"] = relecov_core.models.SampleState.objects.all().values_list("pk", "display_string")
+    s_data["s_state"] = relecov_core.models.SampleState.objects.all().values_list(
+        "pk", "display_string"
+    )
     # Allow to search information from any laboratoryr
     group = Group.objects.get(name="RelecovManager")
     if group in user_obj.groups.all():
@@ -536,7 +588,11 @@ def get_user_id_from_collecting_institution(lab):
     if no user is not defined with this lab it retruns None
     """
     if relecov_core.models.Profile.objects.filter(laboratory__iexact=lab).exists():
-        return relecov_core.models.Profile.objects.filter(laboratory__iexact=lab).last().user.pk
+        return (
+            relecov_core.models.Profile.objects.filter(laboratory__iexact=lab)
+            .last()
+            .user.pk
+        )
     return None
 
 
@@ -546,7 +602,9 @@ def join_sample_and_batch(b_data, user_obj, schema_obj):
     """
     join_data = []
     sample_dict = {}
-    if not relecov_core.models.TemporalSampleStorage.objects.filter(user=user_obj).exists():
+    if not relecov_core.models.TemporalSampleStorage.objects.filter(
+        user=user_obj
+    ).exists():
         return {"ERROR": core_config.ERROR_SAMPLES_NOT_DEFINED_IN_FORM}
     field_list = list(
         relecov_core.models.MetadataVisualization.objects.filter(schemaID=schema_obj)
@@ -554,7 +612,9 @@ def join_sample_and_batch(b_data, user_obj, schema_obj):
         .values_list("label_name", flat=True)
     )
     join_data.append(field_list)
-    t_sample_objs = relecov_core.models.TemporalSampleStorage.objects.filter(user=user_obj)
+    t_sample_objs = relecov_core.models.TemporalSampleStorage.objects.filter(
+        user=user_obj
+    )
     for t_sample_obj in t_sample_objs:
         s_name = t_sample_obj.get_sample_name()
         if s_name not in sample_dict:
@@ -602,7 +662,9 @@ def get_all_recieved_samples_with_dates(accumulated=False):
     )
     sum = 0
     for date in dates:
-        value = relecov_core.models.Sample.objects.filter(sequencing_date__contains=date[0]).count()
+        value = relecov_core.models.Sample.objects.filter(
+            sequencing_date__contains=date[0]
+        ).count()
         s_date = date[0].strftime("%Y %m %d")
         if accumulated:
             sum += value
@@ -665,7 +727,8 @@ def pending_samples_in_metadata_form(user_obj):
 def save_excel_form_in_samba_folder(m_file, user_name):
     f_name = user_name + "_" + m_file.name
     f_path = os.path.join(
-        relecov_core.utils.generic_functions.get_configuration_value("SAMBA_FOLDER"), f_name
+        relecov_core.utils.generic_functions.get_configuration_value("SAMBA_FOLDER"),
+        f_name,
     )
     """Save the metadata lab file in Samba folder"""
     FileSystemStorage().save(f_name, m_file)
@@ -682,24 +745,24 @@ def search_samples(sample_name, lab_name, sample_state, s_date, user):
         sample_objs = sample_objs.filter(collecting_institution__iexact=lab_name)
     if sample_name != "":
         if sample_objs.filter(
-            Q(sequencing_sample_id__iexact=sample_name) |
-            Q(collecting_lab_sample_id__iexact=sample_name)
+            Q(sequencing_sample_id__iexact=sample_name)
+            | Q(collecting_lab_sample_id__iexact=sample_name)
         ).exists():
             sample_objs = sample_objs.filter(
-                Q(sequencing_sample_id__iexact=sample_name) |
-                Q(collecting_lab_sample_id__iexact=sample_name)
+                Q(sequencing_sample_id__iexact=sample_name)
+                | Q(collecting_lab_sample_id__iexact=sample_name)
             )
             if len(sample_objs) == 1:
                 sample_list.append(sample_objs[0].get_sample_id())
                 return sample_list
 
         elif sample_objs.filter(
-            Q(sequencing_sample_id__icontains=sample_name) |
-            Q(collecting_lab_sample_id__icontains=sample_name)
+            Q(sequencing_sample_id__icontains=sample_name)
+            | Q(collecting_lab_sample_id__icontains=sample_name)
         ).exists():
             sample_objs = sample_objs.filter(
-                Q(sequencing_sample_id__icontains=sample_name) |
-                Q(collecting_lab_sample_id__icontains=sample_name)
+                Q(sequencing_sample_id__icontains=sample_name)
+                | Q(collecting_lab_sample_id__icontains=sample_name)
             )
             if len(sample_objs) == 1:
                 sample_list.append(sample_objs[0].get_sample_id())
@@ -708,9 +771,9 @@ def search_samples(sample_name, lab_name, sample_state, s_date, user):
             return sample_list
     if sample_state != "":
         state_ids = list(
-            relecov_core.models.DateUpdateState.objects.filter(stateID__pk__exact=sample_state).values_list(
-                "sampleID__pk", flat=True
-            )
+            relecov_core.models.DateUpdateState.objects.filter(
+                stateID__pk__exact=sample_state
+            ).values_list("sampleID__pk", flat=True)
         )
         sample_objs = sample_objs.filter(pk__in=state_ids)
     if s_date != "":
@@ -741,7 +804,9 @@ def save_temp_sample_data(samples, user_obj):
 
 def write_form_data_to_excel(data, user_obj):
     """Write data to excel using relecov-tools"""
-    samba_folder = relecov_core.utils.generic_functions.get_configuration_value("SAMBA_FOLDER")
+    samba_folder = relecov_core.utils.generic_functions.get_configuration_value(
+        "SAMBA_FOLDER"
+    )
     os.makedirs(samba_folder, exist_ok=True)
     f_name = os.path.join(samba_folder, "Metadata_lab_" + user_obj.username + ".xlsx")
     relecov_tools.utils.write_to_excel_file(data, f_name, "METADATA_LAB", {})

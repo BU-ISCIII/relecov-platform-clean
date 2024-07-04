@@ -49,7 +49,12 @@ def get_fields_if_template():
     Return a list with the labels or None if setting is false or file does not
     exists
     """
-    if relecov_core.utils.generic_functions.get_configuration_value("USE_TEMPLATE_FOR_METADATA_FORM") == "TRUE":
+    if (
+        relecov_core.utils.generic_functions.get_configuration_value(
+            "USE_TEMPLATE_FOR_METADATA_FORM"
+        )
+        == "TRUE"
+    ):
         temp_file_path = os.path.join(
             settings.BASE_DIR, "conf", "template_for_metadata_form.txt"
         )
@@ -75,7 +80,9 @@ def get_fields_from_schema(schema_obj):
     data = {}
     schema_list = []
     data["schema_id"] = schema_obj.get_schema_id()
-    prop_objs = relecov_core.models.SchemaProperties.objects.filter(schemaID=schema_obj).order_by("label")
+    prop_objs = relecov_core.models.SchemaProperties.objects.filter(
+        schemaID=schema_obj
+    ).order_by("label")
     for prop_obj in prop_objs:
         label = prop_obj.get_label()
         fill_mode = prop_obj.get_fill_mode()
@@ -111,10 +118,12 @@ def get_schema_display_data(schema_id):
     if schema_obj is None:
         return {"ERROR": ERROR_SCHEMA_ID_NOT_DEFINED}
     schema_data = {"s_data": []}
-    if relecov_core.models.SchemaProperties.objects.filter(schemaID=schema_obj).exists():
-        s_prop_objs = relecov_core.models.SchemaProperties.objects.filter(schemaID=schema_obj).order_by(
-            "property"
-        )
+    if relecov_core.models.SchemaProperties.objects.filter(
+        schemaID=schema_obj
+    ).exists():
+        s_prop_objs = relecov_core.models.SchemaProperties.objects.filter(
+            schemaID=schema_obj
+        ).order_by("property")
         schema_data["heading"] = HEADING_SCHEMA_DISPLAY
         for s_prop_obj in s_prop_objs:
             schema_data["s_data"].append(s_prop_obj.get_property_info())
@@ -124,10 +133,12 @@ def get_schema_display_data(schema_id):
 def get_schemas_loaded(apps_name):
     """Return the definded schemas"""
     s_data = []
-    if relecov_core.models.Schema.objects.filter(schema_apps_name__exact=apps_name).exists():
-        schema_objs = relecov_core.models.Schema.objects.filter(schema_apps_name__exact=apps_name).order_by(
-            "schema_name"
-        )
+    if relecov_core.models.Schema.objects.filter(
+        schema_apps_name__exact=apps_name
+    ).exists():
+        schema_objs = relecov_core.models.Schema.objects.filter(
+            schema_apps_name__exact=apps_name
+        ).order_by("schema_name")
         for schema_obj in schema_objs:
             s_data.append(schema_obj.get_schema_info())
     return s_data
@@ -147,7 +158,9 @@ def load_schema(json_file):
         data["full_schema"] = json.load(json_file)
     except json.decoder.JSONDecodeError:
         return {"ERROR": ERROR_INVALID_JSON}
-    data["file_name"] = relecov_core.utils.generic_functions.store_file(json_file, SCHEMAS_UPLOAD_FOLDER)
+    data["file_name"] = relecov_core.utils.generic_functions.store_file(
+        json_file, SCHEMAS_UPLOAD_FOLDER
+    )
     return data
 
 
@@ -181,7 +194,9 @@ def get_schema_properties(schema):
     """Fetch the list of the properties"""
     s_prop_dict = {}
     if relecov_core.models.SchemaProperties.objects.filter(schemaID=schema).exists():
-        s_prop_objs = relecov_core.models.SchemaProperties.objects.filter(schemaID=schema)
+        s_prop_objs = relecov_core.models.SchemaProperties.objects.filter(
+            schemaID=schema
+        )
         for s_prop_obj in s_prop_objs:
             p_name = s_prop_obj.get_property_name()
             s_prop_dict[p_name] = {}
@@ -204,7 +219,9 @@ def store_fields_metadata_visualization(data):
         m_data = {"schema_id": schema_obj}
         for idx in range(len(fields)):
             m_data[fields[idx]] = row[idx]
-        relecov_core.models.MetadataVisualization.objects.create_metadata_visualization(m_data)
+        relecov_core.models.MetadataVisualization.objects.create_metadata_visualization(
+            m_data
+        )
         entry_num += 1
     if entry_num == 0:
         return {"ERROR": NO_SELECTED_LABEL_WAS_DONE}
@@ -222,7 +239,9 @@ def store_schema_properties(schema_obj, s_properties, required):
         if "enum" in data:
             data["options"] = True
         try:
-            new_property = relecov_core.models.SchemaProperties.objects.create_new_property(data)
+            new_property = (
+                relecov_core.models.SchemaProperties.objects.create_new_property(data)
+            )
         except (KeyError, DataError) as e:
             print(prop_key, " error ", e)
             # schema_obj.delete()
@@ -236,7 +255,9 @@ def store_schema_properties(schema_obj, s_properties, required):
                     e_data = {"enum": item, "ontology": None}
                 e_data["propertyID"] = new_property
                 try:
-                    relecov_core.models.PropertyOptions.objects.create_property_options(e_data)
+                    relecov_core.models.PropertyOptions.objects.create_property_options(
+                        e_data
+                    )
                 except (KeyError, DataError) as e:
                     print(prop_key, " enum ", e)
                     # schema_obj.delete()
@@ -262,7 +283,9 @@ def store_bioinfo_fields(schema_obj, s_properties):
             # fields["classificationID"] = class_obj
             fields["property_name"] = prop_key
             fields["label_name"] = data["label"]
-            n_field = relecov_core.models.BioinfoAnalysisField.objects.create_new_field(fields)
+            n_field = relecov_core.models.BioinfoAnalysisField.objects.create_new_field(
+                fields
+            )
             n_field.schemaID.add(schema_obj)
     return {"SUCCESS": ""}
 
@@ -299,7 +322,9 @@ def store_public_data_fields(schema_obj, s_properties):
                 public_type_name__exact=database_type
             ).last()
             fields["database_type"] = p_database_type_obj
-            p_field = relecov_core.models.PublicDatabaseFields.objects.create_new_field(fields)
+            p_field = relecov_core.models.PublicDatabaseFields.objects.create_new_field(
+                fields
+            )
             p_field.schemaID.add(schema_obj)
 
 

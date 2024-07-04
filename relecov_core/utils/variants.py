@@ -1,6 +1,6 @@
 from django.db.models import F
 import relecov_core.models
-import relecov_core.core_config 
+import relecov_core.core_config
 import relecov_core.utils.samples as samples
 import relecov_core.utils.plotly_graphics
 
@@ -52,16 +52,22 @@ def get_variant_data_from_sample(sample_id):
     if sample_obj is None:
         return data
     variant_data = []
-    if relecov_core.models.VariantInSample.objects.filter(sampleID_id=sample_obj).exists():
+    if relecov_core.models.VariantInSample.objects.filter(
+        sampleID_id=sample_obj
+    ).exists():
         data["heading"] = relecov_core.core_config.HEADING_FOR_VARIANT_TABLE_DISPLAY
-        v_in_s_objs = relecov_core.models.VariantInSample.objects.filter(sampleID_id=sample_obj)
+        v_in_s_objs = relecov_core.models.VariantInSample.objects.filter(
+            sampleID_id=sample_obj
+        )
         for v_in_s_obj in v_in_s_objs:
             # DP,REF_DP,ALT_DP,AF
             v_in_s_data = v_in_s_obj.get_variant_in_sample_data()
             v_obj = v_in_s_obj.get_variantID_obj()
             # CHROM,POS,REF,ALT,FILTER
             v_data = v_obj.get_variant_data()
-            v_ann_objs = relecov_core.models.VariantAnnotation.objects.filter(variantID_id=v_obj)
+            v_ann_objs = relecov_core.models.VariantAnnotation.objects.filter(
+                variantID_id=v_obj
+            )
             if len(v_ann_objs) > 1:
                 v_ann_data_p = []
                 for v_ann_obj in v_ann_objs:
@@ -92,12 +98,12 @@ def get_variant_graphic_from_sample(sample_id):
     """Collect the variant information to send to create the plotly graphic"""
     v_data = {"x": [], "y": [], "v_id": []}
     sample_obj = samples.get_sample_obj_from_id(sample_id)
-    if relecov_core.models.VariantInSample.objects.filter(sampleID_id=sample_obj).exists():
-        raw_data = relecov_core.models.VariantInSample.objects.filter(sampleID_id=sample_obj).values(
-            x=F("variantID_id__pos"),
-            y=F("af"),
-            v_id=F("variantID_id__pk")
-        )
+    if relecov_core.models.VariantInSample.objects.filter(
+        sampleID_id=sample_obj
+    ).exists():
+        raw_data = relecov_core.models.VariantInSample.objects.filter(
+            sampleID_id=sample_obj
+        ).values(x=F("variantID_id__pos"), y=F("af"), v_id=F("variantID_id__pk"))
         for r_data in raw_data:
             for key, value in r_data.items():
                 v_data[key].append(value)
@@ -109,14 +115,18 @@ def get_variant_graphic_from_sample(sample_id):
         )
         try:
             chromosome_obj = (
-                relecov_core.models.VariantAnnotation.objects.filter(variantID_id__pk=v_data["v_id"][0])
+                relecov_core.models.VariantAnnotation.objects.filter(
+                    variantID_id__pk=v_data["v_id"][0]
+                )
                 .last()
                 .variantID_id.chromosomeID_id
             )
         except AttributeError:
             # get the chromosome obj from the second variant annotation
             chromosome_obj = (
-                relecov_core.models.VariantAnnotation.objects.filter(variantID_id__pk=v_data["v_id"][1])
+                relecov_core.models.VariantAnnotation.objects.filter(
+                    variantID_id__pk=v_data["v_id"][1]
+                )
                 .last()
                 .variantID_id.chromosomeID_id
             )
@@ -129,7 +139,9 @@ def get_variant_graphic_from_sample(sample_id):
 
 def get_gene_obj_from_gene_name(gene_name):
     if relecov_core.models.Gene.objects.filter(gene_name__iexact=gene_name).exists():
-        return relecov_core.models.Gene.objects.filter(gene_name__iexact=gene_name).last()
+        return relecov_core.models.Gene.objects.filter(
+            gene_name__iexact=gene_name
+        ).last()
     return None
 
 
@@ -165,7 +177,9 @@ lineages needle plot graph
 
 
 def get_if_organism_exists(organism_code):
-    if relecov_core.models.OrganismAnnotation.objects.filter(organism_code=organism_code).exists():
+    if relecov_core.models.OrganismAnnotation.objects.filter(
+        organism_code=organism_code
+    ).exists():
         organism_obj = relecov_core.models.OrganismAnnotation.objects.filter(
             organism_code=organism_code
         ).last()
@@ -177,7 +191,9 @@ def get_if_organism_exists(organism_code):
 
 def get_if_chromosomes_exists(chromosome):
     if relecov_core.models.Chromosome.objects.filter(chromosome=chromosome).exists():
-        chromosome_obj = relecov_core.models.Chromosome.objects.filter(chromosome=chromosome).last()
+        chromosome_obj = relecov_core.models.Chromosome.objects.filter(
+            chromosome=chromosome
+        ).last()
         return chromosome_obj
     else:
         return None
@@ -185,7 +201,9 @@ def get_if_chromosomes_exists(chromosome):
 
 def get_gene_objs(chromosome):
     """Get gene objs defined for the chromosome"""
-    chromosome_obj = relecov_core.models.Chromosome.objects.filter(chromosome=chromosome).last()
+    chromosome_obj = relecov_core.models.Chromosome.objects.filter(
+        chromosome=chromosome
+    ).last()
 
     if relecov_core.models.Gene.objects.filter(chromosomeID=chromosome_obj).exists():
         return relecov_core.models.Gene.objects.filter(chromosomeID=chromosome_obj)
@@ -229,8 +247,10 @@ def create_effect_list(sample_name, chromosome):
             )
             for variant_in_sample_obj in variant_in_sample_objs:
                 variant_obj = variant_in_sample_obj.get_variantID_id()
-                variant_annotation_objs = relecov_core.models.VariantAnnotation.objects.filter(
-                    variantID_id=variant_obj
+                variant_annotation_objs = (
+                    relecov_core.models.VariantAnnotation.objects.filter(
+                        variantID_id=variant_obj
+                    )
                 )
 
                 for variant_annotation_obj in variant_annotation_objs:

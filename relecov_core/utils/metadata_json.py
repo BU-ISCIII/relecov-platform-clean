@@ -21,7 +21,9 @@ def get_metadata_json_data(metadata_id):
     if metadata_obj is None:
         return {"ERROR": ERROR_SCHEMA_ID_NOT_DEFINED}
     metadata_data = {"s_data": []}
-    if relecov_core.models.MetadataProperties.objects.filter(metadataID=metadata_obj).exists():
+    if relecov_core.models.MetadataProperties.objects.filter(
+        metadataID=metadata_obj
+    ).exists():
         s_prop_objs = relecov_core.models.MetadataProperties.objects.filter(
             metadataID=metadata_obj
         ).order_by("property")
@@ -34,7 +36,9 @@ def get_metadata_json_data(metadata_id):
 def get_metadata_json_loaded(apps_name):
     """Return the defined metadata"""
     s_data = []
-    if relecov_core.models.Metadata.objects.filter(metadata_apps_name__exact=apps_name).exists():
+    if relecov_core.models.Metadata.objects.filter(
+        metadata_apps_name__exact=apps_name
+    ).exists():
         metadata_objs = relecov_core.models.Metadata.objects.filter(
             metadata_apps_name__exact=apps_name
         ).order_by("metadata_name")
@@ -57,7 +61,9 @@ def load_metadata_json(json_file):
         data["full_metadata_json"] = json.load(json_file)
     except json.decoder.JSONDecodeError:
         return {"ERROR": ERROR_INVALID_JSON}
-    data["file_name"] = relecov_core.utils.generic_functions.store_file(json_file, METADATA_JSON_UPLOAD_FOLDER)
+    data["file_name"] = relecov_core.utils.generic_functions.store_file(
+        json_file, METADATA_JSON_UPLOAD_FOLDER
+    )
     return data
 
 

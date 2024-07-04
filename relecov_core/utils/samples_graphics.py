@@ -61,4 +61,6 @@ def received_samples_graph():
         "y_title": "Number of samples",
         "title": "",
     }
-    return relecov_core.utils.plotly_graphics.line_graphic(data["x"], data["y"], options)
+    return relecov_core.utils.plotly_graphics.line_graphic(
+        data["x"], data["y"], options
+    )

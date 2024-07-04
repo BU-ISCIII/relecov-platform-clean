@@ -20,7 +20,9 @@ def get_lineage_data_from_sample(sample_id):
     # Get the schema ID for filtering Fields
     schema_obj = sample_obj.get_schema_obj()
     a_data = []
-    if not relecov_core.models.LineageFields.objects.filter(schemaID=schema_obj).exists():
+    if not relecov_core.models.LineageFields.objects.filter(
+        schemaID=schema_obj
+    ).exists():
         return None
     a_fields = relecov_core.models.LineageFields.objects.filter(schemaID=schema_obj)
     for a_field in a_fields:
@@ -28,7 +30,7 @@ def get_lineage_data_from_sample(sample_id):
             lineage_fieldID=a_field, sample=sample_obj
         )
         if sample_lineage_fields.exists():
-            value = (sample_lineage_fields.last().get_value())
+            value = sample_lineage_fields.last().get_value()
         else:
             value = ""
         a_data.append([a_field.get_lineage_property_name(), value])

@@ -1,11 +1,5 @@
 from plotly.offline import plot
-from plotly.graph_objects import (
-    Figure,
-    Bar,
-    Scatter,
-    Indicator,
-    Pie
-)
+from plotly.graph_objects import Figure, Bar, Scatter, Indicator, Pie
 from plotly.express import bar
 from plotly.figure_factory import create_bullet
 from dash_bio import NeedlePlot
