@@ -9,7 +9,6 @@ import relecov_core.models
 import relecov_dashboard.utils.generic.graphic_data
 import relecov_dashboard.utils.generic.process_data
 
-# TODO: rename to fetch_variant_data()
 def get_variant_data_from_lineages(graphic_name=None, lineage=None, chromosome=None):
     json_data = relecov_dashboard.utils.generic.graphic_data.get_graphic_json_data(
         graphic_name
@@ -49,8 +48,6 @@ def get_variant_data_from_lineages(graphic_name=None, lineage=None, chromosome=N
 
     return mdata, lineage
 
-# TODO: mv this to graphics
-# TODO: rename to create_needle_graph()
 def create_needle_plot_graph_mutation_by_lineage(lineage_list, lineage, mdata):
     options = []
     for lin in lineage_list:

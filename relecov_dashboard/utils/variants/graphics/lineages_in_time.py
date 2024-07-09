@@ -14,7 +14,6 @@ from django_plotly_dash import DjangoDash
 # Local imports
 import relecov_core.models
 
-# TODO: rename to create_samples_dataframe()
 def create_dataframe_from_database():
     """
     This function reads data from database, DateUpdateState model:

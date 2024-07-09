@@ -21,7 +21,7 @@ import relecov_core.utils.handling_variant
 """
 
 # FIXME: This file is not accessed.
-def create_data_for_dataframe(sample_list, effect_list):
+def create_dataframe(sample_list, effect_list):
     # "B.1.1.7", "NC_045512"
     df = {}
     list_of_hgvs_p = []
@@ -84,7 +84,7 @@ def create_data_for_dataframe(sample_list, effect_list):
     return df_pandas
 
 def create_mutation_table(sample_list, effect_list):
-    df = create_data_for_dataframe(sample_list=sample_list, effect_list=effect_list)
+    df = create_dataframe(sample_list=sample_list, effect_list=effect_list)
     all_effects = list(df["EFFECT"].unique())
     PAGE_SIZE = 20
 
@@ -124,7 +124,7 @@ def create_mutation_table(sample_list, effect_list):
         sample_list = [2018185, 210067]
 
         if isinstance(selected_effects, list) and len(selected_effects) >= 1:
-            df = create_data_for_dataframe(
+            df = create_dataframe(
                 sample_list=sample_list, effect_list=selected_effects
             )
             data = df.to_dict("records")

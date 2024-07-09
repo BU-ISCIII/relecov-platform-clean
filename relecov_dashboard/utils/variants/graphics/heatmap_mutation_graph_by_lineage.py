@@ -20,8 +20,7 @@ from django_plotly_dash import DjangoDash
 import relecov_core.models
 import relecov_core.utils.handling_samples
 
-# TODO: rename to generate_dataframe()
-def create_data_for_dataframe(sample_list, gene_list):
+def create_dataframe(sample_list, gene_list):
     df = {}
     list_of_hgvs_p = []
     gene_list_df = []
@@ -115,9 +114,8 @@ def get_figure(data: pd.DataFrame, sample_ids: list, genes: list):
 
     return fig
 
-# TODO: rename to create_heatmap_graph()
-def create_heat_map(sample_list, gene_list):
-    df = create_data_for_dataframe(sample_list=sample_list, gene_list=gene_list)
+def create_heatmap(sample_list, gene_list):
+    df = create_dataframe(sample_list=sample_list, gene_list=gene_list)
     get_figure(df, sample_list, genes=gene_list)
 
     all_genes = list(df["GENE"].unique())
@@ -180,7 +178,7 @@ def create_heat_map(sample_list, gene_list):
         Input("mutation_heatmap_gene_dropdown", "value"),
     )
     def update_selected_sample(selected_sample: int, selected_genes):
-        data = create_data_for_dataframe(
+        data = create_dataframe(
             sample_list=list(selected_sample), gene_list=selected_genes
         )
         fig = get_figure(data, selected_sample, genes=selected_genes)
