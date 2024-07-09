@@ -55,6 +55,8 @@ def mutations_in_lineage(request):
     )
 
 
+# FIXME: template html has bad ref in plotly_app. App name shoudl be replaced by 'model3D_bn'
+# FIXME: Couldn't find in variants dashboard a button or ref to acces this url 
 @login_required
 def spike_mutations_3d(request):
     relecov_dashboard.utils.variants.graphics.molecule3D_bn_graph.create_model3D_bn()
