@@ -124,6 +124,7 @@ def create_model3D_bn():
                         modelData=data,
                         styles=styles,
                         selectionType="residue",
+                        # FIXME: this should be "size" not suscriptable size since it is a integer type object.
                         height=size[1],
                         width=size[0],
                         zoom={

@@ -6,7 +6,7 @@ import relecov_core.utils.handling_bioinfo_analysis
 import relecov_core.utils.rest_api_handling
 import relecov_core.utils.schema_handling
 import relecov_dashboard.dashboard_config
-import relecov_dashboard.utils.graphics.plotly_graphics
+import relecov_dashboard.utils.generic.graphics.plotly
 
 
 def schema_fields_utilization():
@@ -97,7 +97,7 @@ def index_dash_fields():
             graphics["ERROR_ANALYSIS"] = util_data["ERROR_ANALYSIS"]
             return graphics
         graphics["grouped_fields"] = (
-            relecov_dashboard.utils.graphics.plotly_graphics.bar_graphic(
+            relecov_dashboard.utils.generic.graphics.plotly.bar_graphic(
                 data=util_data["summary"],
                 col_names=["group", "bio_values"],
                 legend=["Bio analysis"],
@@ -108,7 +108,7 @@ def index_dash_fields():
 
     else:
         #  ##### create metadata lab analysis  ######
-        relecov_dashboard.utils.graphics.plotly_graphics.graph_gauge_percent_values(
+        relecov_dashboard.utils.generic.graphics.plotly.graph_gauge_percent_values(
             app_name="lims_filled_values",
             value=util_data["lims_f_values"],
             label="Lab filled values %",
@@ -116,7 +116,7 @@ def index_dash_fields():
         # ##### Create comparison graphics #######
         if "ERROR_ANALYSIS" in util_data:
             graphics["grouped_fields"] = (
-                relecov_dashboard.utils.graphics.plotly_graphics.bar_graphic(
+                relecov_dashboard.utils.generic.graphics.plotly.bar_graphic(
                     data=util_data["summary"],
                     col_names=["group", "lab_values"],
                     legend=["Metada lab"],
@@ -126,7 +126,7 @@ def index_dash_fields():
             )
         else:
             graphics["grouped_fields"] = (
-                relecov_dashboard.utils.graphics.plotly_graphics.bar_graphic(
+                relecov_dashboard.utils.generic.graphics.plotly.bar_graphic(
                     data=util_data["summary"],
                     col_names=["group", "lab_values", "bio_values"],
                     legend=["Metada lab", "Bio analysis"],
@@ -137,7 +137,7 @@ def index_dash_fields():
 
     if "ERROR_ANALYSIS" not in util_data:
         #  ##### create Bio info analysis  ######
-        relecov_dashboard.utils.graphics.plotly_graphics.graph_gauge_percent_values(
+        relecov_dashboard.utils.generic.graphics.plotly.graph_gauge_percent_values(
             app_name="bio_filled_values",
             value=util_data["bio_f_values"],
             label="Bio filled values %",
@@ -151,7 +151,7 @@ def index_dash_fields():
         else:
             colors = None
         graphics["detailed_fields"] = (
-            relecov_dashboard.utils.graphics.plotly_graphics.bar_graphic(
+            relecov_dashboard.utils.generic.graphics.plotly.bar_graphic(
                 data=util_data["field_detail_data"],
                 col_names=["field_name", "field_value"],
                 legend=["metadata fields"],
