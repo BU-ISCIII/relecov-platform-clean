@@ -10,9 +10,7 @@ import relecov_dashboard.utils.generic.graphic_data
 import relecov_dashboard.utils.generic.graphics.plotly
 import relecov_dashboard.utils.generic.process_data
 
-# TODO: rename funciton to generate_sequencing_plots()
 def sequencing_graphics():
-    # TODO: rename funciton to fetch_preprocessed_data()
     def get_pre_proc_data(graphic_name, out_format):
         """Get the pre-processed data for the graphic name.
         If there is not data stored for the graphic, it will query to store
@@ -57,8 +55,7 @@ def sequencing_graphics():
                 data["cts"].append(mean(values))
         return data
     
-    # TODO: fetch_sequencing_data()
-    def fetching_data_for_sequencing_data(project_field, columns):
+    def fetch_sequencing_data(project_field, columns):
         # get stats utilization fields from LIMS
         lims_data = relecov_core.utils.rest_api_handling.get_stats_data(
             {
@@ -71,7 +68,7 @@ def sequencing_graphics():
         return pd.DataFrame(lims_data.items(), columns=columns)
 
     sequencing = {}
-    inst_platform_df = fetching_data_for_sequencing_data(
+    inst_platform_df = fetch_sequencing_data(
         project_field="sequencing_instrument_platform",
         columns=["instrument_platform", "number"],
     )
@@ -86,7 +83,7 @@ def sequencing_graphics():
             options={"title": "Instrument platform", "height": 400},
         )
     )
-    inst_model_df = fetching_data_for_sequencing_data(
+    inst_model_df = fetch_sequencing_data(
         project_field="sequencing_instrument_model",
         columns=["instrument_model", "number"],
     )
@@ -99,7 +96,7 @@ def sequencing_graphics():
             options={"title": "Instrument model", "height": 400},
         )
     )
-    lib_preparation_df = fetching_data_for_sequencing_data(
+    lib_preparation_df = fetch_sequencing_data(
         project_field="library_preparation_kit",
         columns=["library_preparation", "number"],
     )
@@ -112,7 +109,7 @@ def sequencing_graphics():
             options={"title": "Library preparation", "height": 400},
         )
     )
-    read_length_df = fetching_data_for_sequencing_data(
+    read_length_df = fetch_sequencing_data(
         project_field="read_length",
         columns=["read_length", "number"],
     )

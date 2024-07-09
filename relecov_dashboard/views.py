@@ -155,7 +155,7 @@ def variants_mutations_in_lineages_heatmap(request):
             "relecov_dashboard/variantsMutationsInLineagesHeatmap.html",
             {"ERROR": relecov_core.core_config.ERROR_VARIANT_IN_SAMPLE_NOT_DEFINED},
         )
-    relecov_dashboard.utils.variants.graphics.heatmap_mutation_graph_by_lineage.create_heat_map(
+    relecov_dashboard.utils.variants.graphics.heatmap_mutation_graph_by_lineage.create_heatmap(
         sample_list, gene_list
     )
     return render(request, "relecov_dashboard/variantsMutationsInLineagesHeatmap.html")

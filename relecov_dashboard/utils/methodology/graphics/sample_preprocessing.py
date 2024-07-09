@@ -7,7 +7,6 @@ import relecov_dashboard.utils.generic.graphic_data
 import relecov_dashboard.utils.generic.graphics.plotly
 import relecov_dashboard.utils.generic.process_data
 
-# TODO: rename to sample_graphics()
 def sample_processing_graphics():
     def get_pre_proc_data(graphic_name):
         """Get the pre-processed data for the graphic name.
@@ -53,8 +52,8 @@ def sample_processing_graphics():
                 tmp_data += [float_val] * numbers
             data.append({key: tmp_data})
         return data
-    # TODO: rename to fetch_data()
-    def fetching_data_for_sample_processing(project_field, columns):
+
+    def fetch_data(project_field, columns):
         # get stats utilization fields from LIMS about nucleic acid extraction protocol
         lims_data = relecov_core.utils.rest_api_handling.get_stats_data(
             {
@@ -82,7 +81,7 @@ def sample_processing_graphics():
     sample_processing = {}
 
     # extraction protocol graphics
-    extraction_protocol_df = fetching_data_for_sample_processing(
+    extraction_protocol_df = fetch_data(
         project_field="nucleic_acid_extraction_protocol", columns=["protocol", "number"]
     )
     if "ERROR" in extraction_protocol_df:

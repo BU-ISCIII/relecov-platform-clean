@@ -10,7 +10,6 @@ from django_plotly_dash import DjangoDash
 # Local imports
 import relecov_platform.settings
 
-# TODO: fix function names
 def parse_json_file():
     input_file = os.path.join(
         relecov_platform.settings.BASE_DIR,
