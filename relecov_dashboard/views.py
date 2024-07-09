@@ -8,8 +8,8 @@ import relecov_core.utils.handling_lineage
 import relecov_core.utils.handling_variant
 import relecov_dashboard.dashboard_config
 import relecov_dashboard.utils.variants.graphics.lineages_in_time
-import relecov_dashboard.utils.graphics.molecule3D_bn_graph
-import relecov_dashboard.utils.graphics.plotly_graphics
+import relecov_dashboard.utils.variants.graphics.molecule3D_bn_graph
+import relecov_dashboard.utils.generic.graphics.plotly
 import relecov_dashboard.utils.variants.graphics.lineage_variation_over_time_graph
 import relecov_dashboard.utils.variants.graphics.heatmap_mutation_graph_by_lineage
 import relecov_dashboard.utils.variants.graphics.needle_mutation_graph_by_lineage
@@ -17,7 +17,8 @@ import relecov_dashboard.utils.methodology.graphics.bioinfo
 import relecov_dashboard.utils.methodology.graphics.host_info
 import relecov_dashboard.utils.methodology.graphics.index
 import relecov_dashboard.utils.methodology.graphics.sequencing
-import relecov_dashboard.utils.sample_preprocessing
+import relecov_dashboard.utils.methodology.graphics.sample_preprocessing
+import relecov_dashboard.utils.variants.graphics.samples_received_over_time_pie
 
 
 # dashboard/variants
@@ -56,7 +57,7 @@ def mutations_in_lineage(request):
 
 @login_required
 def spike_mutations_3d(request):
-    relecov_dashboard.utils.graphics.molecule3D_bn_graph.create_model3D_bn()
+    relecov_dashboard.utils.variants.graphics.molecule3D_bn_graph.create_model3D_bn()
     return render(request, "relecov_dashboard/variantSpikeMutations3D.html")
 
 
@@ -72,7 +73,7 @@ def lineages_voc(request):
         {"draw_lineages": draw_lineages},
     )
 
-
+# FIXME: isn't called from urls.py and html template is not available.
 @login_required
 def samples_received_over_time_graph(request):
     df = relecov_dashboard.utils.variants.graphics.lineages_in_time.create_dataframe_from_json()
@@ -84,12 +85,12 @@ def samples_received_over_time_graph(request):
 @login_required
 def samples_received_over_time_pie(request):
     data = (
-        relecov_dashboard.utils.graphics.plotly_graphics.parse_json_file()
+        relecov_dashboard.utils.variants.graphics.samples_received_over_time_pie.parse_json_file()
     )
-    relecov_dashboard.utils.graphics.samples_received_over_time_pie.create_samples_received_over_time_per_ccaa_pieChart(
+    relecov_dashboard.utils.variants.graphics.samples_received_over_time_pie.create_samples_received_over_time_per_ccaa_pieChart(
         data
     )
-    relecov_dashboard.utils.graphics.samples_received_over_time_pie.create_samples_received_over_time_per_laboratory_pieChart(
+    relecov_dashboard.utils.variants.graphics.samples_received_over_time_pie.create_samples_received_over_time_per_laboratory_pieChart(
         data
     )
 
@@ -99,12 +100,12 @@ def samples_received_over_time_pie(request):
 @login_required
 def samples_received_over_time_pie_laboratory(request):
     data = (
-        relecov_dashboard.utils.graphics.samples_received_over_time_pie.parse_json_file()
+        relecov_dashboard.utils.variants.graphics.samples_received_over_time_pie.parse_json_file()
     )
-    relecov_dashboard.utils.graphics.samples_received_over_time_pie.create_samples_received_over_time_per_ccaa_pieChart(
+    relecov_dashboard.utils.variants.graphics.samples_received_over_time_pie.create_samples_received_over_time_per_ccaa_pieChart(
         data
     )
-    relecov_dashboard.utils.graphics.samples_received_over_time_pie.create_samples_received_over_time_per_laboratory_pieChart(
+    relecov_dashboard.utils.variants.graphics.samples_received_over_time_pie.create_samples_received_over_time_per_laboratory_pieChart(
         data
     )
 
@@ -200,7 +201,7 @@ def methodology_sequencing(request):
 @login_required
 def methodology_sample_processing(request):
     sample_processing = (
-        relecov_dashboard.utils.sample_preprocessing.sample_processing_graphics()
+        relecov_dashboard.utils.methodology.graphics.sample_preprocessing.sample_processing_graphics()
     )
     if "ERROR" in sample_processing:
         return render(
