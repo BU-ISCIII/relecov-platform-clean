@@ -12,7 +12,6 @@ from django_plotly_dash import DjangoDash
 import relecov_platform.settings
 
 
-
 # Note: PDB parserThis module contains a class that can read PDB files and return a dictionary of structural data
 class PdbParser:
     """

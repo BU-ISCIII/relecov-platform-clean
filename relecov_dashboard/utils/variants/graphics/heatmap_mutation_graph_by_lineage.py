@@ -20,6 +20,7 @@ from django_plotly_dash import DjangoDash
 import relecov_core.models
 import relecov_core.utils.handling_samples
 
+
 def create_dataframe(sample_list, gene_list):
     df = {}
     list_of_hgvs_p = []
