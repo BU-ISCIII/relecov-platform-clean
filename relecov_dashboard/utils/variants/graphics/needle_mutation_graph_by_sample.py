@@ -11,6 +11,7 @@ from django_plotly_dash import DjangoDash
 # Local imports
 import relecov_core.utils.handling_variant
 
+
 # FIXME: This file is not accessed.
 def create_needle_plot_graph_mutation_by_sample(sample_name, mdata):
     sample_list = [2018185, 210067]

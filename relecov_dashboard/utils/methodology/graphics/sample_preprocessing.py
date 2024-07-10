@@ -35,8 +35,10 @@ def sample_processing_graphics():
                 return {"ERROR": "pre-processing not defined"}
             if "ERROR" in result:
                 return result
-            json_data = relecov_dashboard.utils.generic.graphic_data.get_graphic_json_data(
-                graphic_name
+            json_data = (
+                relecov_dashboard.utils.generic.graphic_data.get_graphic_json_data(
+                    graphic_name
+                )
             )
         # Convert string to float values
         if graphic_name == "calculation_date":

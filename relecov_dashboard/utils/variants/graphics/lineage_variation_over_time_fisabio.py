@@ -27,6 +27,7 @@ def select_range_date(start_date, end_date, df):
     df2 = df.loc[mask]
     return df2
 
+
 def make_lineage_variaton_plot(data, start_date, end_date, select_range, windowSize):
     """
     We are sliding a time window of X days to collect the frequency and relative percentage of the lineages. We record

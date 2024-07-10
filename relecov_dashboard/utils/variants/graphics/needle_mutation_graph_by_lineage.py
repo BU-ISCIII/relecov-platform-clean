@@ -9,6 +9,7 @@ import relecov_core.models
 import relecov_dashboard.utils.generic.graphic_data
 import relecov_dashboard.utils.generic.process_data
 
+
 def get_variant_data_from_lineages(graphic_name=None, lineage=None, chromosome=None):
     json_data = relecov_dashboard.utils.generic.graphic_data.get_graphic_json_data(
         graphic_name
@@ -16,10 +17,8 @@ def get_variant_data_from_lineages(graphic_name=None, lineage=None, chromosome=N
 
     if json_data is None:
         # Execute the pre-processed task to get the data
-        result = (
-            relecov_dashboard.utils.generic.process_data.pre_proc_variations_per_lineage(
-                chromosome
-            )
+        result = relecov_dashboard.utils.generic.process_data.pre_proc_variations_per_lineage(
+            chromosome
         )
         if "ERROR" in result:
             return result
@@ -47,6 +46,7 @@ def get_variant_data_from_lineages(graphic_name=None, lineage=None, chromosome=N
     mdata = json_data[lineage]
 
     return mdata, lineage
+
 
 def create_needle_plot_graph_mutation_by_lineage(lineage_list, lineage, mdata):
     options = []

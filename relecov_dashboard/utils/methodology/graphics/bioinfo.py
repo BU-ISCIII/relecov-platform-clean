@@ -29,8 +29,10 @@ def bioinfo_graphics():
                 return {"ERROR": "pre-processing not defined"}
             if "ERROR" in result:
                 return result
-            json_data = relecov_dashboard.utils.generic.graphic_data.get_graphic_json_data(
-                graphic_name
+            json_data = (
+                relecov_dashboard.utils.generic.graphic_data.get_graphic_json_data(
+                    graphic_name
+                )
             )
         tmp_json_float = {}
         for key, values in json_data.items():
