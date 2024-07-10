@@ -10,6 +10,7 @@ import relecov_dashboard.utils.generic.graphic_data
 import relecov_dashboard.utils.generic.graphics.plotly
 import relecov_dashboard.utils.generic.process_data
 
+
 def sequencing_graphics():
     def get_pre_proc_data(graphic_name, out_format):
         """Get the pre-processed data for the graphic name.
