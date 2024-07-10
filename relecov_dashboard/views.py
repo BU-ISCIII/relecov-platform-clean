@@ -56,7 +56,7 @@ def mutations_in_lineage(request):
 
 
 # FIXME: template html has bad ref in plotly_app. App name shoudl be replaced by 'model3D_bn'
-# FIXME: Couldn't find in variants dashboard a button or ref to acces this url 
+# FIXME: Couldn't find in variants dashboard a button or ref to acces this url
 @login_required
 def spike_mutations_3d(request):
     relecov_dashboard.utils.variants.graphics.molecule3D_bn_graph.create_model3D_bn()
@@ -75,13 +75,19 @@ def lineages_voc(request):
         {"draw_lineages": draw_lineages},
     )
 
+
 # FIXME: isn't called from urls.py and html template is not available.
 @login_required
 def samples_received_over_time_graph(request):
-    df = relecov_dashboard.utils.variants.graphics.lineages_in_time.create_dataframe_from_json()
-    relecov_dashboard.utils.variants.graphics.lineages_in_time.create_samples_over_time_graph(df)
+    df = (
+        relecov_dashboard.utils.variants.graphics.lineages_in_time.create_dataframe_from_json()
+    )
+    relecov_dashboard.utils.variants.graphics.lineages_in_time.create_samples_over_time_graph(
+        df
+    )
 
     return render(request, "relecov_dashboard/samplesReceivedOverTimeGraph.html")
+
 
 # FIXME: isn't called from urls.py and html template is not available.
 @login_required
@@ -97,6 +103,7 @@ def samples_received_over_time_pie(request):
     )
 
     return render(request, "relecov_dashboard/samplesReceivedOverTimePie.html")
+
 
 # FIXME: isn't called from urls.py and html template is not available.
 @login_required
@@ -114,6 +121,7 @@ def samples_received_over_time_pie_laboratory(request):
     return render(
         request, "relecov_dashboard/samplesReceivedOverTimePieLaboratory.html"
     )
+
 
 # FIXME: isn't called from urls.py and html template is not available.
 @login_required
@@ -174,7 +182,9 @@ def methodology_index(request):
 
 @login_required
 def methodology_host_info(request):
-    host_info = relecov_dashboard.utils.methodology.graphics.host_info.host_info_graphics()
+    host_info = (
+        relecov_dashboard.utils.methodology.graphics.host_info.host_info_graphics()
+    )
     if "ERROR" in host_info:
         return render(
             request, "relecov_dashboard/methodologyHostInfo.html", {"ERROR": host_info}
@@ -186,7 +196,9 @@ def methodology_host_info(request):
 
 @login_required
 def methodology_sequencing(request):
-    sequencing = relecov_dashboard.utils.methodology.graphics.sequencing.sequencing_graphics()
+    sequencing = (
+        relecov_dashboard.utils.methodology.graphics.sequencing.sequencing_graphics()
+    )
     if "ERROR" in sequencing:
         return render(
             request,

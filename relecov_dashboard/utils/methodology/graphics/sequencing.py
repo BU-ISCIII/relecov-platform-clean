@@ -34,8 +34,10 @@ def sequencing_graphics():
                 return {"ERROR": "pre-processing not defined"}
             if "ERROR" in result:
                 return result
-            json_data = relecov_dashboard.utils.generic.graphic_data.get_graphic_json_data(
-                graphic_name
+            json_data = (
+                relecov_dashboard.utils.generic.graphic_data.get_graphic_json_data(
+                    graphic_name
+                )
             )
         if out_format == "list_of_dict":
             data = []
@@ -55,7 +57,7 @@ def sequencing_graphics():
                 data["based"].append(int(key))
                 data["cts"].append(mean(values))
         return data
-    
+
     def fetch_sequencing_data(project_field, columns):
         # get stats utilization fields from LIMS
         lims_data = relecov_core.utils.rest_api_handling.get_stats_data(

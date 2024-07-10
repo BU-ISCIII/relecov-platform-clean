@@ -20,6 +20,7 @@ import relecov_core.utils.handling_samples
 import relecov_core.utils.handling_variant
 """
 
+
 # FIXME: This file is not accessed.
 def create_dataframe(sample_list, effect_list):
     # "B.1.1.7", "NC_045512"
@@ -83,6 +84,7 @@ def create_dataframe(sample_list, effect_list):
     df_pandas = pd.DataFrame.from_dict(df)
     return df_pandas
 
+
 def create_mutation_table(sample_list, effect_list):
     df = create_dataframe(sample_list=sample_list, effect_list=effect_list)
     all_effects = list(df["EFFECT"].unique())
@@ -124,9 +126,7 @@ def create_mutation_table(sample_list, effect_list):
         sample_list = [2018185, 210067]
 
         if isinstance(selected_effects, list) and len(selected_effects) >= 1:
-            df = create_dataframe(
-                sample_list=sample_list, effect_list=selected_effects
-            )
+            df = create_dataframe(sample_list=sample_list, effect_list=selected_effects)
             data = df.to_dict("records")
         return data
 

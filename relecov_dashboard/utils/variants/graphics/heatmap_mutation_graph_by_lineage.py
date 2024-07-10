@@ -9,6 +9,7 @@ Mutation heatmap
     - Color represents allele frequency
 
 """
+
 # Generic imports
 import pandas as pd
 import plotly.express as px
@@ -80,6 +81,7 @@ def create_dataframe(sample_list, gene_list):
 
     return pandas_df
 
+
 def get_figure(data: pd.DataFrame, sample_ids: list, genes: list):
     # Order by position
     data = data.sort_values(by=["POS"])
@@ -114,6 +116,7 @@ def get_figure(data: pd.DataFrame, sample_ids: list, genes: list):
     fig.update_traces(xgap=1)
 
     return fig
+
 
 def create_heatmap(sample_list, gene_list):
     df = create_dataframe(sample_list=sample_list, gene_list=gene_list)

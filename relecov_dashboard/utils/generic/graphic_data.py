@@ -23,6 +23,7 @@ def get_graphic_in_data_frame(graphic_name):
     return None
 """
 
+
 def get_graphic_json_data(graphic_name):
     """ """
     if relecov_dashboard.models.GraphicJsonFile.objects.filter(
