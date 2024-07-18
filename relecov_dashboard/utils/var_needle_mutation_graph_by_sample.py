@@ -9,7 +9,7 @@ from dash.dependencies import Input, Output
 from django_plotly_dash import DjangoDash
 
 # Local imports
-import relecov_core.utils.handling_variant
+import relecov_core.utils.variants
 
 
 # FIXME: This file is not accessed.
@@ -81,9 +81,7 @@ def create_needle_plot_graph_mutation_by_sample(sample_name, mdata):
         Input("needleplot-select-sample", "value"),
     )
     def update_sample(selected_sample: int):
-        mdata = relecov_core.utils.handling_variant.create_dataframe(
-            sample_name=selected_sample, organism_code="NC_045512"
-        )
+        mdata = relecov_core.utils.variants.create_dataframe(sample_name=selected_sample, organism_code="NC_045512")
         mutationData = mdata
         return mutationData
 

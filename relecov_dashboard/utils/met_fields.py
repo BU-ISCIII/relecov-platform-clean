@@ -12,7 +12,7 @@ from django_plotly_dash import DjangoDash
 
 # Local imports
 import relecov_core.models
-import relecov_core.utils.handling_bioinfo_analysis
+import relecov_core.utils.bioinfo_analysis
 
 
 # FIXME: This file is not accessed.
@@ -202,9 +202,7 @@ def create_utilization_graphic(lineage):
 
 def schema_fields_utilization():
     """ """
-    schema_fields = (
-        relecov_core.utils.handling_bioinfo_analysis.get_bioinfo_analyis_fields_utilization()
-    )
+    schema_fields = relecov_core.utils.bioinfo_analysis.get_bioinfo_analyis_fields_utilization()
     for schema_name, fields in schema_fields.items():
         # import pdb; pdb.set_trace()
 

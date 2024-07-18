@@ -2,9 +2,9 @@
 from statistics import mean
 
 # Local imports
-import relecov_core.utils.handling_bioinfo_analysis
-import relecov_core.utils.rest_api_handling
-import relecov_core.utils.schema_handling
+import relecov_core.utils.bioinfo_analysis
+import relecov_core.utils.rest_api
+import relecov_core.utils.schema
 import relecov_dashboard.dashboard_config
 import relecov_dashboard.utils.plotly
 
@@ -13,7 +13,7 @@ def schema_fields_utilization():
     """Return ERROR when no connection to iSkyLIMS, NO_SCHEMA when there is
     no schema loaded yet, or the data to display graphic
     """
-    schema_obj = relecov_core.utils.schema_handling.get_default_schema()
+    schema_obj = relecov_core.utils.schema.get_default_schema()
     if schema_obj is None:
         return {"NO_SCHEMA": relecov_dashboard.dashboard_config.ERROR_NO_SCHEMA_DEFINED}
 
@@ -25,7 +25,7 @@ def schema_fields_utilization():
         "percent": [],
     }
     # get stats utilization fields from LIMS
-    lims_fields = relecov_core.utils.rest_api_handling.get_stats_data(
+    lims_fields = relecov_core.utils.rest_api.get_stats_data(
         {"sample_project_name": "Relecov"}
     )
     if "ERROR" in lims_fields:
@@ -53,7 +53,7 @@ def schema_fields_utilization():
         util_data["num_lab_fields"] = len(lims_fields["fields_value"])
 
     # get fields utilization from bioinfo analysis
-    bio_fields = relecov_core.utils.handling_bioinfo_analysis.get_bioinfo_analyis_fields_utilization(
+    bio_fields = relecov_core.utils.bioinfo_analysis.get_bioinfo_analyis_fields_utilization(
         schema_obj
     )
     # if return an empty value skip looking for data

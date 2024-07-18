@@ -19,7 +19,7 @@ from django_plotly_dash import DjangoDash
 
 # Local imports
 import relecov_core.models
-import relecov_core.utils.handling_samples
+import relecov_core.utils.samples
 
 
 def create_dataframe(sample_list, gene_list):
@@ -34,11 +34,7 @@ def create_dataframe(sample_list, gene_list):
     # chromosome = "NC_045512"
 
     for sample_name in sample_list:
-        sample_obj = (
-            relecov_core.utils.handling_samples.get_sample_obj_from_sample_name(
-                sample_name=sample_name
-            )
-        )
+        sample_obj = relecov_core.utils.samples.get_sample_obj_from_sample_name(sample_name=sample_name)
 
         if sample_obj is not None:
             variant_in_sample_objs = relecov_core.models.VariantInSample.objects.filter(

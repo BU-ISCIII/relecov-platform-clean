@@ -3,8 +3,8 @@ from datetime import datetime
 
 # Local imports
 import relecov_core.models
-import relecov_core.utils.handling_lineage
-import relecov_core.utils.handling_variant
+import relecov_core.utils.lineage
+import relecov_core.utils.variants
 import relecov_core.utils.rest_api_handling
 import relecov_dashboard.models
 
@@ -221,7 +221,7 @@ def pre_proc_variations_per_lineage(chromosome=None):
     lineage_data = {}
 
     # Grab lineages matching selected lineage
-    for lineage in relecov_core.utils.handling_lineage.get_lineages_list():
+    for lineage in relecov_core.utils.lineage.get_lineages_list():
         mutation_data = {}
         list_of_af = []
         list_of_pos = []
@@ -273,9 +273,7 @@ def pre_proc_variations_per_lineage(chromosome=None):
                 list_of_pos.append(pos)
                 list_of_effects.append(effects)
 
-        domains = relecov_core.utils.handling_variant.get_domains_and_coordenates(
-            chromosome
-        )
+        domains = relecov_core.utils.variants.get_domains_and_coordenates(chromosome)
 
         mutation_data["x"] = list_of_pos
         mutation_data["y"] = list_of_af

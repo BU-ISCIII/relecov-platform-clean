@@ -76,7 +76,9 @@ def create_dataframe_from_json():
         data = json.load(fh)
 
     for line in data:
+        # FIXME: isolate_sample_id has been changed for sequencing_sample_id as reference ID
         list_of_samples.append(line["isolate_sample_id"])
+        # FIXME: sample_received_date is not mandatory
         list_of_dates.append(line["sample_received_date"])
 
     list_of_lists.append(list_of_samples)
