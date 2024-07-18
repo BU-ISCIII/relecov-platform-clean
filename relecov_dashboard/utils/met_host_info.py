@@ -6,7 +6,7 @@ import pandas as pd
 # Local imports
 import relecov_core.utils.rest_api_handling
 import relecov_dashboard.dashboard_config
-import relecov_dashboard.utils.generic.graphics.plotly
+import relecov_dashboard.utils.plotly
 
 
 def host_info_graphics():
@@ -110,7 +110,7 @@ def host_info_graphics():
     if "ERROR" in gender_label:
         return gender_label
     host_info["gender_graph"] = (
-        relecov_dashboard.utils.generic.graphics.plotly.pie_graphic(
+        relecov_dashboard.utils.plotly.pie_graphic(
             labels=gender_label,
             values=gender_values,
             options={"title": "Gender distribution"},
@@ -120,7 +120,7 @@ def host_info_graphics():
     host_gender_age_df = fetching_data_for_sex_and_range_data()[0]
     col_names = list(host_gender_age_df.columns)
     host_info["gender_age_graph"] = (
-        relecov_dashboard.utils.generic.graphics.plotly.bar_graphic(
+        relecov_dashboard.utils.plotly.bar_graphic(
             data=host_gender_age_df,
             col_names=col_names,
             legend=col_names[1:],
@@ -133,7 +133,7 @@ def host_info_graphics():
     )
     host_age_df, invalid_data = fetching_data_for_range_age()
     host_info["range_age_graph"] = (
-        relecov_dashboard.utils.generic.graphics.plotly.bar_graphic(
+        relecov_dashboard.utils.plotly.bar_graphic(
             data=host_age_df,
             col_names=["range_age", "number"],
             legend=[""],

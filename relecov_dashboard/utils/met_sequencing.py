@@ -6,9 +6,9 @@ import pandas as pd
 # Local imports
 import relecov_core.utils.rest_api_handling
 import relecov_core.utils.schema_handling
-import relecov_dashboard.utils.generic.generic_graphic_data
-import relecov_dashboard.utils.generic.graphics.plotly
-import relecov_dashboard.utils.generic.generic_process_data
+import relecov_dashboard.utils.generic_graphic_data
+import relecov_dashboard.utils.plotly
+import relecov_dashboard.utils.generic_process_data
 
 
 def sequencing_graphics():

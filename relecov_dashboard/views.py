@@ -7,18 +7,18 @@ import relecov_core.core_config
 import relecov_core.utils.handling_lineage
 import relecov_core.utils.handling_variant
 import relecov_dashboard.dashboard_config
-import relecov_dashboard.utils.generic.graphics.plotly
-import relecov_dashboard.utils.methodology.graphics.met_bioinfo
-import relecov_dashboard.utils.methodology.graphics.met_host_info
-import relecov_dashboard.utils.methodology.graphics.met_index
-import relecov_dashboard.utils.methodology.graphics.met_sample_preprocessing
-import relecov_dashboard.utils.methodology.graphics.met_sequencing
-import relecov_dashboard.utils.variants.graphics.var_heatmap_mutation_graph_by_lineage
-import relecov_dashboard.utils.variants.graphics.var_lineage_variation_over_time_graph
-import relecov_dashboard.utils.variants.graphics.var_lineages_in_time
-import relecov_dashboard.utils.variants.graphics.var_molecule3D_bn_graph
-import relecov_dashboard.utils.variants.graphics.var_needle_mutation_graph_by_lineage
-import relecov_dashboard.utils.variants.graphics.var_samples_received_over_time_pie
+import relecov_dashboard.utils.plotly
+import relecov_dashboard.utils.met_bioinfo
+import relecov_dashboard.utils.met_host_info
+import relecov_dashboard.utils.met_index
+import relecov_dashboard.utils.met_sample_preprocessing
+import relecov_dashboard.utils.met_sequencing
+import relecov_dashboard.utils.var_heatmap_mutation_graph_by_lineage
+import relecov_dashboard.utils.var_lineage_variation_over_time_graph
+import relecov_dashboard.utils.var_lineages_in_time
+import relecov_dashboard.utils.var_molecule3D_bn_graph
+import relecov_dashboard.utils.var_needle_mutation_graph_by_lineage
+import relecov_dashboard.utils.var_samples_received_over_time_pie
 
 
 # dashboard/variants

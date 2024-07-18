@@ -5,9 +5,9 @@ from statistics import mean
 # Local imports
 import relecov_core.models
 import relecov_dashboard.dashboard_config
-import relecov_dashboard.utils.generic.generic_graphic_data
-import relecov_dashboard.utils.generic.graphics.plotly
-import relecov_dashboard.utils.generic.generic_process_data
+import relecov_dashboard.utils.generic_graphic_data
+import relecov_dashboard.utils.plotly
+import relecov_dashboard.utils.generic_process_data
 
 
 def bioinfo_graphics():
