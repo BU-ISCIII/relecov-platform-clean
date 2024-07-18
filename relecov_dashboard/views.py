@@ -4,8 +4,8 @@ from django.shortcuts import render
 
 # Local imports
 import relecov_core.core_config
-import relecov_core.utils.handling_lineage
-import relecov_core.utils.handling_variant
+import relecov_core.utils.lineage
+import relecov_core.utils.variants
 import relecov_dashboard.dashboard_config
 import relecov_dashboard.utils.met_bioinfo
 import relecov_dashboard.utils.met_host_info
@@ -30,8 +30,8 @@ def variants_index(request):
 @login_required
 def mutations_in_lineage(request):
     # mutations in lineages by lineage
-    def_chrom = relecov_core.utils.handling_variant.get_default_chromosome()
-    lineages_list = relecov_core.utils.handling_lineage.get_lineages_list()
+    def_chrom = relecov_core.utils.variants.get_default_chromosome()
+    lineages_list = relecov_core.utils.lineage.get_lineages_list()
     mdata, lineage = (
         relecov_dashboard.utils.var_needle_mutation_graph_by_lineage.get_variant_data_from_lineages(
             graphic_name="variations_per_lineage", lineage=None, chromosome=def_chrom
@@ -118,7 +118,7 @@ def samples_received_over_time_pie_laboratory(request):
 # FIXME: isn't called from urls.py and html template is not available.
 @login_required
 def variants_mutations_in_lineages_heatmap(request):
-    chromesome_objs = relecov_core.utils.handling_variant.get_all_chromosome_objs()
+    chromesome_objs = relecov_core.utils.variants.get_all_chromosome_objs()
     if chromesome_objs is None:
         return render(
             request,
@@ -141,14 +141,14 @@ def variants_mutations_in_lineages_heatmap(request):
             "relecov_dashboard/variantsMutationsInLineagesHeatmap.html",
             {"ORGANISM": chromesome_list},
         )
-    gene_list = relecov_core.utils.handling_variant.get_gene_list(chromesome_objs[0])
+    gene_list = relecov_core.utils.variants.get_gene_list(chromesome_objs[0])
     if len(gene_list) == 0:
         return render(
             request,
             "relecov_dashboard/variantsMutationsInLineagesHeatmap.html",
             {"ERROR": relecov_core.core_config.ERROR_GENE_NOT_DEFINED_IN_DATABASE},
         )
-    sample_list = relecov_core.utils.handling_variant.get_sample_in_variant_list(
+    sample_list = relecov_core.utils.variants.get_sample_in_variant_list(
         chromesome_objs[0]
     )
     if len(sample_list) == 0:
