@@ -3,7 +3,7 @@ from datetime import datetime
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.models import User
 from django.conf import settings
-from relecov_core.models import ConfigSetting
+import relecov_core.models
 import os
 
 
@@ -20,8 +20,10 @@ def get_configuration_value(parameter_name):
     """
 
     parameter_value = "False"
-    if ConfigSetting.objects.filter(configuration_name__exact=parameter_name).exists():
-        parameter_obj = ConfigSetting.objects.filter(
+    if relecov_core.models.ConfigSetting.objects.filter(
+        configuration_name__exact=parameter_name
+    ).exists():
+        parameter_obj = relecov_core.models.ConfigSetting.objects.filter(
             configuration_name__exact=parameter_name
         ).last()
         parameter_value = parameter_obj.get_configuration_value()
