@@ -1,3 +1,4 @@
+import relecov_core.urls
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 
@@ -21,42 +22,15 @@ from drf_spectacular.utils import (
 from rest_framework import serializers
 
 from django.http import QueryDict
-from relecov_core.api.serializers import (
-    CreateDateAfterChangeStateSerializer,
-    CreateSampleSerializer,
-    CreateErrorSerializer,
-    UpdateStateSampleSerializer,
-)
 
-from relecov_core.models import SampleState, Error
-
-
-from relecov_core.api.utils.sample_handling import (
-    split_sample_data,
-)
-from relecov_core.utils.handling_samples import get_sample_obj_from_sample_name
-
-from relecov_core.api.utils.bioinfo_metadata_handling import (
-    split_bioinfo_data,
-    store_bioinfo_data,
-    get_analysis_defined,
-)
-
-from relecov_core.api.utils.public_db_handling import store_pub_databases_data
-
-from relecov_core.api.utils.variant_handling import (
-    split_variant_data,
-    store_variant_annotation,
-    store_variant_in_sample,
-    delete_created_variancs,
-    variant_annotation_exists,
-    get_variant_analysis_defined,
-)
-
-from relecov_core.api.utils.common_functions import (
-    get_schema_version_if_exists,
-    update_change_state_date,
-)
+import relecov_core.models
+import relecov_core.utils.samples
+import relecov_core.api.serializers
+import relecov_core.api.utils.samples
+import relecov_core.api.utils.bioinfo_metadata
+import relecov_core.api.utils.public_db
+import relecov_core.api.utils.variants
+import relecov_core.api.utils.common_functions
 
 from relecov_core.core_config import (
     ERROR_SAMPLE_NAME_NOT_INCLUDED,
@@ -138,7 +112,9 @@ def create_sample_data(request):
         if isinstance(data, QueryDict):
             data = data.dict()
 
-        schema_obj = get_schema_version_if_exists(data)
+        schema_obj = (
+            relecov_core.api.utils.common_functions.get_schema_version_if_exists(data)
+        )
         if schema_obj is None:
             error = {"ERROR": "schema name and version is not defined"}
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
@@ -147,15 +123,19 @@ def create_sample_data(request):
         if "sequencing_sample_id" not in data or "collecting_institution" not in data:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         # check if sample is already defined
-        if get_sample_obj_from_sample_name(data["sequencing_sample_id"]):
+        if relecov_core.utils.samples.get_sample_obj_from_sample_name(
+            data["sequencing_sample_id"]
+        ):
             error = {"ERROR": "sample already defined"}
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
         # get the user to assign the sample based on the collecting_institution
         # value. If lab is not define user field is set t
-        split_data = split_sample_data(data)
+        split_data = relecov_core.api.utils.samples.split_sample_data(data)
         # Add schema id to store in database
         split_data["sample"]["schema_obj"] = schema_id
-        sample_serializer = CreateSampleSerializer(data=split_data["sample"])
+        sample_serializer = relecov_core.api.serializers.CreateSampleSerializer(
+            data=split_data["sample"]
+        )
         if not sample_serializer.is_valid():
             return Response(
                 sample_serializer.errors, status=status.HTTP_400_BAD_REQUEST
@@ -167,7 +147,9 @@ def create_sample_data(request):
             "sampleID": sample_id,
             "stateID": split_data["sample"]["state"],
         }
-        date_serilizer = CreateDateAfterChangeStateSerializer(data=data)
+        date_serilizer = (
+            relecov_core.api.serializers.CreateDateAfterChangeStateSerializer(data=data)
+        )
         if date_serilizer.is_valid():
             date_serilizer.save()
 
@@ -177,7 +159,7 @@ def create_sample_data(request):
                 split_data["ena"]["ena_sample_accession"] != "Not Provided"
                 and split_data["ena"]["ena_sample_accession"] != ""
             ):
-                result = store_pub_databases_data(
+                result = relecov_core.api.utils.public_db.store_pub_databases_data(
                     split_data["ena"], "ena", schema_obj, sample_id
                 )
                 if "ERROR" in result:
@@ -185,16 +167,22 @@ def create_sample_data(request):
                 # Save entry in update state table
                 sample_obj.update_state("Ena")
                 state_id = (
-                    SampleState.objects.filter(state__exact="Ena").last().get_state_id()
+                    relecov_core.models.SampleState.objects.filter(state__exact="Ena")
+                    .last()
+                    .get_state_id()
                 )
                 data = {"sampleID": sample_id, "stateID": state_id}
-                date_serilizer = CreateDateAfterChangeStateSerializer(data=data)
+                date_serilizer = (
+                    relecov_core.api.serializers.CreateDateAfterChangeStateSerializer(
+                        data=data
+                    )
+                )
                 if date_serilizer.is_valid():
                     date_serilizer.save()
         # Save GISAID info if included
         if len(split_data["gisaid"]) > 0:
             if "EPI_ISL" in split_data["gisaid"]["gisaid_accession_id"]:
-                result = store_pub_databases_data(
+                result = relecov_core.api.utils.public_db.store_pub_databases_data(
                     split_data["gisaid"], "gisaid", schema_obj, sample_id
                 )
                 if "ERROR" in result:
@@ -202,17 +190,23 @@ def create_sample_data(request):
                 # Save entry in update state table
                 sample_obj.update_state("Gisaid")
                 state_id = (
-                    SampleState.objects.filter(state__exact="Gisaid")
+                    relecov_core.models.SampleState.objects.filter(
+                        state__exact="Gisaid"
+                    )
                     .last()
                     .get_state_id()
                 )
                 data = {"sampleID": sample_id, "stateID": state_id}
-                date_serilizer = CreateDateAfterChangeStateSerializer(data=data)
+                date_serilizer = (
+                    relecov_core.api.serializers.CreateDateAfterChangeStateSerializer(
+                        data=data
+                    )
+                )
                 if date_serilizer.is_valid():
                     date_serilizer.save()
         # Save AUTHOR info if included
         if len(split_data["author"]) > 0:
-            result = store_pub_databases_data(
+            result = relecov_core.api.utils.public_db.store_pub_databases_data(
                 split_data["author"], "author", schema_obj, sample_id
             )
             if "ERROR" in result:
@@ -373,7 +367,9 @@ def create_bioinfo_metadata(request):
     if isinstance(data, QueryDict):
         data = data.dict()
     # check schema (name and version)
-    schema_obj = get_schema_version_if_exists(data)
+    schema_obj = relecov_core.api.utils.common_functions.get_schema_version_if_exists(
+        data
+    )
     if schema_obj is None:
         error = {"ERROR": "schema name and version is not defined"}
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
@@ -382,32 +378,49 @@ def create_bioinfo_metadata(request):
             {"ERROR": ERROR_SAMPLE_NAME_NOT_INCLUDED},
             status=status.HTTP_400_BAD_REQUEST,
         )
-    sample_obj = get_sample_obj_from_sample_name(data["sequencing_sample_id"])
+    sample_obj = relecov_core.utils.samples.get_sample_obj_from_sample_name(
+        data["sequencing_sample_id"]
+    )
     if sample_obj is None:
         return Response(
             {"ERROR": ERROR_SAMPLE_NOT_DEFINED}, status=status.HTTP_400_BAD_REQUEST
         )
 
-    analysis_defined = get_analysis_defined(sample_obj)
-    if data["analysis_date"] in list(analysis_defined):
-        return Response(
-            {"ERROR": ERROR_ANALYSIS_ALREADY_DEFINED},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
-    split_data = split_bioinfo_data(data, schema_obj)
+    analysis_defined = relecov_core.api.utils.bioinfo_metadata.get_analysis_defined(
+        sample_obj
+    )
+    analysis_date = data.get("analysis_date", None)
+    if analysis_date is not None:
+        if analysis_date in list(analysis_defined):
+            return Response(
+                {"ERROR": ERROR_ANALYSIS_ALREADY_DEFINED},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+    split_data = relecov_core.api.utils.bioinfo_metadata.split_bioinfo_data(
+        data, schema_obj
+    )
     if "ERROR" in split_data:
         return Response(split_data, status=status.HTTP_400_BAD_REQUEST)
 
-    stored_data = store_bioinfo_data(split_data, schema_obj)
+    stored_data = relecov_core.api.utils.bioinfo_metadata.store_bioinfo_data(
+        split_data, schema_obj
+    )
     if "ERROR" in stored_data:
         return Response(stored_data, status=status.HTTP_400_BAD_REQUEST)
-    state_id = SampleState.objects.filter(state__exact="Bioinfo").last().get_state_id()
+    state_id = (
+        relecov_core.models.SampleState.objects.filter(state__exact="Bioinfo")
+        .last()
+        .get_state_id()
+    )
     data_date = {"sampleID": sample_obj.get_sample_id(), "stateID": state_id}
 
     # update sample state
     sample_obj.update_state("Bioinfo")
     # Include date and state in DateState table
-    date_serializer = CreateDateAfterChangeStateSerializer(data=data_date)
+    date_serializer = relecov_core.api.serializers.CreateDateAfterChangeStateSerializer(
+        data=data_date
+    )
     if date_serializer.is_valid():
         date_serializer.save()
 
@@ -519,12 +532,16 @@ def create_variant_data(request):
         if isinstance(data, QueryDict):
             data = data.dict()
 
-        sample_obj = get_sample_obj_from_sample_name(data["sample_name"])
+        sample_obj = relecov_core.utils.samples.get_sample_obj_from_sample_name(
+            data["sample_name"]
+        )
         if sample_obj is None:
             return Response(
                 {"ERROR": ERROR_SAMPLE_NOT_DEFINED}, status=status.HTTP_400_BAD_REQUEST
             )
-        analysis_defined = get_variant_analysis_defined(sample_obj)
+        analysis_defined = relecov_core.api.utils.variants.get_variant_analysis_defined(
+            sample_obj
+        )
         if data["analysis_date"] in list(analysis_defined):
             return Response(
                 {"ERROR": ERROR_ANALYSIS_ALREADY_DEFINED},
@@ -541,14 +558,18 @@ def create_variant_data(request):
         v_an_list = []
 
         for v_data in data["variants"]:
-            split_data = split_variant_data(v_data, sample_obj, data["analysis_date"])
+            split_data = relecov_core.api.utils.variants.split_variant_data(
+                v_data, sample_obj, data["analysis_date"]
+            )
             if "ERROR" in split_data:
                 error = {"ERROR": split_data}
                 found_error = True
                 break
 
-            variant_in_sample_obj = store_variant_in_sample(
-                split_data["variant_in_sample"]
+            variant_in_sample_obj = (
+                relecov_core.api.utils.variants.store_variant_in_sample(
+                    split_data["variant_in_sample"]
+                )
             )
             if isinstance(variant_in_sample_obj, dict):
                 error = {"ERROR": variant_in_sample_obj}
@@ -557,8 +578,14 @@ def create_variant_data(request):
 
             v_in_sample_list.append(variant_in_sample_obj)
 
-            if not variant_annotation_exists(split_data["variant_ann"]):
-                variant_ann_obj = store_variant_annotation(split_data["variant_ann"])
+            if not relecov_core.api.utils.variants.variant_annotation_exists(
+                split_data["variant_ann"]
+            ):
+                variant_ann_obj = (
+                    relecov_core.api.utils.variants.store_variant_annotation(
+                        split_data["variant_ann"]
+                    )
+                )
                 if isinstance(variant_ann_obj, dict):
                     error = {"ERROR": variant_ann_obj}
                     found_error = True
@@ -567,16 +594,22 @@ def create_variant_data(request):
                 v_an_list.append(variant_ann_obj)
 
         if found_error:
-            delete_created_variancs(v_in_sample_list, v_an_list)
+            relecov_core.api.utils.variants.delete_created_variancs(
+                v_in_sample_list, v_an_list
+            )
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
         sample_obj.update_state("Variant")
         # Include date and state in DateState table
         state_id = (
-            SampleState.objects.filter(state__exact="Variant").last().get_state_id()
+            relecov_core.models.SampleState.objects.filter(state__exact="Variant")
+            .last()
+            .get_state_id()
         )
         sample_id = sample_obj.get_sample_id()
-        update_change_state_date(sample_id, state_id)
+        relecov_core.api.utils.common_functions.update_change_state_date(
+            sample_id, state_id
+        )
 
         return Response(status=status.HTTP_201_CREATED)
     return Response(error, status=status.HTTP_400_BAD_REQUEST)
@@ -612,23 +645,29 @@ def update_state(request):
         if isinstance(data, QueryDict):
             data = data.dict()
         data["user"] = request.user.pk
-        sample_obj = get_sample_obj_from_sample_name(data["sample_name"])
+        sample_obj = relecov_core.utils.samples.get_sample_obj_from_sample_name(
+            data["sample_name"]
+        )
         if sample_obj is None:
             return Response(
                 {"ERROR": ERROR_SAMPLE_NOT_DEFINED}, status=status.HTTP_400_BAD_REQUEST
             )
         sample_id = sample_obj.get_sample_id()
         # if state exists,
-        if SampleState.objects.filter(state=data["state"]).exists():
+        if relecov_core.models.SampleState.objects.filter(state=data["state"]).exists():
             s_data = {
-                "state": SampleState.objects.filter(state=data["state"])
+                "state": relecov_core.models.SampleState.objects.filter(
+                    state=data["state"]
+                )
                 .last()
                 .get_state_id()
             }
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        sample_serializer = UpdateStateSampleSerializer(sample_obj, data=s_data)
+        sample_serializer = relecov_core.api.serializers.UpdateStateSampleSerializer(
+            sample_obj, data=s_data
+        )
         if not sample_serializer.is_valid():
             return Response(
                 sample_serializer.errors, status=status.HTTP_400_BAD_REQUEST
@@ -637,19 +676,23 @@ def update_state(request):
 
         if "error_type" in data and "Error" in data["state"]:
             error_type_id = (
-                Error.objects.filter(error_name=data["error_type"])
+                relecov_core.models.Error.objects.filter(error_name=data["error_type"])
                 .last()
                 .get_error_id()
             )
             e_data = {"error_type": error_type_id}
-            sample_err_serializer = CreateErrorSerializer(sample_obj, data=e_data)
+            sample_err_serializer = relecov_core.api.serializers.CreateErrorSerializer(
+                sample_obj, data=e_data
+            )
             if not sample_err_serializer.is_valid():
                 return Response(
                     sample_err_serializer.errors, status=status.HTTP_400_BAD_REQUEST
                 )
             sample_err_serializer.save()
 
-        update_change_state_date(sample_id, s_data["state"])
+        relecov_core.api.utils.common_functions.update_change_state_date(
+            sample_id, s_data["state"]
+        )
 
         return Response(
             "Successful. sample state updated", status=status.HTTP_201_CREATED
