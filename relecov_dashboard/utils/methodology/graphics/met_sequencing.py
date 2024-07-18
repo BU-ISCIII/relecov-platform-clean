@@ -6,9 +6,9 @@ import pandas as pd
 # Local imports
 import relecov_core.utils.rest_api_handling
 import relecov_core.utils.schema_handling
-import relecov_dashboard.utils.generic.graphic_data
+import relecov_dashboard.utils.generic.generic_graphic_data
 import relecov_dashboard.utils.generic.graphics.plotly
-import relecov_dashboard.utils.generic.process_data
+import relecov_dashboard.utils.generic.generic_process_data
 
 
 def sequencing_graphics():
@@ -17,25 +17,25 @@ def sequencing_graphics():
         If there is not data stored for the graphic, it will query to store
         them before calling for the second time
         """
-        json_data = relecov_dashboard.utils.generic.graphic_data.get_graphic_json_data(
+        json_data = relecov_dashboard.utils.generic.generic_graphic_data.get_graphic_json_data(
             graphic_name
         )
         if json_data is None:
             # Execute the pre-processed task to get the data
             if graphic_name == "library_kit_pcr_1":
                 result = (
-                    relecov_dashboard.utils.generic.process_data.pre_proc_library_kit_pcr_1()
+                    relecov_dashboard.utils.generic.generic_process_data.pre_proc_library_kit_pcr_1()
                 )
             elif graphic_name == "ct_number_of_base_pairs_sequenced":
                 result = (
-                    relecov_dashboard.utils.generic.process_data.pre_proc_based_pairs_sequenced()
+                    relecov_dashboard.utils.generic.generic_process_data.pre_proc_based_pairs_sequenced()
                 )
             else:
                 return {"ERROR": "pre-processing not defined"}
             if "ERROR" in result:
                 return result
             json_data = (
-                relecov_dashboard.utils.generic.graphic_data.get_graphic_json_data(
+                relecov_dashboard.utils.generic.generic_graphic_data.get_graphic_json_data(
                     graphic_name
                 )
             )

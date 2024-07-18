@@ -3,9 +3,9 @@ import pandas
 
 # Local imports
 import relecov_core.utils.rest_api_handling
-import relecov_dashboard.utils.generic.graphic_data
+import relecov_dashboard.utils.generic.generic_graphic_data
 import relecov_dashboard.utils.generic.graphics.plotly
-import relecov_dashboard.utils.generic.process_data
+import relecov_dashboard.utils.generic.generic_process_data
 
 
 def sample_processing_graphics():
@@ -14,29 +14,29 @@ def sample_processing_graphics():
         If there is no data stored for the graphic, it will query to store
         them before calling for the second time
         """
-        json_data = relecov_dashboard.utils.generic.graphic_data.get_graphic_json_data(
+        json_data = relecov_dashboard.utils.generic.generic_graphic_data.get_graphic_json_data(
             graphic_name
         )
         if json_data is None:
             # Execute the pre-processed task to get the data
             if graphic_name == "specimen_source_pcr_1":
                 result = (
-                    relecov_dashboard.utils.generic.process_data.pre_proc_specimen_source_pcr_1()
+                    relecov_dashboard.utils.generic.generic_process_data.pre_proc_specimen_source_pcr_1()
                 )
             elif graphic_name == "extraction_protocol_pcr_1":
                 result = (
-                    relecov_dashboard.utils.generic.process_data.pre_proc_extraction_protocol_pcr_1()
+                    relecov_dashboard.utils.generic.generic_process_data.pre_proc_extraction_protocol_pcr_1()
                 )
             elif graphic_name == "calculation_date":
                 result = (
-                    relecov_dashboard.utils.generic.process_data.pre_proc_calculation_date()
+                    relecov_dashboard.utils.generic.generic_process_data.pre_proc_calculation_date()
                 )
             else:
                 return {"ERROR": "pre-processing not defined"}
             if "ERROR" in result:
                 return result
             json_data = (
-                relecov_dashboard.utils.generic.graphic_data.get_graphic_json_data(
+                relecov_dashboard.utils.generic.generic_graphic_data.get_graphic_json_data(
                     graphic_name
                 )
             )
