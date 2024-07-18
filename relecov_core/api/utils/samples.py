@@ -3,12 +3,17 @@ from relecov_core.core_config import ERROR_INTIAL_SETTINGS_NOT_DEFINED
 import relecov_core.models
 import relecov_core.utils.samples
 
+
 def prepare_fields_in_sample(s_data):
     """Add sample state and set to None GISAID and ENA if not set"""
-    if not relecov_core.models.SampleState.objects.filter(state__exact="Defined").exists():
+    if not relecov_core.models.SampleState.objects.filter(
+        state__exact="Defined"
+    ).exists():
         return {"ERROR": ERROR_INTIAL_SETTINGS_NOT_DEFINED}
     s_data["state"] = (
-        relecov_core.models.SampleState.objects.filter(state__exact="Defined").last().get_state_id()
+        relecov_core.models.SampleState.objects.filter(state__exact="Defined")
+        .last()
+        .get_state_id()
     )
     if "biosample_accession_ENA" not in s_data:
         s_data["biosample_accession_ENA"] = None
@@ -49,15 +54,21 @@ def split_sample_data(data):
 
     # add user and state to sample data
     split_data["sample"]["state"] = (
-        relecov_core.models.SampleState.objects.filter(state__exact="Defined").last().get_state_id()
+        relecov_core.models.SampleState.objects.filter(state__exact="Defined")
+        .last()
+        .get_state_id()
     )
-    split_data["sample"]["user"] = relecov_core.utils.samples.get_user_id_from_collecting_institution(
-        split_data["sample"]["collecting_institution"]
+    split_data["sample"]["user"] = (
+        relecov_core.utils.samples.get_user_id_from_collecting_institution(
+            split_data["sample"]["collecting_institution"]
+        )
     )
     if relecov_core.models.Sample.objects.all().exists():
-        last_unique_value = relecov_core.models.Sample.objects.all().last().get_unique_id()
-        split_data["sample"]["sample_unique_id"] = relecov_core.utils.samples.increase_unique_value(
-            last_unique_value
+        last_unique_value = (
+            relecov_core.models.Sample.objects.all().last().get_unique_id()
+        )
+        split_data["sample"]["sample_unique_id"] = (
+            relecov_core.utils.samples.increase_unique_value(last_unique_value)
         )
     else:
         split_data["sample"]["sample_unique_id"] = "AAA-0001"

@@ -14,10 +14,13 @@ from relecov_core.core_config import (
     ERROR_UNABLE_TO_STORE_IN_DATABASE,
 )
 
+
 def create_or_get_filter_obj(filter_value):
     """Return the filter instance or create if not exists"""
     if relecov_core.models.Filter.objects.filter(filter__iexact=filter_value).exists():
-        return relecov_core.models.Filter.objects.filter(filter__iexact=filter_value).last()
+        return relecov_core.models.Filter.objects.filter(
+            filter__iexact=filter_value
+        ).last()
     filter_serializer = CreateFilterSerializer(data={"filter": filter_value})
     if filter_serializer.is_valid():
         filter_obj = filter_serializer.save()
@@ -28,7 +31,9 @@ def create_or_get_filter_obj(filter_value):
 def create_or_get_effect_obj(effect_value):
     """Return the effect instance or create if not exists"""
     if relecov_core.models.Effect.objects.filter(effect__iexact=effect_value).exists():
-        return relecov_core.models.Effect.objects.filter(effect__iexact=effect_value).last()
+        return relecov_core.models.Effect.objects.filter(
+            effect__iexact=effect_value
+        ).last()
     effect_serializer = CreateEffectSerializer(data={"effect": effect_value})
     if effect_serializer.is_valid():
         effect_obj = effect_serializer.save()
@@ -90,9 +95,9 @@ def get_variant_id(data):
 
 
 def get_variant_analysis_defined(s_obj):
-    return relecov_core.models.VariantInSample.objects.filter(sampleID_id=s_obj).values_list(
-        "analysis_date", flat=True
-    )
+    return relecov_core.models.VariantInSample.objects.filter(
+        sampleID_id=s_obj
+    ).values_list("analysis_date", flat=True)
 
 
 def get_required_variant_ann_id(data):
