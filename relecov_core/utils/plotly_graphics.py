@@ -109,6 +109,7 @@ def gauge_graphic(data):
     plot_div = plot(graph, output_type="div", config={"displaylogo": False})
     return plot_div
 
+
 # FIXME: This function es never called within the platform
 def bullet_graphic(value, title):
     point = str(value)
