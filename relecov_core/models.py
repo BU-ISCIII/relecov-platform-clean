@@ -650,6 +650,7 @@ class Error(models.Model):
 class SampleManager(models.Manager):
     def create_new_sample(self, data):
         state = SampleState.objects.filter(state__exact=data["state"]).last()
+        # FIXME: Sequencing_date is not supposed to be mandatory, collecting date is
         new_sample = self.create(
             sample_unique_id=data["sample_unique_id"],
             sequencing_sample_id=data["sequencing_sample_id"],
