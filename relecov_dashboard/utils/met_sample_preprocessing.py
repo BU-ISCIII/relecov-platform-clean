@@ -4,8 +4,8 @@ import pandas
 # Local imports
 import relecov_core.utils.rest_api_handling
 import relecov_dashboard.utils.generic_graphic_data
-import relecov_dashboard.utils.plotly
 import relecov_dashboard.utils.generic_process_data
+import relecov_dashboard.utils.plotly
 
 
 def sample_processing_graphics():
@@ -14,29 +14,29 @@ def sample_processing_graphics():
         If there is no data stored for the graphic, it will query to store
         them before calling for the second time
         """
-        json_data = relecov_dashboard.utils.generic.generic_graphic_data.get_graphic_json_data(
+        json_data = relecov_dashboard.utils.generic_graphic_data.get_graphic_json_data(
             graphic_name
         )
         if json_data is None:
             # Execute the pre-processed task to get the data
             if graphic_name == "specimen_source_pcr_1":
                 result = (
-                    relecov_dashboard.utils.generic.generic_process_data.pre_proc_specimen_source_pcr_1()
+                    relecov_dashboard.utils.generic_process_data.pre_proc_specimen_source_pcr_1()
                 )
             elif graphic_name == "extraction_protocol_pcr_1":
                 result = (
-                    relecov_dashboard.utils.generic.generic_process_data.pre_proc_extraction_protocol_pcr_1()
+                    relecov_dashboard.utils.generic_process_data.pre_proc_extraction_protocol_pcr_1()
                 )
             elif graphic_name == "calculation_date":
                 result = (
-                    relecov_dashboard.utils.generic.generic_process_data.pre_proc_calculation_date()
+                    relecov_dashboard.utils.generic_process_data.pre_proc_calculation_date()
                 )
             else:
                 return {"ERROR": "pre-processing not defined"}
             if "ERROR" in result:
                 return result
             json_data = (
-                relecov_dashboard.utils.generic.generic_graphic_data.get_graphic_json_data(
+                relecov_dashboard.utils.generic_graphic_data.get_graphic_json_data(
                     graphic_name
                 )
             )
@@ -90,7 +90,7 @@ def sample_processing_graphics():
     if "ERROR" in extraction_protocol_df:
         return extraction_protocol_df
     sample_processing["nucleic_protocol"] = (
-        relecov_dashboard.utils.generic.graphics.plotly.bar_graphic(
+        relecov_dashboard.utils.plotly.bar_graphic(
             data=extraction_protocol_df,
             col_names=["protocol", "number"],
             legend=[""],
@@ -106,7 +106,7 @@ def sample_processing_graphics():
     cts_extraction_data = get_pre_proc_data("extraction_protocol_pcr_1")
 
     sample_processing["cts_extraction"] = (
-        relecov_dashboard.utils.generic.graphics.plotly.box_plot_graphic(
+        relecov_dashboard.utils.plotly.box_plot_graphic(
             cts_extraction_data,
             {"title": "Boxplot Cts / Extraction protocol", "height": 400, "width": 520},
         )
@@ -115,7 +115,7 @@ def sample_processing_graphics():
     cts_specimen_data = get_pre_proc_data("specimen_source_pcr_1")
 
     sample_processing["cts_specimen"] = (
-        relecov_dashboard.utils.generic.graphics.plotly.box_plot_graphic(
+        relecov_dashboard.utils.plotly.box_plot_graphic(
             cts_specimen_data,
             {"title": "Boxplot Cts / specimen source", "height": 400, "width": 600},
         )
@@ -123,7 +123,7 @@ def sample_processing_graphics():
     # calculate the number of days spent in each state before moved on to the next step
     calculation_date_data = get_pre_proc_data("calculation_date")
     sample_processing["calculation_date"] = (
-        relecov_dashboard.utils.generic.graphics.plotly.box_plot_graphic(
+        relecov_dashboard.utils.plotly.box_plot_graphic(
             calculation_date_data,
             {"title": "Time between sample step actions", "height": 400, "width": 420},
         )

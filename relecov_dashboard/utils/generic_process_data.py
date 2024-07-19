@@ -17,7 +17,7 @@ def pre_proc_calculation_date():
     def convert_data_to_sample_dict(data, data_1, data_2):
         out_data = {}
         for item in data:
-            if not item[data_1] in out_data:
+            if item[data_1] not in out_data:
                 out_data[item[data_1]] = item[data_2]
         return out_data
 
