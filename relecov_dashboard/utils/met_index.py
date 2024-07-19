@@ -96,14 +96,12 @@ def index_dash_fields():
         if "ERROR_ANALYSIS" in util_data:
             graphics["ERROR_ANALYSIS"] = util_data["ERROR_ANALYSIS"]
             return graphics
-        graphics["grouped_fields"] = (
-            relecov_dashboard.utils.plotly.bar_graphic(
-                data=util_data["summary"],
-                col_names=["group", "bio_values"],
-                legend=["Bio analysis"],
-                yaxis={"title": "Number of fields"},
-                options={"title": "Schema Fields Utilization", "height": 300},
-            )
+        graphics["grouped_fields"] = relecov_dashboard.utils.plotly.bar_graphic(
+            data=util_data["summary"],
+            col_names=["group", "bio_values"],
+            legend=["Bio analysis"],
+            yaxis={"title": "Number of fields"},
+            options={"title": "Schema Fields Utilization", "height": 300},
         )
 
     else:
@@ -115,24 +113,20 @@ def index_dash_fields():
         )
         # ##### Create comparison graphics #######
         if "ERROR_ANALYSIS" in util_data:
-            graphics["grouped_fields"] = (
-                relecov_dashboard.utils.plotly.bar_graphic(
-                    data=util_data["summary"],
-                    col_names=["group", "lab_values"],
-                    legend=["Metada lab"],
-                    yaxis={"title": "Number of fields"},
-                    options={"title": "Schema Fields Utilization", "height": 300},
-                )
+            graphics["grouped_fields"] = relecov_dashboard.utils.plotly.bar_graphic(
+                data=util_data["summary"],
+                col_names=["group", "lab_values"],
+                legend=["Metada lab"],
+                yaxis={"title": "Number of fields"},
+                options={"title": "Schema Fields Utilization", "height": 300},
             )
         else:
-            graphics["grouped_fields"] = (
-                relecov_dashboard.utils.plotly.bar_graphic(
-                    data=util_data["summary"],
-                    col_names=["group", "lab_values", "bio_values"],
-                    legend=["Metada lab", "Bio analysis"],
-                    yaxis={"title": "Number of fields"},
-                    options={"title": "Schema Fields Utilization", "height": 300},
-                )
+            graphics["grouped_fields"] = relecov_dashboard.utils.plotly.bar_graphic(
+                data=util_data["summary"],
+                col_names=["group", "lab_values", "bio_values"],
+                legend=["Metada lab", "Bio analysis"],
+                yaxis={"title": "Number of fields"},
+                options={"title": "Schema Fields Utilization", "height": 300},
             )
 
     if "ERROR_ANALYSIS" not in util_data:
@@ -150,18 +144,16 @@ def index_dash_fields():
             colors = lab_colors + bio_colors
         else:
             colors = None
-        graphics["detailed_fields"] = (
-            relecov_dashboard.utils.plotly.bar_graphic(
-                data=util_data["field_detail_data"],
-                col_names=["field_name", "field_value"],
-                legend=["metadata fields"],
-                yaxis={"title": "Number of samples"},
-                options={
-                    "title": "Number of samples for each schema field",
-                    "height": 400,
-                    "colors": colors,
-                },
-            )
+        graphics["detailed_fields"] = relecov_dashboard.utils.plotly.bar_graphic(
+            data=util_data["field_detail_data"],
+            col_names=["field_name", "field_value"],
+            legend=["metadata fields"],
+            yaxis={"title": "Number of samples"},
+            options={
+                "title": "Number of samples for each schema field",
+                "height": 400,
+                "colors": colors,
+            },
         )
         # ###### create table for detailed field information ######
         graphics["table"] = zip(

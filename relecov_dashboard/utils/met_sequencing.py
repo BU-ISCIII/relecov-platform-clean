@@ -77,80 +77,68 @@ def sequencing_graphics():
     )
     if "ERROR" in inst_platform_df:
         return inst_platform_df
-    sequencing["instrument_platform"] = (
-        relecov_dashboard.utils.plotly.bar_graphic(
-            data=inst_platform_df,
-            col_names=["instrument_platform", "number"],
-            legend=[""],
-            yaxis={"title": "Number of samples"},
-            options={"title": "Instrument platform", "height": 400},
-        )
+    sequencing["instrument_platform"] = relecov_dashboard.utils.plotly.bar_graphic(
+        data=inst_platform_df,
+        col_names=["instrument_platform", "number"],
+        legend=[""],
+        yaxis={"title": "Number of samples"},
+        options={"title": "Instrument platform", "height": 400},
     )
     inst_model_df = fetch_sequencing_data(
         project_field="sequencing_instrument_model",
         columns=["instrument_model", "number"],
     )
-    sequencing["instrument_model"] = (
-        relecov_dashboard.utils.plotly.bar_graphic(
-            data=inst_model_df,
-            col_names=["instrument_model", "number"],
-            legend=[""],
-            yaxis={"title": "Number of samples"},
-            options={"title": "Instrument model", "height": 400},
-        )
+    sequencing["instrument_model"] = relecov_dashboard.utils.plotly.bar_graphic(
+        data=inst_model_df,
+        col_names=["instrument_model", "number"],
+        legend=[""],
+        yaxis={"title": "Number of samples"},
+        options={"title": "Instrument model", "height": 400},
     )
     lib_preparation_df = fetch_sequencing_data(
         project_field="library_preparation_kit",
         columns=["library_preparation", "number"],
     )
-    sequencing["library_preparation"] = (
-        relecov_dashboard.utils.plotly.bar_graphic(
-            data=lib_preparation_df,
-            col_names=["library_preparation", "number"],
-            legend=[""],
-            yaxis={"title": "Number of samples"},
-            options={"title": "Library preparation", "height": 400},
-        )
+    sequencing["library_preparation"] = relecov_dashboard.utils.plotly.bar_graphic(
+        data=lib_preparation_df,
+        col_names=["library_preparation", "number"],
+        legend=[""],
+        yaxis={"title": "Number of samples"},
+        options={"title": "Library preparation", "height": 400},
     )
     read_length_df = fetch_sequencing_data(
         project_field="read_length",
         columns=["read_length", "number"],
     )
-    sequencing["read_length"] = (
-        relecov_dashboard.utils.plotly.bar_graphic(
-            data=read_length_df,
-            col_names=["read_length", "number"],
-            legend=[""],
-            yaxis={"title": "Number of samples"},
-            options={"title": "Read length", "height": 400, "colors": "#1aff8c"},
-        )
+    sequencing["read_length"] = relecov_dashboard.utils.plotly.bar_graphic(
+        data=read_length_df,
+        col_names=["read_length", "number"],
+        legend=[""],
+        yaxis={"title": "Number of samples"},
+        options={"title": "Read length", "height": 400, "colors": "#1aff8c"},
     )
     # box plot for library preparation kit
 
     cts_library_data = get_pre_proc_data("library_kit_pcr_1", "list_of_dict")
-    sequencing["cts_library"] = (
-        relecov_dashboard.utils.plotly.box_plot_graphic(
-            cts_library_data,
-            {
-                "title": "Boxplot Cts / Library preparation kit",
-                "height": 400,
-                "width": 420,
-            },
-        )
+    sequencing["cts_library"] = relecov_dashboard.utils.plotly.box_plot_graphic(
+        cts_library_data,
+        {
+            "title": "Boxplot Cts / Library preparation kit",
+            "height": 400,
+            "width": 420,
+        },
     )
 
     cts_pcr_1 = get_pre_proc_data("ct_number_of_base_pairs_sequenced", "dict")
-    sequencing["number_of_base"] = (
-        relecov_dashboard.utils.plotly.line_graphic(
-            cts_pcr_1["based"],
-            cts_pcr_1["cts"],
-            {
-                "title": "CTs / Base pairs sequenced",
-                "height": 350,
-                "width": 300,
-                "x_title": "Number of base pairs sequenced",
-                "y_title": "PCR CT 1",
-            },
-        )
+    sequencing["number_of_base"] = relecov_dashboard.utils.plotly.line_graphic(
+        cts_pcr_1["based"],
+        cts_pcr_1["cts"],
+        {
+            "title": "CTs / Base pairs sequenced",
+            "height": 350,
+            "width": 300,
+            "x_title": "Number of base pairs sequenced",
+            "y_title": "PCR CT 1",
+        },
     )
     return sequencing
