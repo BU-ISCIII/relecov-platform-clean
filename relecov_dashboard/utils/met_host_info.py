@@ -109,37 +109,31 @@ def host_info_graphics():
     gender_label, gender_values = fetching_data_for_gender()
     if "ERROR" in gender_label:
         return gender_label
-    host_info["gender_graph"] = (
-        relecov_dashboard.utils.plotly.pie_graphic(
-            labels=gender_label,
-            values=gender_values,
-            options={"title": "Gender distribution"},
-        )
+    host_info["gender_graph"] = relecov_dashboard.utils.plotly.pie_graphic(
+        labels=gender_label,
+        values=gender_values,
+        options={"title": "Gender distribution"},
     )
     # graphic for gender and age
     host_gender_age_df = fetching_data_for_sex_and_range_data()[0]
     col_names = list(host_gender_age_df.columns)
-    host_info["gender_age_graph"] = (
-        relecov_dashboard.utils.plotly.bar_graphic(
-            data=host_gender_age_df,
-            col_names=col_names,
-            legend=col_names[1:],
-            yaxis={"title": "Number of samples"},
-            options={
-                "title": "Samples received for host gender and host age",
-                "height": 300,
-            },
-        )
+    host_info["gender_age_graph"] = relecov_dashboard.utils.plotly.bar_graphic(
+        data=host_gender_age_df,
+        col_names=col_names,
+        legend=col_names[1:],
+        yaxis={"title": "Number of samples"},
+        options={
+            "title": "Samples received for host gender and host age",
+            "height": 300,
+        },
     )
     host_age_df, invalid_data = fetching_data_for_range_age()
-    host_info["range_age_graph"] = (
-        relecov_dashboard.utils.plotly.bar_graphic(
-            data=host_age_df,
-            col_names=["range_age", "number"],
-            legend=[""],
-            yaxis={"title": "Number of samples"},
-            options={"title": "Samples received for host age", "height": 300},
-        )
+    host_info["range_age_graph"] = relecov_dashboard.utils.plotly.bar_graphic(
+        data=host_age_df,
+        col_names=["range_age", "number"],
+        legend=[""],
+        yaxis={"title": "Number of samples"},
+        options={"title": "Samples received for host age", "height": 300},
     )
     if invalid_data > 0:
         host_info["invalid_data"] = invalid_data

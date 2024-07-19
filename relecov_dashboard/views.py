@@ -79,12 +79,8 @@ def lineages_voc(request):
 # FIXME: isn't called from urls.py and html template is not available.
 @login_required
 def samples_received_over_time_graph(request):
-    df = (
-        relecov_dashboard.utils.var_lineages_in_time.create_dataframe_from_json()
-    )
-    relecov_dashboard.utils.var_lineages_in_time.create_samples_over_time_graph(
-        df
-    )
+    df = relecov_dashboard.utils.var_lineages_in_time.create_dataframe_from_json()
+    relecov_dashboard.utils.var_lineages_in_time.create_samples_over_time_graph(df)
 
     return render(request, "relecov_dashboard/samplesReceivedOverTimeGraph.html")
 
@@ -92,9 +88,7 @@ def samples_received_over_time_graph(request):
 # FIXME: isn't called from urls.py and html template is not available.
 @login_required
 def samples_received_over_time_pie(request):
-    data = (
-        relecov_dashboard.utils.var_samples_received_over_time_pie.parse_json_file()
-    )
+    data = relecov_dashboard.utils.var_samples_received_over_time_pie.parse_json_file()
     relecov_dashboard.utils.var_samples_received_over_time_pie.create_samples_received_over_time_per_ccaa_pieChart(
         data
     )
@@ -108,9 +102,7 @@ def samples_received_over_time_pie(request):
 # FIXME: isn't called from urls.py and html template is not available.
 @login_required
 def samples_received_over_time_pie_laboratory(request):
-    data = (
-        relecov_dashboard.utils.var_samples_received_over_time_pie.parse_json_file()
-    )
+    data = relecov_dashboard.utils.var_samples_received_over_time_pie.parse_json_file()
     relecov_dashboard.utils.var_samples_received_over_time_pie.create_samples_received_over_time_per_ccaa_pieChart(
         data
     )
@@ -174,7 +166,7 @@ def variants_mutations_in_lineages_heatmap(request):
 # dashboard/methodology
 @login_required
 def methodology_index(request):
-    graphics =relecov_dashboard.utils.met_index.index_dash_fields()
+    graphics = relecov_dashboard.utils.met_index.index_dash_fields()
     return render(
         request, "relecov_dashboard/methodologyIndex.html", {"graphics": graphics}
     )
@@ -182,9 +174,7 @@ def methodology_index(request):
 
 @login_required
 def methodology_host_info(request):
-    host_info = (
-        relecov_dashboard.utils.met_host_info.host_info_graphics()
-    )
+    host_info = relecov_dashboard.utils.met_host_info.host_info_graphics()
     if "ERROR" in host_info:
         return render(
             request, "relecov_dashboard/methodologyHostInfo.html", {"ERROR": host_info}
@@ -196,9 +186,7 @@ def methodology_host_info(request):
 
 @login_required
 def methodology_sequencing(request):
-    sequencing = (
-        relecov_dashboard.utils.met_sequencing.sequencing_graphics()
-    )
+    sequencing = relecov_dashboard.utils.met_sequencing.sequencing_graphics()
     if "ERROR" in sequencing:
         return render(
             request,

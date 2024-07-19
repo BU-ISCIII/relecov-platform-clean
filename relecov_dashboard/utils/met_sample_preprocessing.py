@@ -89,18 +89,16 @@ def sample_processing_graphics():
     )
     if "ERROR" in extraction_protocol_df:
         return extraction_protocol_df
-    sample_processing["nucleic_protocol"] = (
-        relecov_dashboard.utils.plotly.bar_graphic(
-            data=extraction_protocol_df,
-            col_names=["protocol", "number"],
-            legend=[""],
-            yaxis={"title": "Number of samples"},
-            options={
-                "title": "Nucleic acid extraction protocol",
-                "height": 400,
-                "width": 320,
-            },
-        )
+    sample_processing["nucleic_protocol"] = relecov_dashboard.utils.plotly.bar_graphic(
+        data=extraction_protocol_df,
+        col_names=["protocol", "number"],
+        legend=[""],
+        yaxis={"title": "Number of samples"},
+        options={
+            "title": "Nucleic acid extraction protocol",
+            "height": 400,
+            "width": 320,
+        },
     )
 
     cts_extraction_data = get_pre_proc_data("extraction_protocol_pcr_1")
@@ -114,11 +112,9 @@ def sample_processing_graphics():
     # specimen source graphics
     cts_specimen_data = get_pre_proc_data("specimen_source_pcr_1")
 
-    sample_processing["cts_specimen"] = (
-        relecov_dashboard.utils.plotly.box_plot_graphic(
-            cts_specimen_data,
-            {"title": "Boxplot Cts / specimen source", "height": 400, "width": 600},
-        )
+    sample_processing["cts_specimen"] = relecov_dashboard.utils.plotly.box_plot_graphic(
+        cts_specimen_data,
+        {"title": "Boxplot Cts / specimen source", "height": 400, "width": 600},
     )
     # calculate the number of days spent in each state before moved on to the next step
     calculation_date_data = get_pre_proc_data("calculation_date")
