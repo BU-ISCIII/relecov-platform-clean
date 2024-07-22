@@ -2,7 +2,7 @@
 import os
 import json
 import pandas as pd
-from plotly.express import choropleth_mapbox
+import plotly.express as px
 from dash import dcc, html
 from django_plotly_dash import DjangoDash
 
@@ -37,7 +37,7 @@ def create_samples_received_map():
             data["samples"].append("0")
     ldata = pd.DataFrame(data)
 
-    fig = choropleth_mapbox(
+    fig = px.choropleth_mapbox(
         ldata,
         geojson=counties,
         locations=ldata.ccaa_id,

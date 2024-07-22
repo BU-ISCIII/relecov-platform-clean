@@ -1,8 +1,8 @@
 # Generic imports
 from plotly.offline import plot
-from plotly.graph_objects import Figure, Bar, Scatter, Indicator, Pie
-from plotly.express import bar
-from plotly.figure_factory import create_bullet
+import plotly.graph_objects as go
+import plotly.express as px
+import plotly.figure_factory as ff
 from dash_bio import NeedlePlot
 from dash import dcc, html
 from django_plotly_dash import DjangoDash
@@ -15,10 +15,10 @@ def bar_graphic(data, col_names, legend, yaxis, options):
         colors = options["colors"]
     else:
         colors = ["#0099ff", "#1aff8c", "#ffad33", "#ff7733", "#66b3ff", "#66ffcc"]
-    fig = Figure()
+    fig = go.Figure()
     for idx in range(1, len(col_names)):
         fig.add_trace(
-            Bar(
+            go.Bar(
                 x=data[col_names[0]],
                 y=data[col_names[idx]],
                 name=legend[idx - 1],
@@ -53,8 +53,8 @@ def bar_graphic(data, col_names, legend, yaxis, options):
 
 def line_graphic(x_data, y_data, options):
     # Create line
-    fig = Figure()
-    fig.add_trace(Scatter(x=x_data, y=y_data, mode="lines", name="lines"))
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=x_data, y=y_data, mode="lines", name="lines"))
 
     fig.update_layout(
         height=options["height"],
@@ -73,7 +73,7 @@ def line_graphic(x_data, y_data, options):
 
 
 def histogram_graphic(data, col_names, options):
-    graph = bar(
+    graph = px.bar(
         data, y=col_names[1], x=col_names[0], text_auto=True, width=options["width"]
     )
     # Customize aspect
@@ -96,8 +96,8 @@ def histogram_graphic(data, col_names, options):
 
 
 def gauge_graphic(data):
-    graph = Figure(
-        Indicator(
+    graph = go.Figure(
+        go.Indicator(
             mode="gauge+number",
             value=data["value"],
             number={"suffix": "%"},
@@ -125,7 +125,7 @@ def bullet_graphic(value, title):
     ]
 
     measure_colors = ["rgb(68, 107, 162)", "rgb(0, 153, 0)"]
-    fig = create_bullet(
+    fig = ff.create_bullet(
         data,
         titles="label",
         title=title,
@@ -157,8 +157,8 @@ def pie_graphic(data, names, title, show_legend=False):
         "darkorange",
         "turquoise",
     ]
-    fig = Figure(
-        data=Pie(
+    fig = go.Figure(
+        data=go.Pie(
             labels=names,
             values=data,
         )
