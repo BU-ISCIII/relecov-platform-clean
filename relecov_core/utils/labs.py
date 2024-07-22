@@ -1,12 +1,13 @@
+# Local imports
 import relecov_core.models
-import relecov_core.utils.rest_api_handling
+import relecov_core.utils.rest_api
 
 
 def get_lab_contact_details(user_obj):
     lab_data = {}
     lab_name = get_lab_name_from_user(user_obj)
     if lab_name != "":
-        data = relecov_core.utils.rest_api_handling.get_laboratory_data(lab_name)
+        data = relecov_core.utils.rest_api.get_laboratory_data(lab_name)
         if "ERROR" in data:
             return data["ERROR"]
         lab_data["lab_contact_email"] = data["DATA"]["labEmail"]
@@ -19,7 +20,7 @@ def get_lab_contact_details(user_obj):
 
 def get_all_defined_labs():
     """Get a list of laboratories that are defined in iSkyLIMS"""
-    sum_data = relecov_core.utils.rest_api_handling.get_summarize_data(None)
+    sum_data = relecov_core.utils.rest_api.get_summarize_data(None)
     if "ERROR" in sum_data:
         return sum_data
     return list(sum_data["laboratory"].keys())
@@ -44,7 +45,7 @@ def update_contact_lab(old_data, new_data):
             data[key] = value
         else:
             data[key] = new_data[key]
-    result = relecov_core.utils.rest_api_handling.set_laboratory_data(data)
+    result = relecov_core.utils.rest_api.set_laboratory_data(data)
     if "ERROR" in result:
         return result
     return "OK"

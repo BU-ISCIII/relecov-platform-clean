@@ -1,4 +1,5 @@
-from relecov_core.utils.samples import get_sample_obj_from_id
+# Local imports
+import relecov_core.utils.samples
 import relecov_core.models
 
 
@@ -14,7 +15,7 @@ def get_lineages_list():
 
 def get_lineage_data_from_sample(sample_id):
     """Get the bioinfo analysis for the sample"""
-    sample_obj = get_sample_obj_from_id(sample_id)
+    sample_obj = relecov_core.utils.samples.get_sample_obj_from_id(sample_id)
     if not sample_obj:
         return None
     # Get the schema ID for filtering Fields

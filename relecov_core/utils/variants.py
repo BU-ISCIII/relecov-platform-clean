@@ -1,7 +1,10 @@
+# Generic imports
 from django.db.models import F
+
+# Local imports
 import relecov_core.models
 import relecov_core.core_config
-import relecov_core.utils.samples as samples
+import relecov_core.utils.samples
 import relecov_core.utils.plotly_graphics
 
 
@@ -48,7 +51,7 @@ def get_sample_in_variant_list(chromosome_obj):
 def get_variant_data_from_sample(sample_id):
     """Collect the variant information for the sample"""
     data = {}
-    sample_obj = samples.get_sample_obj_from_id(sample_id)
+    sample_obj = relecov_core.utils.samples.get_sample_obj_from_id(sample_id)
     if sample_obj is None:
         return data
     variant_data = []
@@ -97,7 +100,7 @@ def get_variant_data_from_sample(sample_id):
 def get_variant_graphic_from_sample(sample_id):
     """Collect the variant information to send to create the plotly graphic"""
     v_data = {"x": [], "y": [], "v_id": []}
-    sample_obj = samples.get_sample_obj_from_id(sample_id)
+    sample_obj = relecov_core.utils.samples.get_sample_obj_from_id(sample_id)
     if relecov_core.models.VariantInSample.objects.filter(
         sampleID_id=sample_obj
     ).exists():
@@ -226,7 +229,9 @@ def get_alelle_frequency_per_sample(sample_name, chromosome):
     list_of_af = []
     chrom_obj = get_if_chromosomes_exists(chromosome)
     if chrom_obj:
-        sample_obj = samples.get_sample_obj_from_sample_name(sample_name)
+        sample_obj = relecov_core.utils.samples.get_sample_obj_from_sample_name(
+            sample_name
+        )
         if sample_obj:
             variant_in_sample_objs = relecov_core.models.VariantInSample.objects.filter(
                 sampleID_id=sample_obj
@@ -240,7 +245,9 @@ def create_effect_list(sample_name, chromosome):
     list_of_effects = []
     chrom_obj = get_if_chromosomes_exists(chromosome)
     if chrom_obj:
-        sample_obj = samples.get_sample_obj_from_sample_name(sample_name)
+        sample_obj = relecov_core.utils.samples.get_sample_obj_from_sample_name(
+            sample_name
+        )
         if sample_obj:
             variant_in_sample_objs = relecov_core.models.VariantInSample.objects.filter(
                 sampleID_id=sample_obj
@@ -265,7 +272,9 @@ def get_position_per_sample(sample_name, chromosome):
     list_of_position = []
     chrom_obj = get_if_chromosomes_exists(chromosome)
     if chrom_obj:
-        sample_obj = samples.get_sample_obj_from_sample_name(sample_name)
+        sample_obj = relecov_core.utils.samples.get_sample_obj_from_sample_name(
+            sample_name
+        )
         if sample_obj:
             variant_in_sample_objs = relecov_core.models.VariantInSample.objects.filter(
                 sampleID_id=sample_obj

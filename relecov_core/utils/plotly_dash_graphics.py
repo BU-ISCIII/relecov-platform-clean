@@ -1,3 +1,4 @@
+# Generic imports
 from django_plotly_dash import DjangoDash
 from dash.dependencies import Input, Output
 from dash import dcc, html

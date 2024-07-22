@@ -1,8 +1,10 @@
+# Generic imports
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+# Local imports
 from relecov_core.core_config import SCHEMAS_UPLOAD_FOLDER
 
 # Comentarios de modificacion

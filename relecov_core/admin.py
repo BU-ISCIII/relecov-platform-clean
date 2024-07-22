@@ -1,7 +1,9 @@
+# Generic imports
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
+# Local imports
 from relecov_core.models import (
     BioinfoAnalysisValue,
     BioinfoAnalysisField,

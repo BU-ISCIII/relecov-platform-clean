@@ -1,3 +1,4 @@
+# Generic imports
 from django.urls import path
 from django.conf import settings
 from relecov_core import views

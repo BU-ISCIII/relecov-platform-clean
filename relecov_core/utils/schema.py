@@ -1,9 +1,11 @@
+# Generic imports
 import json
 import re
 import os
 from django.db import DataError
 from django.conf import settings
 
+# Local imports
 import relecov_core.models
 import relecov_core.utils.generic_functions
 from relecov_core.core_config import (

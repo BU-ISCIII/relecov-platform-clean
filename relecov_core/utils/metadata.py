@@ -1,9 +1,11 @@
+# Generic imports
 import datetime
 import os
 from pathlib import Path
 
+# Local imports
 from relecov_core.core_config import METADATA_UPLOAD_FOLDER
-from relecov_core.models import Document
+import relecov_core.models
 
 
 def upload_excel_file(request):
@@ -23,7 +25,9 @@ def upload_excel_file(request):
         path.mkdir(parents=True)
 
     # Saving the information in the database
-    document = Document(title=title, file_path=path, uploadedFile=uploadedFile)
+    document = relecov_core.models.Document(
+        title=title, file_path=path, uploadedFile=uploadedFile
+    )
     document.save()
     sample_recorded["process"] = "File Upload"
 

@@ -1,3 +1,4 @@
+# Generic imports
 import json
 import os
 import shutil
@@ -10,11 +11,12 @@ from django.conf import settings
 from django.db.models import Q
 import relecov_tools.utils
 
+# Local imports
 import relecov_core.utils.plotly_dash_graphics
-import relecov_core.core_config as core_config
+import relecov_core.core_config
 import relecov_core.utils.labs
 import relecov_core.utils.plotly_graphics
-import relecov_core.utils.rest_api_handling
+import relecov_core.utils.rest_api
 import relecov_core.utils.generic_functions
 import relecov_core.models
 
@@ -35,9 +37,11 @@ def analyze_input_samples(request):
         "SUBMITTING_INSTITUTION"
     )
     # Select the sample field that will be used in Sample class
-    idx_sample = heading_in_form.index(core_config.FIELD_FOR_GETTING_SAMPLE_ID)
+    idx_sample = heading_in_form.index(
+        relecov_core.core_config.FIELD_FOR_GETTING_SAMPLE_ID
+    )
     allowed_empty_index = []
-    for item in core_config.ALLOWED_EMPTY_FIELDS_IN_METADATA_SAMPLE_FORM:
+    for item in relecov_core.core_config.ALLOWED_EMPTY_FIELDS_IN_METADATA_SAMPLE_FORM:
         allowed_empty_index.append(heading_in_form.index(item))
 
     for row in s_json_data:
@@ -82,7 +86,9 @@ def assign_samples_to_new_user(data):
         ).update(user=user_obj[0])
         return {"Success": "Success"}
     return {
-        "ERROR": core_config.ERROR_NO_SAMPLES_ARE_ASSIGNED_TO_LAB + " " + data["lab"]
+        "ERROR": relecov_core.core_config.ERROR_NO_SAMPLES_ARE_ASSIGNED_TO_LAB
+        + " "
+        + data["lab"]
     }
 
 
@@ -114,18 +120,16 @@ def create_form_for_batch(schema_obj, user_obj):
     """
     schema_name = schema_obj.get_schema_name()
     try:
-        iskylims_sample_raw = (
-            relecov_core.utils.rest_api_handling.get_sample_fields_data()
-        )
+        iskylims_sample_raw = relecov_core.utils.rest_api.get_sample_fields_data()
     except AttributeError:
-        return {"ERROR": core_config.ERROR_ISKYLIMS_NOT_REACHEABLE}
+        return {"ERROR": relecov_core.core_config.ERROR_ISKYLIMS_NOT_REACHEABLE}
     if "ERROR" in iskylims_sample_raw:
         return iskylims_sample_raw
     # Remove the characters "schema" if exist in the name of the schema
     if "schema" in schema_name:
         schema_name = schema_name.replace("schema", "").strip()
-    i_sam_proj_raw = (
-        relecov_core.utils.rest_api_handling.get_sample_project_fields_data(schema_name)
+    i_sam_proj_raw = relecov_core.utils.rest_api.get_sample_project_fields_data(
+        schema_name
     )
     i_sam_proj_data = {}
     # Create the structure from the sample project fields get from iSkyLIMS
@@ -140,7 +144,9 @@ def create_form_for_batch(schema_obj, user_obj):
     if not relecov_core.models.MetadataVisualization.objects.filter(
         fill_mode="sample"
     ).exists():
-        return {"ERROR": core_config.ERROR_FIELDS_FOR_METADATA_ARE_NOT_DEFINED}
+        return {
+            "ERROR": relecov_core.core_config.ERROR_FIELDS_FOR_METADATA_ARE_NOT_DEFINED
+        }
     m_batch_objs = relecov_core.models.MetadataVisualization.objects.filter(
         fill_mode="batch"
     ).order_by("order")
@@ -176,7 +182,9 @@ def create_form_for_sample(schema_obj):
     if not relecov_core.models.MetadataVisualization.objects.filter(
         fill_mode="sample"
     ).exists():
-        return {"ERROR": core_config.ERROR_FIELDS_FOR_METADATA_ARE_NOT_DEFINED}
+        return {
+            "ERROR": relecov_core.core_config.ERROR_FIELDS_FOR_METADATA_ARE_NOT_DEFINED
+        }
     m_sam_objs = relecov_core.models.MetadataVisualization.objects.filter(
         fill_mode="sample"
     ).order_by("order")
@@ -196,23 +204,21 @@ def create_form_for_sample(schema_obj):
 
     # get the sample fields and sample project fields from iSkyLIMS
     try:
-        iskylims_sample_raw = (
-            relecov_core.utils.rest_api_handling.get_sample_fields_data()
-        )
+        iskylims_sample_raw = relecov_core.utils.rest_api.get_sample_fields_data()
     except AttributeError:
-        return {"ERROR": core_config.ERROR_ISKYLIMS_NOT_REACHEABLE}
+        return {"ERROR": relecov_core.core_config.ERROR_ISKYLIMS_NOT_REACHEABLE}
     if "ERROR" in iskylims_sample_raw:
         return iskylims_sample_raw
 
     # Remove the characters "schema" if exist in the name of the schema
     if "schema" in schema_name:
         schema_name = schema_name.replace("schema", "").strip()
-    i_sam_proj_raw = (
-        relecov_core.utils.rest_api_handling.get_sample_project_fields_data(schema_name)
+    i_sam_proj_raw = relecov_core.utils.rest_api.get_sample_project_fields_data(
+        schema_name
     )
     if "ERROR" in i_sam_proj_raw:
         return {
-            "ERROR": core_config.ERROR_UNABLE_FETCH_SAMPLE_PROJECT_FIELDS
+            "ERROR": relecov_core.core_config.ERROR_UNABLE_FETCH_SAMPLE_PROJECT_FIELDS
             + "for "
             + schema_name
         }
@@ -278,7 +284,9 @@ def create_metadata_form(schema_obj, user_obj):
     """
     # Check if Fields for metadata Form are defiened
     if not relecov_core.models.MetadataVisualization.objects.all().exists():
-        return {"ERROR": core_config.ERROR_FIELDS_FOR_METADATA_ARE_NOT_DEFINED}
+        return {
+            "ERROR": relecov_core.core_config.ERROR_FIELDS_FOR_METADATA_ARE_NOT_DEFINED
+        }
     m_form = {}
     m_form["sample"] = create_form_for_sample(schema_obj)
     if "ERROR" in m_form["sample"]:
@@ -407,7 +415,7 @@ def get_sample_display_data(sample_id, user):
     """
     sample_obj = get_sample_obj_from_id(sample_id)
     if sample_obj is None:
-        return {"ERROR": core_config.ERROR_SAMPLE_DOES_NOT_EXIST}
+        return {"ERROR": relecov_core.core_config.ERROR_SAMPLE_DOES_NOT_EXIST}
     # Allow to see information obut sample to relecovManager
     group = Group.objects.get(name="RelecovManager")
     if group not in user.groups.all():
@@ -415,17 +423,22 @@ def get_sample_display_data(sample_id, user):
         if not relecov_core.models.Profile.objects.filter(
             user=user, laboratory__iexact=lab_name
         ).exists():
-            return {"ERROR": core_config.ERROR_NOT_ALLOWED_TO_SEE_THE_SAMPLE}
+            return {
+                "ERROR": relecov_core.core_config.ERROR_NOT_ALLOWED_TO_SEE_THE_SAMPLE
+            }
 
     s_data = {}
     s_data["basic"] = list(
         zip(
-            core_config.HEADING_FOR_BASIC_SAMPLE_DATA,
+            relecov_core.core_config.HEADING_FOR_BASIC_SAMPLE_DATA,
             sample_obj.get_sample_basic_data(),
         )
     )
     s_data["fastq"] = list(
-        zip(core_config.HEADING_FOR_FASTQ_SAMPLE_DATA, sample_obj.get_fastq_data())
+        zip(
+            relecov_core.core_config.HEADING_FOR_FASTQ_SAMPLE_DATA,
+            sample_obj.get_fastq_data(),
+        )
     )
     # Fetch actions done on the sample
     if relecov_core.models.DateUpdateState.objects.filter(sampleID=sample_obj).exists():
@@ -443,9 +456,7 @@ def get_sample_display_data(sample_id, user):
     lab_sample = sample_obj.get_collecting_lab_sample_id()
     # Fetch information from iSkyLIMS
     if lab_sample != "":
-        iskylims_data = relecov_core.utils.rest_api_handling.get_sample_information(
-            lab_sample
-        )
+        iskylims_data = relecov_core.utils.rest_api.get_sample_information(lab_sample)
         if "ERROR" not in iskylims_data:
             s_data["iskylims_basic"] = []
             s_data["iskylims_p_data"] = []
@@ -566,7 +577,7 @@ def get_search_data(user_obj):
     """Fetch data to show in form"""
     s_data = {}
     if relecov_core.models.Sample.objects.count() == 0:
-        return {"ERROR": core_config.ERROR_NOT_SAMPLES_HAVE_BEEN_DEFINED}
+        return {"ERROR": relecov_core.core_config.ERROR_NOT_SAMPLES_HAVE_BEEN_DEFINED}
     s_data["s_state"] = relecov_core.models.SampleState.objects.all().values_list(
         "pk", "display_string"
     )
@@ -606,7 +617,7 @@ def join_sample_and_batch(b_data, user_obj, schema_obj):
     if not relecov_core.models.TemporalSampleStorage.objects.filter(
         user=user_obj
     ).exists():
-        return {"ERROR": core_config.ERROR_SAMPLES_NOT_DEFINED_IN_FORM}
+        return {"ERROR": relecov_core.core_config.ERROR_SAMPLES_NOT_DEFINED_IN_FORM}
     field_list = list(
         relecov_core.models.MetadataVisualization.objects.filter(schemaID=schema_obj)
         .order_by("order")
@@ -792,14 +803,20 @@ def save_temp_sample_data(samples, user_obj):
     sample_saved_list = []
     for sample in samples:
         for item, value in sample.items():
-            data = {"sample_name": sample[core_config.FIELD_FOR_GETTING_SAMPLE_ID]}
+            data = {
+                "sample_name": sample[
+                    relecov_core.core_config.FIELD_FOR_GETTING_SAMPLE_ID
+                ]
+            }
             data["field"] = item
             data["value"] = value
             data["user"] = user_obj
             relecov_core.models.TemporalSampleStorage.objects.save_temp_data(data)
         # Include Originating Laboratory and Submitting Institution
 
-        sample_saved_list.append(sample[core_config.FIELD_FOR_GETTING_SAMPLE_ID])
+        sample_saved_list.append(
+            sample[relecov_core.core_config.FIELD_FOR_GETTING_SAMPLE_ID]
+        )
     return
 
 

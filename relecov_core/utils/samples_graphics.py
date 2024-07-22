@@ -1,11 +1,12 @@
+# Local imports
 import relecov_core.utils.plotly_graphics
-import relecov_core.utils.rest_api_handling
-from relecov_core.utils.samples import get_all_recieved_samples_with_dates
+import relecov_core.utils.rest_api
+import relecov_core.utils.samples
 
 
 def received_per_ccaa():
     """Fetch the data from LIMS and show them in a graphic bar"""
-    raw_data = relecov_core.utils.rest_api_handling.get_summarize_data("")
+    raw_data = relecov_core.utils.rest_api.get_summarize_data("")
     if "ERROR" in raw_data:
         return raw_data
 
@@ -25,7 +26,7 @@ def received_per_ccaa():
 
 def received_per_lab():
     """Fetch the data from LIMS and show them in a graphic bar"""
-    raw_data = relecov_core.utils.rest_api_handling.get_summarize_data("")
+    raw_data = relecov_core.utils.rest_api.get_summarize_data("")
     if "ERROR" in raw_data:
         return raw_data
 
@@ -45,7 +46,9 @@ def received_per_lab():
 
 def received_samples_graph():
     """Fetch the number of samples received in the plaftorm and show them"""
-    r_data = get_all_recieved_samples_with_dates(accumulated=True)
+    r_data = relecov_core.utils.samples.get_all_recieved_samples_with_dates(
+        accumulated=True
+    )
     data = {"x": [], "y": []}
     for r_dat in r_data:
         for key, value in r_dat.items():

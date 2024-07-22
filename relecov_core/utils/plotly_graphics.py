@@ -1,3 +1,4 @@
+# Generic imports
 from plotly.offline import plot
 from plotly.graph_objects import Figure, Bar, Scatter, Indicator, Pie
 from plotly.express import bar

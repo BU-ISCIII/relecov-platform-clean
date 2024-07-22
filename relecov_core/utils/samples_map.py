@@ -1,12 +1,14 @@
+# Generic imports
 import os
-import pandas as pd
 import json
+import pandas as pd
 from plotly.express import choropleth_mapbox
 from dash import dcc, html
 from django_plotly_dash import DjangoDash
 
+# Local imports
 from relecov_platform import settings as relecov_platform_settings
-import relecov_core.utils.rest_api_handling
+import relecov_core.utils.rest_api
 
 
 def create_samples_received_map():
@@ -17,7 +19,7 @@ def create_samples_received_map():
         "map",
         "spain-communities.geojson",
     )
-    raw_data = relecov_core.utils.rest_api_handling.get_summarize_data("")
+    raw_data = relecov_core.utils.rest_api.get_summarize_data("")
     if "ERROR" in raw_data:
         return raw_data
 

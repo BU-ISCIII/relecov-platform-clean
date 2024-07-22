@@ -1,7 +1,10 @@
+# Generic imports
 from datetime import datetime
-from relecov_core.core_config import ERROR_INTIAL_SETTINGS_NOT_DEFINED
+
+# Local imports
 import relecov_core.models
 import relecov_core.utils.samples
+from relecov_core.core_config import ERROR_INTIAL_SETTINGS_NOT_DEFINED
 
 
 def prepare_fields_in_sample(s_data):

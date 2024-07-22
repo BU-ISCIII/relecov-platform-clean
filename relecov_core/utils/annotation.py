@@ -1,4 +1,7 @@
+# Generic imports
 import re
+
+# Local imports
 import relecov_core.models
 from relecov_core.core_config import (
     HEADING_FOR_ANNOTATION_GENE,
