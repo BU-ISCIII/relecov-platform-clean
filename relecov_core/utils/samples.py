@@ -4,7 +4,7 @@ import os
 import shutil
 from collections import OrderedDict
 from datetime import datetime
-from pandas import DataFrame as PandasDataFrame
+import pandas as pd
 from django.contrib.auth.models import Group, User
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
@@ -292,7 +292,7 @@ def create_date_sample_bar(lab_sample, cust_data):
     """Create bar graph where X-axis are the dates and Y-axis the number of
     samples
     """
-    df = PandasDataFrame(lab_sample.items(), columns=cust_data["col_names"])
+    df = pd.DataFrame(lab_sample.items(), columns=cust_data["col_names"])
     histogram = relecov_core.utils.plotly_graphics.histogram_graphic(
         df, cust_data["col_names"], cust_data["options"]
     )
@@ -303,7 +303,7 @@ def create_dash_bar_for_each_lab():
     """Function collect the list of lab and the samples per date per each lab
     and call dash plotly function to display
     """
-    df_data = PandasDataFrame(get_sample_per_date_per_all_lab(detailed=True))
+    df_data = pd.DataFrame(get_sample_per_date_per_all_lab(detailed=True))
     relecov_core.utils.plotly_dash_graphics(get_all_lab_list(), df_data)
     return
 

@@ -2,7 +2,7 @@
 from django_plotly_dash import DjangoDash
 from dash.dependencies import Input, Output
 from dash import dcc, html
-from plotly.express import bar
+import plotly.express as px
 from dash.exceptions import PreventUpdate
 
 
@@ -12,7 +12,7 @@ def dash_bar_lab(option_list, data):
         option.append({"label": opt_list, "value": opt_list})
 
     app = DjangoDash("samplePerLabGraphic")
-    empty_fig = bar(x=[0], y=[0], height=300)
+    empty_fig = px.bar(x=[0], y=[0], height=300)
 
     app.layout = html.Div(
         [
@@ -45,7 +45,7 @@ def dash_bar_lab(option_list, data):
         if select_lab_name == 1:
             raise PreventUpdate
         sub_data = data[data.lab_name == select_lab_name]
-        graph = bar(
+        graph = px.bar(
             sub_data,
             x=sub_data["date"],
             y=sub_data["num_samples"],
