@@ -5,7 +5,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 # Local imports
-from relecov_core.core_config import SCHEMAS_UPLOAD_FOLDER
+import relecov_core.config
 
 # Comentarios de modificacion
 # Comentarios de modificacion
@@ -72,7 +72,7 @@ class SchemaManager(models.Manager):
 
 
 class Schema(models.Model):
-    file_name = models.FileField(upload_to=SCHEMAS_UPLOAD_FOLDER)
+    file_name = models.FileField(upload_to=relecov_core.config.SCHEMAS_UPLOAD_FOLDER)
     user_name = models.ForeignKey(User, on_delete=models.CASCADE)
     schema_name = models.CharField(max_length=40)
     schema_version = models.CharField(max_length=10)

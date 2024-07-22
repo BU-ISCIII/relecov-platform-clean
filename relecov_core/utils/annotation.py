@@ -3,10 +3,7 @@ import re
 
 # Local imports
 import relecov_core.models
-from relecov_core.core_config import (
-    HEADING_FOR_ANNOTATION_GENE,
-    ERROR_ANNOTATION_ORGANISM_ALREADY_EXISTS,
-)
+import relecov_core.config
 
 
 def get_annotations():
@@ -60,7 +57,7 @@ def get_annotation_data(annot_id):
             g_info.insert(0, gene_obj.get_gene_name())
             genes.append(g_info)
         annot_data["genes"] = genes
-        annot_data["heading"] = HEADING_FOR_ANNOTATION_GENE
+        annot_data["heading"] = relecov_core.config.HEADING_FOR_ANNOTATION_GENE
     return annot_data
 
 
@@ -94,7 +91,7 @@ def read_gff_file(a_file):
     if check_if_organism_version_exists(
         f_data["organism_code"], f_data["organism_code_version"]
     ):
-        return {"ERROR": ERROR_ANNOTATION_ORGANISM_ALREADY_EXISTS}
+        return {"ERROR": relecov_core.config.ERROR_ANNOTATION_ORGANISM_ALREADY_EXISTS}
     f_data["genes"] = []
     for line in lines:
         if line.startswith("#") or line == "":

@@ -8,18 +8,7 @@ from django.conf import settings
 # Local imports
 import relecov_core.models
 import relecov_core.utils.generic_functions
-from relecov_core.core_config import (
-    SCHEMAS_UPLOAD_FOLDER,
-    ERROR_INVALID_JSON,
-    ERROR_INVALID_SCHEMA,
-    ERROR_SCHEMA_ALREADY_LOADED,
-    SCHEMA_SUCCESSFUL_LOAD,
-    ERROR_SCHEMA_ID_NOT_DEFINED,
-    ERROR_SCHEMA_NOT_DEFINED,
-    HEADING_SCHEMA_DISPLAY,
-    MAIN_SCHEMA_STRUCTURE,
-    NO_SELECTED_LABEL_WAS_DONE,
-)
+import relecov_core.config
 
 
 def fetch_info_meta_visualization(schema_obj):
@@ -111,14 +100,14 @@ def get_latest_schema(schema_name, apps_name):
             schema_apps_name__exact=apps_name,
             schema_default=True,
         ).last()
-    return {"ERROR": ERROR_SCHEMA_NOT_DEFINED}
+    return {"ERROR": relecov_core.config.ERROR_SCHEMA_NOT_DEFINED}
 
 
 def get_schema_display_data(schema_id):
     """Get the properties define for the schema"""
     schema_obj = get_schema_obj_from_id(schema_id)
     if schema_obj is None:
-        return {"ERROR": ERROR_SCHEMA_ID_NOT_DEFINED}
+        return {"ERROR": relecov_core.config.ERROR_SCHEMA_ID_NOT_DEFINED}
     schema_data = {"s_data": []}
     if relecov_core.models.SchemaProperties.objects.filter(
         schemaID=schema_obj
@@ -126,7 +115,7 @@ def get_schema_display_data(schema_id):
         s_prop_objs = relecov_core.models.SchemaProperties.objects.filter(
             schemaID=schema_obj
         ).order_by("property")
-        schema_data["heading"] = HEADING_SCHEMA_DISPLAY
+        schema_data["heading"] = relecov_core.config.HEADING_SCHEMA_DISPLAY
         for s_prop_obj in s_prop_objs:
             schema_data["s_data"].append(s_prop_obj.get_property_info())
     return schema_data
@@ -159,9 +148,9 @@ def load_schema(json_file):
     try:
         data["full_schema"] = json.load(json_file)
     except json.decoder.JSONDecodeError:
-        return {"ERROR": ERROR_INVALID_JSON}
+        return {"ERROR": relecov_core.config.ERROR_INVALID_JSON}
     data["file_name"] = relecov_core.utils.generic_functions.store_file(
-        json_file, SCHEMAS_UPLOAD_FOLDER
+        json_file, relecov_core.config.SCHEMAS_UPLOAD_FOLDER
     )
     return data
 
@@ -226,7 +215,7 @@ def store_fields_metadata_visualization(data):
         )
         entry_num += 1
     if entry_num == 0:
-        return {"ERROR": NO_SELECTED_LABEL_WAS_DONE}
+        return {"ERROR": relecov_core.config.NO_SELECTED_LABEL_WAS_DONE}
     return {"SUCCESS": entry_num}
 
 
@@ -350,8 +339,10 @@ def process_schema_file(json_file, default, user, apps_name):
     if "ERROR" in schema_data:
         return schema_data
     # store root data of json schema
-    if not check_heading_valid_json(schema_data["full_schema"], MAIN_SCHEMA_STRUCTURE):
-        return {"ERROR": ERROR_INVALID_SCHEMA}
+    if not check_heading_valid_json(
+        schema_data["full_schema"], relecov_core.config.MAIN_SCHEMA_STRUCTURE
+    ):
+        return {"ERROR": relecov_core.config.ERROR_INVALID_SCHEMA}
     schema_name = schema_data["full_schema"]["title"]
     version = schema_data["full_schema"]["version"]
     if default == "on":
@@ -364,7 +355,7 @@ def process_schema_file(json_file, default, user, apps_name):
         schema_version__iexact=version,
         schema_apps_name__exact=apps_name,
     ).exists():
-        return {"ERROR": ERROR_SCHEMA_ALREADY_LOADED}
+        return {"ERROR": relecov_core.config.ERROR_SCHEMA_ALREADY_LOADED}
     data = {
         "schema_name": schema_name,
         "file_name": schema_data["file_name"],
@@ -385,4 +376,4 @@ def process_schema_file(json_file, default, user, apps_name):
     store_lineage_fields(new_schema, schema_data["full_schema"]["properties"])
     store_public_data_fields(new_schema, schema_data["full_schema"]["properties"])
 
-    return {"SUCCESS": SCHEMA_SUCCESSFUL_LOAD}
+    return {"SUCCESS": relecov_core.config.SCHEMA_SUCCESSFUL_LOAD}

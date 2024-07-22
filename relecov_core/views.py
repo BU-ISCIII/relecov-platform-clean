@@ -13,19 +13,13 @@ import relecov_core.utils.variants
 import relecov_core.utils.generic_functions
 import relecov_core.utils.annotation
 import relecov_core.utils.lineage
+import relecov_core.config
 
 # Imports for received samples graphic at intranet
 import relecov_core.utils.samples_graphics
 import relecov_core.utils.samples_map
 
 #  End of imports  received samples
-
-from relecov_core.core_config import (
-    ERROR_USER_IS_NOT_ASSIGNED_TO_LAB,
-    ERROR_INVALID_DEFINED_SAMPLE_FORMAT,
-    ERROR_NOT_MATCHED_ITEMS_IN_SEARCH,
-    HEADING_FOR_SAMPLE_LIST,
-)
 
 
 def index(request):
@@ -163,7 +157,7 @@ def search_sample(request):
                 "relecov_core/searchSample.html",
                 {
                     "search_data": search_data,
-                    "warning": ERROR_INVALID_DEFINED_SAMPLE_FORMAT,
+                    "warning": relecov_core.config.ERROR_INVALID_DEFINED_SAMPLE_FORMAT,
                 },
             )
         sample_list = relecov_core.utils.samples.search_samples(
@@ -175,13 +169,16 @@ def search_sample(request):
                 "relecov_core/searchSample.html",
                 {
                     "search_data": search_data,
-                    "warning": ERROR_NOT_MATCHED_ITEMS_IN_SEARCH,
+                    "warning": relecov_core.config.ERROR_NOT_MATCHED_ITEMS_IN_SEARCH,
                 },
             )
         if len(sample_list) == 1:
             return redirect("sample_display", sample_id=sample_list[0])
         else:
-            sample = {"s_data": sample_list, "heading": HEADING_FOR_SAMPLE_LIST}
+            sample = {
+                "s_data": sample_list,
+                "heading": relecov_core.config.HEADING_FOR_SAMPLE_LIST,
+            }
             return render(
                 request, "relecov_core/searchSample.html", {"list_display": sample}
             )
@@ -462,7 +459,7 @@ def metadata_form(request):
             return render(
                 request,
                 "relecov_core/metadataForm.html",
-                {"ERROR": ERROR_USER_IS_NOT_ASSIGNED_TO_LAB},
+                {"ERROR": relecov_core.config.ERROR_USER_IS_NOT_ASSIGNED_TO_LAB},
             )
         return render(request, "relecov_core/metadataForm.html", {"m_form": m_form})
 

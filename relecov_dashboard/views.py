@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
 # Local imports
-import relecov_core.core_config
+import relecov_core.config
 import relecov_core.utils.lineage
 import relecov_core.utils.variants
 import relecov_dashboard.dashboard_config
@@ -123,9 +123,7 @@ def variants_mutations_in_lineages_heatmap(request):
         return render(
             request,
             "relecov_dashboard/variantsMutationsInLineagesHeatmap.html",
-            {
-                "ERROR": relecov_core.core_config.ERROR_CHROMOSOME_NOT_DEFINED_IN_DATABASE
-            },
+            {"ERROR": relecov_core.config.ERROR_CHROMOSOME_NOT_DEFINED_IN_DATABASE},
         )
     if len(chromesome_objs) > 1:
         chromesome_list = []
@@ -146,7 +144,7 @@ def variants_mutations_in_lineages_heatmap(request):
         return render(
             request,
             "relecov_dashboard/variantsMutationsInLineagesHeatmap.html",
-            {"ERROR": relecov_core.core_config.ERROR_GENE_NOT_DEFINED_IN_DATABASE},
+            {"ERROR": relecov_core.config.ERROR_GENE_NOT_DEFINED_IN_DATABASE},
         )
     sample_list = relecov_core.utils.variants.get_sample_in_variant_list(
         chromesome_objs[0]
@@ -155,7 +153,7 @@ def variants_mutations_in_lineages_heatmap(request):
         return render(
             request,
             "relecov_dashboard/variantsMutationsInLineagesHeatmap.html",
-            {"ERROR": relecov_core.core_config.ERROR_VARIANT_IN_SAMPLE_NOT_DEFINED},
+            {"ERROR": relecov_core.config.ERROR_VARIANT_IN_SAMPLE_NOT_DEFINED},
         )
     relecov_dashboard.utils.var_heatmap_mutation_graph_by_lineage.create_heatmap(
         sample_list, gene_list

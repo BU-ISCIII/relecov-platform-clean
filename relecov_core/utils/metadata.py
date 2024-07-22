@@ -4,8 +4,8 @@ import os
 from pathlib import Path
 
 # Local imports
-from relecov_core.core_config import METADATA_UPLOAD_FOLDER
 import relecov_core.models
+import relecov_core.config
 
 
 def upload_excel_file(request):
@@ -19,7 +19,7 @@ def upload_excel_file(request):
     # Fetching the form data
     uploadedFile = request.FILES["samplesExcel"]
     # Create a folder per day if it doesn't exist
-    path = os.path.join(METADATA_UPLOAD_FOLDER, file_path)
+    path = os.path.join(relecov_core.config.METADATA_UPLOAD_FOLDER, file_path)
     if not os.path.exists(path):
         path = Path(path)
         path.mkdir(parents=True)
