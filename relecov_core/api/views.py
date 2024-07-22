@@ -1,7 +1,6 @@
-import relecov_core.urls
+# Generic imports
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
-
 from rest_framework.decorators import (
     authentication_classes,
     permission_classes,
@@ -9,10 +8,6 @@ from rest_framework.decorators import (
 )
 from rest_framework import status
 from rest_framework.response import Response
-
-# from drf_yasg.utils import swagger_auto_schema
-# from drf_yasg import openapi
-
 from drf_spectacular.utils import (
     extend_schema,
     OpenApiExample,
@@ -20,9 +15,10 @@ from drf_spectacular.utils import (
     OpenApiResponse,
 )
 from rest_framework import serializers
-
 from django.http import QueryDict
 
+# Local imports
+import relecov_core.urls
 import relecov_core.models
 import relecov_core.utils.samples
 import relecov_core.api.serializers
@@ -31,7 +27,6 @@ import relecov_core.api.utils.bioinfo_metadata
 import relecov_core.api.utils.public_db
 import relecov_core.api.utils.variants
 import relecov_core.api.utils.common_functions
-
 from relecov_core.core_config import (
     ERROR_SAMPLE_NAME_NOT_INCLUDED,
     ERROR_SAMPLE_NOT_DEFINED,
