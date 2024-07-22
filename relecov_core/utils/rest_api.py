@@ -1,5 +1,8 @@
+# Generic imports
 import json
 import relecov_tools.rest_api
+
+# Local imports
 import relecov_core.utils.generic_functions
 from relecov_core.core_config import (
     ISKLIMS_GET_LABORATORY_PARAMETERS,

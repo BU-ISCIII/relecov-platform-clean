@@ -1,13 +1,7 @@
+# Local imports
 import relecov_core.models
 import relecov_core.utils.variants
-
-from relecov_core.api.serializers import (
-    CreateEffectSerializer,
-    CreateFilterSerializer,
-    CreateVariantInSampleSerializer,
-    CreateVariantAnnotationSerializer,
-    CreateVariantSerializer,
-)
+import relecov_core.api.serializers
 from relecov_core.core_config import (
     ERROR_GENE_NOT_DEFINED_IN_DATABASE,
     ERROR_CHROMOSOME_NOT_DEFINED_IN_DATABASE,
@@ -21,7 +15,9 @@ def create_or_get_filter_obj(filter_value):
         return relecov_core.models.Filter.objects.filter(
             filter__iexact=filter_value
         ).last()
-    filter_serializer = CreateFilterSerializer(data={"filter": filter_value})
+    filter_serializer = relecov_core.api.serializers.CreateFilterSerializer(
+        data={"filter": filter_value}
+    )
     if filter_serializer.is_valid():
         filter_obj = filter_serializer.save()
         return filter_obj
@@ -34,7 +30,9 @@ def create_or_get_effect_obj(effect_value):
         return relecov_core.models.Effect.objects.filter(
             effect__iexact=effect_value
         ).last()
-    effect_serializer = CreateEffectSerializer(data={"effect": effect_value})
+    effect_serializer = relecov_core.api.serializers.CreateEffectSerializer(
+        data={"effect": effect_value}
+    )
     if effect_serializer.is_valid():
         effect_obj = effect_serializer.save()
         return effect_obj
@@ -51,7 +49,9 @@ def delete_created_variancs(v_in_sample_list, v_an_list):
 
 
 def store_variant_annotation(v_ann_data):
-    v_ann_serializer = CreateVariantAnnotationSerializer(data=v_ann_data)
+    v_ann_serializer = relecov_core.api.serializers.CreateVariantAnnotationSerializer(
+        data=v_ann_data
+    )
     if not v_ann_serializer.is_valid():
         return {"ERROR": ERROR_UNABLE_TO_STORE_IN_DATABASE}
     v_ann_obj = v_ann_serializer.save()
@@ -59,7 +59,9 @@ def store_variant_annotation(v_ann_data):
 
 
 def store_variant_in_sample(v_data):
-    v_in_sample_serializer = CreateVariantInSampleSerializer(data=v_data)
+    v_in_sample_serializer = (
+        relecov_core.api.serializers.CreateVariantInSampleSerializer(data=v_data)
+    )
     if not v_in_sample_serializer.is_valid():
         return {"ERROR": ERROR_UNABLE_TO_STORE_IN_DATABASE}
     v_obj = v_in_sample_serializer.save()
@@ -87,7 +89,9 @@ def get_variant_id(data):
         variant_dict["pos"] = data["Variant"]["pos"]
         variant_dict["alt"] = data["Variant"]["alt"]
         variant_dict["ref"] = data["Variant"]["ref"]
-        variant_serializer = CreateVariantSerializer(data=variant_dict)
+        variant_serializer = relecov_core.api.serializers.CreateVariantSerializer(
+            data=variant_dict
+        )
         if not variant_serializer.is_valid():
             return {"ERROR": ERROR_UNABLE_TO_STORE_IN_DATABASE}
         variant_obj = variant_serializer.save()

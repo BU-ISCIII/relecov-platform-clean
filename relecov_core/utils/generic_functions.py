@@ -1,10 +1,13 @@
+# Generic imports
 import time
+import os
 from datetime import datetime
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.models import User
 from django.conf import settings
+
+# local imports
 import relecov_core.models
-import os
 
 
 def get_configuration_value(parameter_name):

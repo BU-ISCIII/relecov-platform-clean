@@ -1,6 +1,7 @@
+# Local imports
 import relecov_core.models
 import relecov_core.utils.samples
-import relecov_core.utils.schema_handling
+import relecov_core.utils.schema
 
 
 def get_bio_analysis_stats_from_lab(lab_name=None):
@@ -56,7 +57,7 @@ def get_bioinfo_analyis_fields_utilization(schema_obj=None):
     """
     b_data = {}
     if schema_obj is None:
-        schema_obj = relecov_core.utils.schema_handling.get_default_schema()
+        schema_obj = relecov_core.utils.schema.get_default_schema()
 
     # get field names
     b_field_objs = relecov_core.models.BioinfoAnalysisField.objects.filter(

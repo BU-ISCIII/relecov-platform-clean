@@ -1,9 +1,11 @@
+# Generic imports
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 
+# Local imports
 import relecov_core.utils.samples
-import relecov_core.utils.schema_handling
+import relecov_core.utils.schema
 import relecov_core.utils.bioinfo_analysis
 import relecov_core.utils.labs
 import relecov_core.utils.public_db
@@ -105,7 +107,7 @@ def schema_handling(request):
             schemaDefault = "on"
         else:
             schemaDefault = "off"
-        schema_data = relecov_core.utils.schema_handling.process_schema_file(
+        schema_data = relecov_core.utils.schema.process_schema_file(
             request.FILES["schemaFile"],
             schemaDefault,
             request.user,
@@ -117,13 +119,13 @@ def schema_handling(request):
                 "relecov_core/schemaHandling.html",
                 {"ERROR": schema_data["ERROR"]},
             )
-        schemas = relecov_core.utils.schema_handling.get_schemas_loaded(__package__)
+        schemas = relecov_core.utils.schema.get_schemas_loaded(__package__)
         return render(
             request,
             "relecov_core/schemaHandling.html",
             {"SUCCESS": schema_data["SUCCESS"], "schemas": schemas},
         )
-    schemas = relecov_core.utils.schema_handling.get_schemas_loaded(__package__)
+    schemas = relecov_core.utils.schema.get_schemas_loaded(__package__)
     return render(request, "relecov_core/schemaHandling.html", {"schemas": schemas})
 
 
@@ -131,7 +133,7 @@ def schema_handling(request):
 def schema_display(request, schema_id):
     if request.user.username != "admin":
         return redirect("/")
-    schema_data = relecov_core.utils.schema_handling.get_schema_display_data(schema_id)
+    schema_data = relecov_core.utils.schema.get_schema_display_data(schema_id)
     return render(
         request, "relecov_core/schemaDisplay.html", {"schema_data": schema_data}
     )
@@ -197,14 +199,12 @@ def metadata_visualization(request):
     if request.user.username != "admin":
         return redirect("/")
     if request.method == "POST" and request.POST["action"] == "selectFields":
-        selected_fields = (
-            relecov_core.utils.schema_handling.store_fields_metadata_visualization(
-                request.POST
-            )
+        selected_fields = relecov_core.utils.schema.store_fields_metadata_visualization(
+            request.POST
         )
         if "ERROR" in selected_fields:
-            m_visualization = relecov_core.utils.schema_handling.get_fields_from_schema(
-                relecov_core.utils.schema_handling.get_schema_obj_from_id(
+            m_visualization = relecov_core.utils.schema.get_fields_from_schema(
+                relecov_core.utils.schema.get_schema_obj_from_id(
                     request.POST["schemaID"]
                 )
             )
@@ -219,21 +219,19 @@ def metadata_visualization(request):
             {"SUCCESS": selected_fields},
         )
     if request.method == "POST" and request.POST["action"] == "deleteFields":
-        relecov_core.utils.schema_handling.del_metadata_visualization()
+        relecov_core.utils.schema.del_metadata_visualization()
         return render(
             request, "relecov_core/metadataVisualization.html", {"DELETE": "DELETE"}
         )
-    metadata_obj = relecov_core.utils.schema_handling.get_latest_schema(
-        "Relecov", __package__
-    )
+    metadata_obj = relecov_core.utils.schema.get_latest_schema("Relecov", __package__)
     if isinstance(metadata_obj, dict):
         return render(
             request,
             "relecov_core/metadataVisualization.html",
             {"ERROR": metadata_obj["ERROR"]},
         )
-    data_visualization = (
-        relecov_core.utils.schema_handling.fetch_info_meta_visualization(metadata_obj)
+    data_visualization = relecov_core.utils.schema.fetch_info_meta_visualization(
+        metadata_obj
     )
     if isinstance(data_visualization, dict):
         return render(
@@ -241,9 +239,7 @@ def metadata_visualization(request):
             "relecov_core/metadataVisualization.html",
             {"data_visualization": data_visualization},
         )
-    m_visualization = relecov_core.utils.schema_handling.get_fields_from_schema(
-        metadata_obj
-    )
+    m_visualization = relecov_core.utils.schema.get_fields_from_schema(metadata_obj)
     return render(
         request,
         "relecov_core/metadataVisualization.html",
@@ -370,14 +366,12 @@ def intranet(request):
 
 
 def variants(request):
-    return render(request, "relecov_core/relecov_core.utils.variants.html", {})
+    return render(request, "relecov_core/variants.html", {})
 
 
 @login_required()
 def metadata_form(request):
-    schema_obj = relecov_core.utils.schema_handling.get_latest_schema(
-        "relecov", __package__
-    )
+    schema_obj = relecov_core.utils.schema.get_latest_schema("relecov", __package__)
     if request.method == "POST" and request.POST["action"] == "uploadMetadataFile":
         if "metadataFile" in request.FILES:
             relecov_core.utils.samples.save_excel_form_in_samba_folder(
