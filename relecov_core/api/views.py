@@ -27,12 +27,7 @@ import relecov_core.api.utils.bioinfo_metadata
 import relecov_core.api.utils.public_db
 import relecov_core.api.utils.variants
 import relecov_core.api.utils.common_functions
-from relecov_core.core_config import (
-    ERROR_SAMPLE_NAME_NOT_INCLUDED,
-    ERROR_SAMPLE_NOT_DEFINED,
-    ERROR_VARIANT_INFORMATION_NOT_DEFINED,
-    ERROR_ANALYSIS_ALREADY_DEFINED,
-)
+import relecov_core.config
 
 
 @extend_schema(
@@ -370,7 +365,7 @@ def create_bioinfo_metadata(request):
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
     if "sequencing_sample_id" not in data:
         return Response(
-            {"ERROR": ERROR_SAMPLE_NAME_NOT_INCLUDED},
+            {"ERROR": relecov_core.config.ERROR_SAMPLE_NAME_NOT_INCLUDED},
             status=status.HTTP_400_BAD_REQUEST,
         )
     sample_obj = relecov_core.utils.samples.get_sample_obj_from_sample_name(
@@ -378,7 +373,8 @@ def create_bioinfo_metadata(request):
     )
     if sample_obj is None:
         return Response(
-            {"ERROR": ERROR_SAMPLE_NOT_DEFINED}, status=status.HTTP_400_BAD_REQUEST
+            {"ERROR": relecov_core.config.ERROR_SAMPLE_NOT_DEFINED},
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
     analysis_defined = relecov_core.api.utils.bioinfo_metadata.get_analysis_defined(
@@ -388,7 +384,7 @@ def create_bioinfo_metadata(request):
     if analysis_date is not None:
         if analysis_date in list(analysis_defined):
             return Response(
-                {"ERROR": ERROR_ANALYSIS_ALREADY_DEFINED},
+                {"ERROR": relecov_core.config.ERROR_ANALYSIS_ALREADY_DEFINED},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -532,20 +528,21 @@ def create_variant_data(request):
         )
         if sample_obj is None:
             return Response(
-                {"ERROR": ERROR_SAMPLE_NOT_DEFINED}, status=status.HTTP_400_BAD_REQUEST
+                {"ERROR": relecov_core.config.ERROR_SAMPLE_NOT_DEFINED},
+                status=status.HTTP_400_BAD_REQUEST,
             )
         analysis_defined = relecov_core.api.utils.variants.get_variant_analysis_defined(
             sample_obj
         )
         if data["analysis_date"] in list(analysis_defined):
             return Response(
-                {"ERROR": ERROR_ANALYSIS_ALREADY_DEFINED},
+                {"ERROR": relecov_core.config.ERROR_ANALYSIS_ALREADY_DEFINED},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
         if "variants" not in data:
             return Response(
-                {"ERROR": ERROR_VARIANT_INFORMATION_NOT_DEFINED},
+                {"ERROR": relecov_core.config.ERROR_VARIANT_INFORMATION_NOT_DEFINED},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         found_error = False
@@ -645,7 +642,8 @@ def update_state(request):
         )
         if sample_obj is None:
             return Response(
-                {"ERROR": ERROR_SAMPLE_NOT_DEFINED}, status=status.HTTP_400_BAD_REQUEST
+                {"ERROR": relecov_core.config.ERROR_SAMPLE_NOT_DEFINED},
+                status=status.HTTP_400_BAD_REQUEST,
             )
         sample_id = sample_obj.get_sample_id()
         # if state exists,

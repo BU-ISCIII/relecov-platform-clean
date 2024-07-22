@@ -4,7 +4,7 @@ from datetime import datetime
 # Local imports
 import relecov_core.models
 import relecov_core.utils.samples
-from relecov_core.core_config import ERROR_INTIAL_SETTINGS_NOT_DEFINED
+import relecov_core.config
 
 
 def prepare_fields_in_sample(s_data):
@@ -12,7 +12,7 @@ def prepare_fields_in_sample(s_data):
     if not relecov_core.models.SampleState.objects.filter(
         state__exact="Defined"
     ).exists():
-        return {"ERROR": ERROR_INTIAL_SETTINGS_NOT_DEFINED}
+        return {"ERROR": relecov_core.config.ERROR_INTIAL_SETTINGS_NOT_DEFINED}
     s_data["state"] = (
         relecov_core.models.SampleState.objects.filter(state__exact="Defined")
         .last()

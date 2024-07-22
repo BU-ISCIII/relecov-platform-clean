@@ -3,7 +3,7 @@ from django.db.models import F
 
 # Local imports
 import relecov_core.models
-import relecov_core.core_config
+import relecov_core.config
 import relecov_core.utils.samples
 import relecov_core.utils.plotly_graphics
 
@@ -58,7 +58,7 @@ def get_variant_data_from_sample(sample_id):
     if relecov_core.models.VariantInSample.objects.filter(
         sampleID_id=sample_obj
     ).exists():
-        data["heading"] = relecov_core.core_config.HEADING_FOR_VARIANT_TABLE_DISPLAY
+        data["heading"] = relecov_core.config.HEADING_FOR_VARIANT_TABLE_DISPLAY
         v_in_s_objs = relecov_core.models.VariantInSample.objects.filter(
             sampleID_id=sample_obj
         )

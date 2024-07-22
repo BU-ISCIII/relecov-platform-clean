@@ -1,9 +1,7 @@
 # Local imports
 import relecov_core.models
 import relecov_core.api.serializers
-from relecov_core.core_config import (
-    ERROR_UNABLE_TO_STORE_IN_DATABASE,
-)
+import relecov_core.config
 
 
 def split_bioinfo_data(data, schema_obj):
@@ -58,7 +56,11 @@ def store_bioinfo_data(s_data, schema_obj):
             relecov_core.api.serializers.CreateBioinfoAnalysisValueSerializer(data=data)
         )
         if not bio_value_serializer.is_valid():
-            return {"ERROR": str(field + " " + ERROR_UNABLE_TO_STORE_IN_DATABASE)}
+            return {
+                "ERROR": str(
+                    field + " " + relecov_core.config.ERROR_UNABLE_TO_STORE_IN_DATABASE
+                )
+            }
         bio_value_obj = bio_value_serializer.save()
         sample_obj.bio_analysis_values.add(bio_value_obj)
 
@@ -77,7 +79,11 @@ def store_bioinfo_data(s_data, schema_obj):
         )
 
         if not lineage_value_serializer.is_valid():
-            return {"ERROR": str(field + " " + ERROR_UNABLE_TO_STORE_IN_DATABASE)}
+            return {
+                "ERROR": str(
+                    field + " " + relecov_core.config.ERROR_UNABLE_TO_STORE_IN_DATABASE
+                )
+            }
         lineage_value_obj = lineage_value_serializer.save()
         sample_obj.lineage_values.add(lineage_value_obj)
 

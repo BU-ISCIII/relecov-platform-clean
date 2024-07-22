@@ -1,7 +1,7 @@
 # Local imports
 import relecov_core.models
 import relecov_core.api.serializers
-from relecov_core.core_config import ERROR_UNABLE_TO_STORE_IN_DATABASE
+import relecov_core.config
 
 
 def store_pub_databases_data(data, pub_db, schema_obj, sample_id):
@@ -23,6 +23,12 @@ def store_pub_databases_data(data, pub_db, schema_obj, sample_id):
             )
         )
         if not value_serializer.is_valid():
-            return {"ERROR": str(prop_name + " " + ERROR_UNABLE_TO_STORE_IN_DATABASE)}
+            return {
+                "ERROR": str(
+                    prop_name
+                    + " "
+                    + relecov_core.config.ERROR_UNABLE_TO_STORE_IN_DATABASE
+                )
+            }
         value_serializer.save()
     return {"SUCCESS": "success"}

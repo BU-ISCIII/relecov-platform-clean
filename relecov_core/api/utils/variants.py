@@ -2,11 +2,7 @@
 import relecov_core.models
 import relecov_core.utils.variants
 import relecov_core.api.serializers
-from relecov_core.core_config import (
-    ERROR_GENE_NOT_DEFINED_IN_DATABASE,
-    ERROR_CHROMOSOME_NOT_DEFINED_IN_DATABASE,
-    ERROR_UNABLE_TO_STORE_IN_DATABASE,
-)
+import relecov_core.config
 
 
 def create_or_get_filter_obj(filter_value):
@@ -21,7 +17,7 @@ def create_or_get_filter_obj(filter_value):
     if filter_serializer.is_valid():
         filter_obj = filter_serializer.save()
         return filter_obj
-    return {"ERROR": ERROR_UNABLE_TO_STORE_IN_DATABASE}
+    return {"ERROR": relecov_core.config.ERROR_UNABLE_TO_STORE_IN_DATABASE}
 
 
 def create_or_get_effect_obj(effect_value):
@@ -37,7 +33,7 @@ def create_or_get_effect_obj(effect_value):
         effect_obj = effect_serializer.save()
         return effect_obj
 
-    return {"ERROR": ERROR_UNABLE_TO_STORE_IN_DATABASE}
+    return {"ERROR": relecov_core.config.ERROR_UNABLE_TO_STORE_IN_DATABASE}
 
 
 def delete_created_variancs(v_in_sample_list, v_an_list):
@@ -53,7 +49,7 @@ def store_variant_annotation(v_ann_data):
         data=v_ann_data
     )
     if not v_ann_serializer.is_valid():
-        return {"ERROR": ERROR_UNABLE_TO_STORE_IN_DATABASE}
+        return {"ERROR": relecov_core.config.ERROR_UNABLE_TO_STORE_IN_DATABASE}
     v_ann_obj = v_ann_serializer.save()
     return v_ann_obj
 
@@ -63,7 +59,7 @@ def store_variant_in_sample(v_data):
         relecov_core.api.serializers.CreateVariantInSampleSerializer(data=v_data)
     )
     if not v_in_sample_serializer.is_valid():
-        return {"ERROR": ERROR_UNABLE_TO_STORE_IN_DATABASE}
+        return {"ERROR": relecov_core.config.ERROR_UNABLE_TO_STORE_IN_DATABASE}
     v_obj = v_in_sample_serializer.save()
     return v_obj
 
@@ -72,7 +68,7 @@ def get_variant_id(data):
     """look out for the necessary reference ids to create the variance instance"""
     chr_obj = relecov_core.utils.variants.get_if_chromosomes_exists(data["Chromosome"])
     if chr_obj is None:
-        return {"ERROR": ERROR_CHROMOSOME_NOT_DEFINED_IN_DATABASE}
+        return {"ERROR": relecov_core.config.ERROR_CHROMOSOME_NOT_DEFINED_IN_DATABASE}
     variant_obj = relecov_core.models.Variant.objects.filter(
         chromosomeID_id=chr_obj,
         pos__iexact=data["Variant"]["pos"],
@@ -93,7 +89,7 @@ def get_variant_id(data):
             data=variant_dict
         )
         if not variant_serializer.is_valid():
-            return {"ERROR": ERROR_UNABLE_TO_STORE_IN_DATABASE}
+            return {"ERROR": relecov_core.config.ERROR_UNABLE_TO_STORE_IN_DATABASE}
         variant_obj = variant_serializer.save()
     return variant_obj.get_variant_id()
 
@@ -110,7 +106,7 @@ def get_required_variant_ann_id(data):
     gene_obj = relecov_core.utils.variants.get_gene_obj_from_gene_name(data["Gene"])
 
     if gene_obj is None:
-        return {"ERROR": ERROR_GENE_NOT_DEFINED_IN_DATABASE}
+        return {"ERROR": relecov_core.config.ERROR_GENE_NOT_DEFINED_IN_DATABASE}
     v_ann_ids["geneID_id"] = gene_obj.get_gene_id()
     effect_obj = create_or_get_effect_obj(data["Effect"])
     if isinstance(effect_obj, dict):

@@ -4,20 +4,7 @@ import relecov_tools.rest_api
 
 # Local imports
 import relecov_core.utils.generic_functions
-from relecov_core.core_config import (
-    ISKLIMS_GET_LABORATORY_PARAMETERS,
-    ISKLIMS_PUT_LABORATORY_PARAMETER,
-    ISKLIMS_REST_API,
-    ISKLIMS_GET_SAMPLE_FIELDS,
-    ISKLIMS_GET_SAMPLE_INFORMATION,
-    ISKLIMS_GET_SAMPLE_PARAMETER_INFORMATION,
-    ISKLIMS_GET_SAMPLE_PROJECT_PARAMETER_INFORMATION,
-    ISKLIMS_GET_SAMPLE_PROJECT_FIELDS,
-    ISKLIMS_GET_SUMMARIZE_DATA,
-    ISKLIMS_GET_STATS_DATA,
-    ISKLIMS_FETCH_SAMPLES_ON_CONDITION,
-    ISKLIMS_POST_SAMPLE_DATA,
-)
+import relecov_core.config
 
 
 def create_get_api_instance(request_param, data):
@@ -25,7 +12,7 @@ def create_get_api_instance(request_param, data):
     iskylims_server = relecov_core.utils.generic_functions.get_configuration_value(
         "ISKYLIMS_SERVER"
     )
-    iskylims_url = ISKLIMS_REST_API
+    iskylims_url = relecov_core.config.ISKLIMS_REST_API
     if isinstance(data, dict):
         request = request_param[0]
         param = data
@@ -43,8 +30,8 @@ def fetch_samples_on_condition(request_param):
     iskylims_server = relecov_core.utils.generic_functions.get_configuration_value(
         "ISKYLIMS_SERVER"
     )
-    iskylims_url = ISKLIMS_REST_API
-    request, param = ISKLIMS_FETCH_SAMPLES_ON_CONDITION
+    iskylims_url = relecov_core.config.ISKLIMS_REST_API
+    request, param = relecov_core.config.ISKLIMS_FETCH_SAMPLES_ON_CONDITION
     r_api = relecov_tools.rest_api.RestApi(iskylims_server, iskylims_url)
     data = r_api.get_request(request, param, request_param)
     if "ERROR" in data:
@@ -58,8 +45,8 @@ def get_laboratory_data(lab_name):
     iskylims_server = relecov_core.utils.generic_functions.get_configuration_value(
         "ISKYLIMS_SERVER"
     )
-    iskylims_url = ISKLIMS_REST_API
-    request, param = ISKLIMS_GET_LABORATORY_PARAMETERS
+    iskylims_url = relecov_core.config.ISKLIMS_REST_API
+    request, param = relecov_core.config.ISKLIMS_GET_LABORATORY_PARAMETERS
     r_api = relecov_tools.rest_api.RestApi(iskylims_server, iskylims_url)
     data = r_api.get_request(request, param, lab_name)
     if "ERROR" in data:
@@ -85,9 +72,9 @@ def set_laboratory_data(lab_data):
     iskylims_server = relecov_core.utils.generic_functions.get_configuration_value(
         "ISKYLIMS_SERVER"
     )
-    iskylims_url = ISKLIMS_REST_API
+    iskylims_url = relecov_core.config.ISKLIMS_REST_API
 
-    request = ISKLIMS_PUT_LABORATORY_PARAMETER
+    request = relecov_core.config.ISKLIMS_PUT_LABORATORY_PARAMETER
     r_api = relecov_tools.rest_api.RestApi(iskylims_server, iskylims_url)
     credentials = get_user_credentials()
     data = r_api.put_request(lab_data, credentials, request)
@@ -101,8 +88,8 @@ def get_sample_fields_data():
     iskylims_server = relecov_core.utils.generic_functions.get_configuration_value(
         "ISKYLIMS_SERVER"
     )
-    iskylims_url = ISKLIMS_REST_API
-    request = ISKLIMS_GET_SAMPLE_FIELDS
+    iskylims_url = relecov_core.config.ISKLIMS_REST_API
+    request = relecov_core.config.ISKLIMS_GET_SAMPLE_FIELDS
     r_api = relecov_tools.rest_api.RestApi(iskylims_server, iskylims_url)
     data = r_api.get_request(request, "", "")
     if "ERROR" in data:
@@ -118,7 +105,9 @@ def get_sample_information(sample_name):
     request = ISKLIMS_GET_SAMPLE_INFORMATION
     r_api = RestApi(iskylims_server, iskylims_url)
     """
-    data = create_get_api_instance(ISKLIMS_GET_SAMPLE_INFORMATION, sample_name)
+    data = create_get_api_instance(
+        relecov_core.config.ISKLIMS_GET_SAMPLE_INFORMATION, sample_name
+    )
     # data = r_api.get_request(request, sample_name)
     if "ERROR" in data:
         return {"ERROR": data}
@@ -128,11 +117,12 @@ def get_sample_information(sample_name):
 def get_sample_parameter_data(param_data):
     if isinstance(param_data, dict):
         data = create_get_api_instance(
-            ISKLIMS_GET_SAMPLE_PROJECT_PARAMETER_INFORMATION, param_data
+            relecov_core.config.ISKLIMS_GET_SAMPLE_PROJECT_PARAMETER_INFORMATION,
+            param_data,
         )
     else:
         data = create_get_api_instance(
-            ISKLIMS_GET_SAMPLE_PARAMETER_INFORMATION, param_data
+            relecov_core.config.ISKLIMS_GET_SAMPLE_PARAMETER_INFORMATION, param_data
         )
     # data = r_api.get_request(request, sample_name)
     if "ERROR" in data:
@@ -147,8 +137,8 @@ def get_sample_project_fields_data(project):
     iskylims_server = relecov_core.utils.generic_functions.get_configuration_value(
         "ISKYLIMS_SERVER"
     )
-    iskylims_url = ISKLIMS_REST_API
-    request, param = ISKLIMS_GET_SAMPLE_PROJECT_FIELDS
+    iskylims_url = relecov_core.config.ISKLIMS_REST_API
+    request, param = relecov_core.config.ISKLIMS_GET_SAMPLE_PROJECT_FIELDS
     r_api = relecov_tools.rest_api.RestApi(iskylims_server, iskylims_url)
     data = r_api.get_request(request, param, project)
     if "ERROR" in data:
@@ -161,8 +151,8 @@ def get_summarize_data(param_data):
     iskylims_server = relecov_core.utils.generic_functions.get_configuration_value(
         "ISKYLIMS_SERVER"
     )
-    iskylims_url = ISKLIMS_REST_API
-    request = ISKLIMS_GET_SUMMARIZE_DATA
+    iskylims_url = relecov_core.config.ISKLIMS_REST_API
+    request = relecov_core.config.ISKLIMS_GET_SUMMARIZE_DATA
     r_api = relecov_tools.rest_api.RestApi(iskylims_server, iskylims_url)
     data = r_api.get_request(request, param_data)
     if "ERROR" in data:
@@ -175,8 +165,8 @@ def get_stats_data(param_data):
     iskylims_server = relecov_core.utils.generic_functions.get_configuration_value(
         "ISKYLIMS_SERVER"
     )
-    iskylims_url = ISKLIMS_REST_API
-    request = ISKLIMS_GET_STATS_DATA
+    iskylims_url = relecov_core.config.ISKLIMS_REST_API
+    request = relecov_core.config.ISKLIMS_GET_STATS_DATA
     r_api = relecov_tools.rest_api.RestApi(iskylims_server, iskylims_url)
     data = r_api.get_request(request, param_data)
     if "ERROR" in data:
@@ -189,8 +179,8 @@ def save_sample_form_data(post_data, credencials):
     iskylims_server = relecov_core.utils.generic_functions.get_configuration_value(
         "ISKYLIMS_SERVER"
     )
-    iskylims_url = ISKLIMS_REST_API
-    request = ISKLIMS_POST_SAMPLE_DATA
+    iskylims_url = relecov_core.config.ISKLIMS_REST_API
+    request = relecov_core.config.ISKLIMS_POST_SAMPLE_DATA
     r_api = relecov_tools.rest_api.RestApi(iskylims_server, iskylims_url)
 
     data = r_api.post_request(json.dumps(post_data), credencials, request)

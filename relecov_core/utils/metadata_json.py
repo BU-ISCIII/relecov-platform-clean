@@ -5,22 +5,14 @@ from django.db import DataError
 # Local imports
 import relecov_core.models
 import relecov_core.utils.generic_functions
-from relecov_core.core_config import (
-    METADATA_JSON_SUCCESSFUL_LOAD,
-    METADATA_JSON_UPLOAD_FOLDER,
-    ERROR_INVALID_JSON,
-    ERROR_INVALID_SCHEMA,
-    ERROR_SCHEMA_ALREADY_LOADED,
-    ERROR_SCHEMA_ID_NOT_DEFINED,
-    HEADING_SCHEMA_DISPLAY,
-)
+import relecov_core.config
 
 
 def get_metadata_json_data(metadata_id):
     """Get the properties defined for the schema"""
     metadata_obj = get_metadata_obj_from_id(metadata_id)
     if metadata_obj is None:
-        return {"ERROR": ERROR_SCHEMA_ID_NOT_DEFINED}
+        return {"ERROR": relecov_core.config.ERROR_SCHEMA_ID_NOT_DEFINED}
     metadata_data = {"s_data": []}
     if relecov_core.models.MetadataProperties.objects.filter(
         metadataID=metadata_obj
@@ -28,7 +20,7 @@ def get_metadata_json_data(metadata_id):
         s_prop_objs = relecov_core.models.MetadataProperties.objects.filter(
             metadataID=metadata_obj
         ).order_by("property")
-        metadata_data["heading"] = HEADING_SCHEMA_DISPLAY
+        metadata_data["heading"] = relecov_core.config.HEADING_SCHEMA_DISPLAY
         for s_prop_obj in s_prop_objs:
             metadata_data["s_data"].append(s_prop_obj.get_property_info())
     return metadata_data
@@ -61,9 +53,9 @@ def load_metadata_json(json_file):
     try:
         data["full_metadata_json"] = json.load(json_file)
     except json.decoder.JSONDecodeError:
-        return {"ERROR": ERROR_INVALID_JSON}
+        return {"ERROR": relecov_core.config.ERROR_INVALID_JSON}
     data["file_name"] = relecov_core.utils.generic_functions.store_file(
-        json_file, METADATA_JSON_UPLOAD_FOLDER
+        json_file, relecov_core.config.METADATA_JSON_UPLOAD_FOLDER
     )
     return data
 
@@ -120,7 +112,7 @@ def process_metadata_json_file(json_file, version, default, user, apps_name):
         "properties",
     ]
     if not check_heading_valid_json(metadata_data["full_metadata_json"], structure):
-        return {"ERROR": ERROR_INVALID_SCHEMA}
+        return {"ERROR": relecov_core.config.ERROR_INVALID_SCHEMA}
 
     metadata_name = metadata_data["full_metadata_json"]["project"]
 
@@ -135,7 +127,7 @@ def process_metadata_json_file(json_file, version, default, user, apps_name):
         metadata_version__iexact=version,
         metadata_apps_name__exact=apps_name,
     ).exists():
-        return {"ERROR": ERROR_SCHEMA_ALREADY_LOADED}
+        return {"ERROR": relecov_core.config.ERROR_SCHEMA_ALREADY_LOADED}
 
     data = {
         "file_name": metadata_data["file_name"],
@@ -156,4 +148,4 @@ def process_metadata_json_file(json_file, version, default, user, apps_name):
     if "ERROR" in result:
         return result
 
-    return {"SUCCESS": METADATA_JSON_SUCCESSFUL_LOAD}
+    return {"SUCCESS": relecov_core.config.METADATA_JSON_SUCCESSFUL_LOAD}
