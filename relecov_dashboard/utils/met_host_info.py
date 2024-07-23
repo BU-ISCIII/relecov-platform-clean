@@ -4,7 +4,7 @@ from collections import OrderedDict
 import pandas as pd
 
 # Local imports
-import relecov_core.utils.rest_api_handling
+import relecov_core.utils.rest_api
 import relecov_dashboard.dashboard_config
 import relecov_dashboard.utils.plotly
 
@@ -29,7 +29,7 @@ def host_info_graphics():
 
     def fetching_data_for_range_age():
         # get stats utilization fields from LIMS
-        lims_fields = relecov_core.utils.rest_api_handling.get_stats_data(
+        lims_fields = relecov_core.utils.rest_api.get_stats_data(
             {"sample_project_name": "Relecov", "project_field": "host_age"}
         )
         host_age = {}
@@ -57,7 +57,7 @@ def host_info_graphics():
         return host_age_range_df, invalid_data
 
     def fetching_data_for_sex_and_range_data():
-        lims_fields = relecov_core.utils.rest_api_handling.get_stats_data(
+        lims_fields = relecov_core.utils.rest_api.get_stats_data(
             {"sample_project_name": "Relecov", "project_field": "host_gender,host_age"}
         )
         max_value = 0
@@ -91,7 +91,7 @@ def host_info_graphics():
 
     def fetching_data_for_gender():
         # get stats for host gender from LIMS
-        lims_fields = relecov_core.utils.rest_api_handling.get_stats_data(
+        lims_fields = relecov_core.utils.rest_api.get_stats_data(
             {"sample_project_name": "Relecov", "project_field": "host_gender"}
         )
         if "ERROR" in lims_fields:
