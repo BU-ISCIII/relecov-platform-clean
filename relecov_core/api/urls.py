@@ -2,7 +2,7 @@
 from django.urls import path
 
 # Local imports
-import relecov_core.api
+import relecov_core.api.views
 
 app_name = "relecov_api"
 
