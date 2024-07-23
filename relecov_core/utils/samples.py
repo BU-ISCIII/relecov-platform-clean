@@ -304,7 +304,7 @@ def create_dash_bar_for_each_lab():
     and call dash plotly function to display
     """
     df_data = pd.DataFrame(get_sample_per_date_per_all_lab(detailed=True))
-    relecov_core.utils.plotly_dash_graphics(get_all_lab_list(), df_data)
+    relecov_core.utils.plotly_dash_graphics.dash_bar_lab(get_all_lab_list(), df_data)
     return
 
 
