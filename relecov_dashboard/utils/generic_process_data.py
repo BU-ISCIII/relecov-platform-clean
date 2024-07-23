@@ -5,7 +5,7 @@ from datetime import datetime
 import relecov_core.models
 import relecov_core.utils.lineage
 import relecov_core.utils.variants
-import relecov_core.utils.rest_api_handling
+import relecov_core.utils.rest_api
 import relecov_dashboard.models
 
 
@@ -83,7 +83,7 @@ def pre_proc_calculation_date():
     )
 
     # send request to iSkyLIMS
-    collection_date = relecov_core.utils.rest_api_handling.get_sample_parameter_data(
+    collection_date = relecov_core.utils.rest_api.get_sample_parameter_data(
         "collectionSampleDate"
     )
     collection_date = convert_data_to_sample_dict(
@@ -93,7 +93,7 @@ def pre_proc_calculation_date():
         collection_date, "-", invalid_samples
     )
 
-    recorded_date = relecov_core.utils.rest_api_handling.get_sample_parameter_data(
+    recorded_date = relecov_core.utils.rest_api.get_sample_parameter_data(
         "sampleEntryDate"
     )
     recorded_date = convert_data_to_sample_dict(
@@ -134,7 +134,7 @@ def pre_proc_variant_graphic():
     GraphicJsonFile. Smoothing is performed before saving into database
     """
 
-    in_date_samples = relecov_core.utils.rest_api_handling.fetch_samples_on_condition(
+    in_date_samples = relecov_core.utils.rest_api.fetch_samples_on_condition(
         "collectionSampleDate"
     )
     if "ERROR" in in_date_samples:
@@ -292,7 +292,7 @@ def pre_proc_variations_per_lineage(chromosome=None):
 # preprocessing data for Sample processing dashboard
 def pre_proc_specimen_source_pcr_1():
     """Collect the cts values when using pcr 1 and per specimen source"""
-    lims_data = relecov_core.utils.rest_api_handling.get_stats_data(
+    lims_data = relecov_core.utils.rest_api.get_stats_data(
         {
             "sample_project_name": "Relecov",
             "project_field": "specimen_source,diagnostic_pcr_Ct_value_1",
@@ -310,7 +310,7 @@ def pre_proc_specimen_source_pcr_1():
 
 def pre_proc_extraction_protocol_pcr_1():
     """Collect the cts values when using pcr 1 and per specimen source"""
-    lims_data = relecov_core.utils.rest_api_handling.get_stats_data(
+    lims_data = relecov_core.utils.rest_api.get_stats_data(
         {
             "sample_project_name": "Relecov",
             "project_field": "nucleic_acid_extraction_protocol,diagnostic_pcr_Ct_value_1",
@@ -329,7 +329,7 @@ def pre_proc_extraction_protocol_pcr_1():
 # preprocessing data for Sequencing dashboard
 def pre_proc_library_kit_pcr_1():
     """Collect the cts values when using pcr 1 and per library preparation kit"""
-    lims_data = relecov_core.utils.rest_api_handling.get_stats_data(
+    lims_data = relecov_core.utils.rest_api.get_stats_data(
         {
             "sample_project_name": "Relecov",
             "project_field": "library_preparation_kit,diagnostic_pcr_Ct_value_1",
@@ -347,7 +347,7 @@ def pre_proc_library_kit_pcr_1():
 
 def pre_proc_based_pairs_sequenced():
     based_pairs = {}
-    pcr_ct_1_values = relecov_core.utils.rest_api_handling.get_sample_parameter_data(
+    pcr_ct_1_values = relecov_core.utils.rest_api.get_sample_parameter_data(
         {"sample_project_name": "relecov", "parameter": "diagnostic_pcr_Ct_value_1"}
     )
     if "ERROR" in pcr_ct_1_values:
@@ -426,7 +426,7 @@ def pre_proc_depth_sample_run():
     ).values("value", "sample__collecting_lab_sample_id")
     if len(depth_sample_list) == 0:
         return {"ERROR": "No data"}
-    sample_in_run = relecov_core.utils.rest_api_handling.get_sample_parameter_data(
+    sample_in_run = relecov_core.utils.rest_api.get_sample_parameter_data(
         {"sample_project_name": "relecov", "parameter": "number_of_samples_in_run"}
     )
     # return error, no connection to LIMS

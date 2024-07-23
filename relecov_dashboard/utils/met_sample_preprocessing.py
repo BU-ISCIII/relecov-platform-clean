@@ -2,7 +2,7 @@
 import pandas
 
 # Local imports
-import relecov_core.utils.rest_api_handling
+import relecov_core.utils.rest_api
 import relecov_dashboard.utils.generic_graphic_data
 import relecov_dashboard.utils.generic_process_data
 import relecov_dashboard.utils.plotly
@@ -58,7 +58,7 @@ def sample_processing_graphics():
 
     def fetch_data(project_field, columns):
         # get stats utilization fields from LIMS about nucleic acid extraction protocol
-        lims_data = relecov_core.utils.rest_api_handling.get_stats_data(
+        lims_data = relecov_core.utils.rest_api.get_stats_data(
             {
                 "sample_project_name": "Relecov",
                 "project_field": project_field,
