@@ -1,11 +1,9 @@
 # Generic imports
 from statistics import mean
-
 import pandas as pd
 
 # Local imports
-import relecov_core.utils.rest_api_handling
-import relecov_core.utils.schema_handling
+import relecov_core.utils.rest_api
 import relecov_dashboard.utils.generic_graphic_data
 import relecov_dashboard.utils.plotly
 import relecov_dashboard.utils.generic_process_data
@@ -60,7 +58,7 @@ def sequencing_graphics():
 
     def fetch_sequencing_data(project_field, columns):
         # get stats utilization fields from LIMS
-        lims_data = relecov_core.utils.rest_api_handling.get_stats_data(
+        lims_data = relecov_core.utils.rest_api.get_stats_data(
             {
                 "sample_project_name": "Relecov",
                 "project_field": project_field,
