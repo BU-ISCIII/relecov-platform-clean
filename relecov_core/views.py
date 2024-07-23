@@ -257,8 +257,10 @@ def intranet(request):
             sample_lab_objs = relecov_core.utils.samples.get_sample_objs_per_lab(
                 lab_name
             )
-            analysis_percent = relecov_core.utils.bioinfo_analysis.get_bio_analysis_stats_from_lab(
-                lab_name
+            analysis_percent = (
+                relecov_core.utils.bioinfo_analysis.get_bio_analysis_stats_from_lab(
+                    lab_name
+                )
             )
             cust_data = {
                 "col_names": ["Sequencing Date", "Number of samples"],
@@ -320,7 +322,9 @@ def intranet(request):
                 )
             )
             # graph for percentage analysis
-            analysis_percent = relecov_core.utils.bioinfo_analysis.get_bio_analysis_stats_from_lab()
+            analysis_percent = (
+                relecov_core.utils.bioinfo_analysis.get_bio_analysis_stats_from_lab()
+            )
             manager_intra_data["sample_gauge_graph"] = (
                 relecov_core.utils.samples.perc_gauge_graphic(analysis_percent)
             )
