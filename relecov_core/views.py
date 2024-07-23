@@ -545,17 +545,17 @@ def received_samples(request):
 
     # # collecting now data from database
     sample_data["received_samples_graph"] = (
-        relecov_core.utils.samples_graphics.display_received_samples_graph()
+        relecov_core.utils.samples_graphics.received_samples_graph()
     )
     # Pie charts
     # data = parse_json_file()
     # create_samples_received_over_time_per_ccaa_pieChart(data)
     sample_data["samples_per_ccaa"] = (
-        relecov_core.utils.samples_graphics.display_received_per_ccaa()
+        relecov_core.utils.samples_graphics.received_per_ccaa()
     )
     # create_samples_received_over_time_per_laboratory_pieChart(data)
     sample_data["samples_per_lab"] = (
-        relecov_core.utils.samples_graphics.display_received_per_lab()
+        relecov_core.utils.samples_graphics.received_per_lab()
     )
     return render(
         request,
