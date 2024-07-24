@@ -664,6 +664,8 @@ def get_all_recieved_samples_with_dates(accumulated=False):
     )
     sum = 0
     for date in dates:
+        if date[0] is None:
+            continue
         value = relecov_core.models.Sample.objects.filter(
             sequencing_date__contains=date[0]
         ).count()
