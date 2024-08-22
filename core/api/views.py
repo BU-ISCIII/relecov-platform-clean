@@ -102,9 +102,7 @@ def create_sample_data(request):
         if isinstance(data, QueryDict):
             data = data.dict()
 
-        schema_obj = (
-            core.api.utils.common_functions.get_schema_version_if_exists(data)
-        )
+        schema_obj = core.api.utils.common_functions.get_schema_version_if_exists(data)
         if schema_obj is None:
             error = {"ERROR": "schema name and version is not defined"}
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
@@ -137,8 +135,8 @@ def create_sample_data(request):
             "sampleID": sample_id,
             "stateID": split_data["sample"]["state"],
         }
-        date_serilizer = (
-            core.api.serializers.CreateDateAfterChangeStateSerializer(data=data)
+        date_serilizer = core.api.serializers.CreateDateAfterChangeStateSerializer(
+            data=data
         )
         if date_serilizer.is_valid():
             date_serilizer.save()
@@ -163,9 +161,7 @@ def create_sample_data(request):
                 )
                 data = {"sampleID": sample_id, "stateID": state_id}
                 date_serilizer = (
-                    core.api.serializers.CreateDateAfterChangeStateSerializer(
-                        data=data
-                    )
+                    core.api.serializers.CreateDateAfterChangeStateSerializer(data=data)
                 )
                 if date_serilizer.is_valid():
                     date_serilizer.save()
@@ -180,17 +176,13 @@ def create_sample_data(request):
                 # Save entry in update state table
                 sample_obj.update_state("Gisaid")
                 state_id = (
-                    core.models.SampleState.objects.filter(
-                        state__exact="Gisaid"
-                    )
+                    core.models.SampleState.objects.filter(state__exact="Gisaid")
                     .last()
                     .get_state_id()
                 )
                 data = {"sampleID": sample_id, "stateID": state_id}
                 date_serilizer = (
-                    core.api.serializers.CreateDateAfterChangeStateSerializer(
-                        data=data
-                    )
+                    core.api.serializers.CreateDateAfterChangeStateSerializer(data=data)
                 )
                 if date_serilizer.is_valid():
                     date_serilizer.save()
@@ -357,9 +349,7 @@ def create_bioinfo_metadata(request):
     if isinstance(data, QueryDict):
         data = data.dict()
     # check schema (name and version)
-    schema_obj = core.api.utils.common_functions.get_schema_version_if_exists(
-        data
-    )
+    schema_obj = core.api.utils.common_functions.get_schema_version_if_exists(data)
     if schema_obj is None:
         error = {"ERROR": "schema name and version is not defined"}
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
@@ -377,9 +367,7 @@ def create_bioinfo_metadata(request):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    analysis_defined = core.api.utils.bioinfo_metadata.get_analysis_defined(
-        sample_obj
-    )
+    analysis_defined = core.api.utils.bioinfo_metadata.get_analysis_defined(sample_obj)
     analysis_date = data.get("analysis_date", None)
     if analysis_date is not None:
         if analysis_date in list(analysis_defined):
@@ -388,9 +376,7 @@ def create_bioinfo_metadata(request):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-    split_data = core.api.utils.bioinfo_metadata.split_bioinfo_data(
-        data, schema_obj
-    )
+    split_data = core.api.utils.bioinfo_metadata.split_bioinfo_data(data, schema_obj)
     if "ERROR" in split_data:
         return Response(split_data, status=status.HTTP_400_BAD_REQUEST)
 
@@ -558,10 +544,8 @@ def create_variant_data(request):
                 found_error = True
                 break
 
-            variant_in_sample_obj = (
-                core.api.utils.variants.store_variant_in_sample(
-                    split_data["variant_in_sample"]
-                )
+            variant_in_sample_obj = core.api.utils.variants.store_variant_in_sample(
+                split_data["variant_in_sample"]
             )
             if isinstance(variant_in_sample_obj, dict):
                 error = {"ERROR": variant_in_sample_obj}
@@ -573,10 +557,8 @@ def create_variant_data(request):
             if not core.api.utils.variants.variant_annotation_exists(
                 split_data["variant_ann"]
             ):
-                variant_ann_obj = (
-                    core.api.utils.variants.store_variant_annotation(
-                        split_data["variant_ann"]
-                    )
+                variant_ann_obj = core.api.utils.variants.store_variant_annotation(
+                    split_data["variant_ann"]
                 )
                 if isinstance(variant_ann_obj, dict):
                     error = {"ERROR": variant_ann_obj}
@@ -586,9 +568,7 @@ def create_variant_data(request):
                 v_an_list.append(variant_ann_obj)
 
         if found_error:
-            core.api.utils.variants.delete_created_variancs(
-                v_in_sample_list, v_an_list
-            )
+            core.api.utils.variants.delete_created_variancs(v_in_sample_list, v_an_list)
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
         sample_obj.update_state("Variant")
@@ -599,9 +579,7 @@ def create_variant_data(request):
             .get_state_id()
         )
         sample_id = sample_obj.get_sample_id()
-        core.api.utils.common_functions.update_change_state_date(
-            sample_id, state_id
-        )
+        core.api.utils.common_functions.update_change_state_date(sample_id, state_id)
 
         return Response(status=status.HTTP_201_CREATED)
     return Response(error, status=status.HTTP_400_BAD_REQUEST)
@@ -649,9 +627,7 @@ def update_state(request):
         # if state exists,
         if core.models.SampleState.objects.filter(state=data["state"]).exists():
             s_data = {
-                "state": core.models.SampleState.objects.filter(
-                    state=data["state"]
-                )
+                "state": core.models.SampleState.objects.filter(state=data["state"])
                 .last()
                 .get_state_id()
             }

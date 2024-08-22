@@ -14,9 +14,7 @@ def get_metadata_json_data(metadata_id):
     if metadata_obj is None:
         return {"ERROR": core.config.ERROR_SCHEMA_ID_NOT_DEFINED}
     metadata_data = {"s_data": []}
-    if core.models.MetadataProperties.objects.filter(
-        metadataID=metadata_obj
-    ).exists():
+    if core.models.MetadataProperties.objects.filter(metadataID=metadata_obj).exists():
         s_prop_objs = core.models.MetadataProperties.objects.filter(
             metadataID=metadata_obj
         ).order_by("property")

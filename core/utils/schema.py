@@ -109,9 +109,7 @@ def get_schema_display_data(schema_id):
     if schema_obj is None:
         return {"ERROR": core.config.ERROR_SCHEMA_ID_NOT_DEFINED}
     schema_data = {"s_data": []}
-    if core.models.SchemaProperties.objects.filter(
-        schemaID=schema_obj
-    ).exists():
+    if core.models.SchemaProperties.objects.filter(schemaID=schema_obj).exists():
         s_prop_objs = core.models.SchemaProperties.objects.filter(
             schemaID=schema_obj
         ).order_by("property")
@@ -124,9 +122,7 @@ def get_schema_display_data(schema_id):
 def get_schemas_loaded(apps_name):
     """Return the definded schemas"""
     s_data = []
-    if core.models.Schema.objects.filter(
-        schema_apps_name__exact=apps_name
-    ).exists():
+    if core.models.Schema.objects.filter(schema_apps_name__exact=apps_name).exists():
         schema_objs = core.models.Schema.objects.filter(
             schema_apps_name__exact=apps_name
         ).order_by("schema_name")
@@ -185,9 +181,7 @@ def get_schema_properties(schema):
     """Fetch the list of the properties"""
     s_prop_dict = {}
     if core.models.SchemaProperties.objects.filter(schemaID=schema).exists():
-        s_prop_objs = core.models.SchemaProperties.objects.filter(
-            schemaID=schema
-        )
+        s_prop_objs = core.models.SchemaProperties.objects.filter(schemaID=schema)
         for s_prop_obj in s_prop_objs:
             p_name = s_prop_obj.get_property_name()
             s_prop_dict[p_name] = {}
@@ -210,9 +204,7 @@ def store_fields_metadata_visualization(data):
         m_data = {"schema_id": schema_obj}
         for idx in range(len(fields)):
             m_data[fields[idx]] = row[idx]
-        core.models.MetadataVisualization.objects.create_metadata_visualization(
-            m_data
-        )
+        core.models.MetadataVisualization.objects.create_metadata_visualization(m_data)
         entry_num += 1
     if entry_num == 0:
         return {"ERROR": core.config.NO_SELECTED_LABEL_WAS_DONE}
@@ -230,8 +222,8 @@ def store_schema_properties(schema_obj, s_properties, required):
         if "enum" in data:
             data["options"] = True
         try:
-            new_property = (
-                core.models.SchemaProperties.objects.create_new_property(data)
+            new_property = core.models.SchemaProperties.objects.create_new_property(
+                data
             )
         except (KeyError, DataError) as e:
             print(prop_key, " error ", e)
@@ -246,9 +238,7 @@ def store_schema_properties(schema_obj, s_properties, required):
                     e_data = {"enum": item, "ontology": None}
                 e_data["propertyID"] = new_property
                 try:
-                    core.models.PropertyOptions.objects.create_property_options(
-                        e_data
-                    )
+                    core.models.PropertyOptions.objects.create_property_options(e_data)
                 except (KeyError, DataError) as e:
                     print(prop_key, " enum ", e)
                     # schema_obj.delete()
@@ -274,9 +264,7 @@ def store_bioinfo_fields(schema_obj, s_properties):
             # fields["classificationID"] = class_obj
             fields["property_name"] = prop_key
             fields["label_name"] = data["label"]
-            n_field = core.models.BioinfoAnalysisField.objects.create_new_field(
-                fields
-            )
+            n_field = core.models.BioinfoAnalysisField.objects.create_new_field(fields)
             n_field.schemaID.add(schema_obj)
     return {"SUCCESS": ""}
 
@@ -313,9 +301,7 @@ def store_public_data_fields(schema_obj, s_properties):
                 public_type_name__exact=database_type
             ).last()
             fields["database_type"] = p_database_type_obj
-            p_field = core.models.PublicDatabaseFields.objects.create_new_field(
-                fields
-            )
+            p_field = core.models.PublicDatabaseFields.objects.create_new_field(fields)
             p_field.schemaID.add(schema_obj)
 
 

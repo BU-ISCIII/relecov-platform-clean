@@ -46,9 +46,7 @@ def received_per_lab():
 
 def received_samples_graph():
     """Fetch the number of samples received in the plaftorm and show them"""
-    r_data = core.utils.samples.get_all_recieved_samples_with_dates(
-        accumulated=True
-    )
+    r_data = core.utils.samples.get_all_recieved_samples_with_dates(accumulated=True)
     data = {"x": [], "y": []}
     for r_dat in r_data:
         for key, value in r_dat.items():
@@ -64,6 +62,4 @@ def received_samples_graph():
         "y_title": "Number of samples",
         "title": "",
     }
-    return core.utils.plotly_graphics.line_graphic(
-        data["x"], data["y"], options
-    )
+    return core.utils.plotly_graphics.line_graphic(data["x"], data["y"], options)

@@ -8,9 +8,7 @@ import core.config
 def create_or_get_filter_obj(filter_value):
     """Return the filter instance or create if not exists"""
     if core.models.Filter.objects.filter(filter__iexact=filter_value).exists():
-        return core.models.Filter.objects.filter(
-            filter__iexact=filter_value
-        ).last()
+        return core.models.Filter.objects.filter(filter__iexact=filter_value).last()
     filter_serializer = core.api.serializers.CreateFilterSerializer(
         data={"filter": filter_value}
     )
@@ -23,9 +21,7 @@ def create_or_get_filter_obj(filter_value):
 def create_or_get_effect_obj(effect_value):
     """Return the effect instance or create if not exists"""
     if core.models.Effect.objects.filter(effect__iexact=effect_value).exists():
-        return core.models.Effect.objects.filter(
-            effect__iexact=effect_value
-        ).last()
+        return core.models.Effect.objects.filter(effect__iexact=effect_value).last()
     effect_serializer = core.api.serializers.CreateEffectSerializer(
         data={"effect": effect_value}
     )
@@ -55,8 +51,8 @@ def store_variant_annotation(v_ann_data):
 
 
 def store_variant_in_sample(v_data):
-    v_in_sample_serializer = (
-        core.api.serializers.CreateVariantInSampleSerializer(data=v_data)
+    v_in_sample_serializer = core.api.serializers.CreateVariantInSampleSerializer(
+        data=v_data
     )
     if not v_in_sample_serializer.is_valid():
         return {"ERROR": core.config.ERROR_UNABLE_TO_STORE_IN_DATABASE}
@@ -95,9 +91,9 @@ def get_variant_id(data):
 
 
 def get_variant_analysis_defined(s_obj):
-    return core.models.VariantInSample.objects.filter(
-        sampleID_id=s_obj
-    ).values_list("analysis_date", flat=True)
+    return core.models.VariantInSample.objects.filter(sampleID_id=s_obj).values_list(
+        "analysis_date", flat=True
+    )
 
 
 def get_required_variant_ann_id(data):

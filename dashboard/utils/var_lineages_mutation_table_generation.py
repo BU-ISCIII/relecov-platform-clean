@@ -43,11 +43,9 @@ def create_dataframe(sample_list, effect_list):
             )
 
             for variant_in_sample_obj in variant_in_sample_objs:
-                variant_annotation_obj = (
-                    core.models.VariantAnnotation.objects.filter(
-                        variantID_id=variant_in_sample_obj.get_variantID_id()
-                    ).last()
-                )
+                variant_annotation_obj = core.models.VariantAnnotation.objects.filter(
+                    variantID_id=variant_in_sample_obj.get_variantID_id()
+                ).last()
                 effect_obj = core.models.Effect.objects.filter(
                     effect__iexact=variant_annotation_obj.get_effectID_id()
                 ).last()

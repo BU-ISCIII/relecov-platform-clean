@@ -31,8 +31,8 @@ def get_analysis_defined(s_obj):
 def update_change_state_date(sample_id, state_id):
     """Update the DateUpdateState table with the new sample state"""
     d_date = {"stateID": state_id, "sampleID": sample_id}
-    date_update_serializer = (
-        core.api.serializers.CreateDateAfterChangeStateSerializer(data=d_date)
+    date_update_serializer = core.api.serializers.CreateDateAfterChangeStateSerializer(
+        data=d_date
     )
     if date_update_serializer.is_valid():
         date_update_serializer.save()

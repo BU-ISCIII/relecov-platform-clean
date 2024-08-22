@@ -93,9 +93,7 @@ def pre_proc_calculation_date():
         collection_date, "-", invalid_samples
     )
 
-    recorded_date = core.utils.rest_api.get_sample_parameter_data(
-        "sampleEntryDate"
-    )
+    recorded_date = core.utils.rest_api.get_sample_parameter_data("sampleEntryDate")
     recorded_date = convert_data_to_sample_dict(
         recorded_date, "Sample Name", "sampleEntryDate"
     )
@@ -255,14 +253,12 @@ def pre_proc_variations_per_lineage(chromosome=None):
                 .count()
             )
             mut_freq_population = number_samples_wmutation / number_samples_wlineage
-            pos = core.models.VariantInSample.objects.filter(
-                variantID_id=variant
-            )[0].get_pos()
+            pos = core.models.VariantInSample.objects.filter(variantID_id=variant)[
+                0
+            ].get_pos()
 
             effects = (
-                core.models.VariantAnnotation.objects.filter(
-                    variantID_id__pk=variant
-                )
+                core.models.VariantAnnotation.objects.filter(variantID_id__pk=variant)
                 .values_list("effectID_id__effect", flat=True)
                 .last()
             )

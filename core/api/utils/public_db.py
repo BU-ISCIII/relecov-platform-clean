@@ -17,17 +17,13 @@ def store_pub_databases_data(data, pub_db, schema_obj, sample_id):
             value_data["value"] = data[prop_name]
         except KeyError:
             value_data["value"] = ""
-        value_serializer = (
-            core.api.serializers.CreatePublicDatabaseValueSerializer(
-                data=value_data
-            )
+        value_serializer = core.api.serializers.CreatePublicDatabaseValueSerializer(
+            data=value_data
         )
         if not value_serializer.is_valid():
             return {
                 "ERROR": str(
-                    prop_name
-                    + " "
-                    + core.config.ERROR_UNABLE_TO_STORE_IN_DATABASE
+                    prop_name + " " + core.config.ERROR_UNABLE_TO_STORE_IN_DATABASE
                 )
             }
         value_serializer.save()

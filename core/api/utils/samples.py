@@ -9,9 +9,7 @@ import core.config
 
 def prepare_fields_in_sample(s_data):
     """Add sample state and set to None GISAID and ENA if not set"""
-    if not core.models.SampleState.objects.filter(
-        state__exact="Defined"
-    ).exists():
+    if not core.models.SampleState.objects.filter(state__exact="Defined").exists():
         return {"ERROR": core.config.ERROR_INTIAL_SETTINGS_NOT_DEFINED}
     s_data["state"] = (
         core.models.SampleState.objects.filter(state__exact="Defined")
@@ -67,9 +65,7 @@ def split_sample_data(data):
         )
     )
     if core.models.Sample.objects.all().exists():
-        last_unique_value = (
-            core.models.Sample.objects.all().last().get_unique_id()
-        )
+        last_unique_value = core.models.Sample.objects.all().last().get_unique_id()
         split_data["sample"]["sample_unique_id"] = (
             core.utils.samples.increase_unique_value(last_unique_value)
         )

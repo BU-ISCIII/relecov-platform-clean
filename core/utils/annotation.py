@@ -22,9 +22,7 @@ def get_annotations():
 
 def check_if_annotation_exists(annot_id):
     """check if the annotation id exists on database"""
-    if core.models.OrganismAnnotation.objects.filter(
-        pk__exact=annot_id
-    ).exists():
+    if core.models.OrganismAnnotation.objects.filter(pk__exact=annot_id).exists():
         return True
     return False
 
@@ -46,9 +44,7 @@ def get_annotation_data(annot_id):
     annot_data["organism"] = annot_obj.get_organism_code()
     annot_data["version"] = annot_obj.get_organism_code_version()
 
-    genes_in_chrom = core.models.Gene.objects.filter(
-        chromosomeID=chromosome_obj
-    )
+    genes_in_chrom = core.models.Gene.objects.filter(chromosomeID=chromosome_obj)
     if genes_in_chrom.exists():
         gene_objs = genes_in_chrom.order_by("gene_start")
         genes = []
@@ -63,12 +59,8 @@ def get_annotation_data(annot_id):
 
 def get_annotation_obj_from_id(annot_id):
     """Return the instace object from the id"""
-    if core.models.OrganismAnnotation.objects.filter(
-        pk__exact=annot_id
-    ).exists():
-        return core.models.OrganismAnnotation.objects.filter(
-            pk__exact=annot_id
-        ).last()
+    if core.models.OrganismAnnotation.objects.filter(pk__exact=annot_id).exists():
+        return core.models.OrganismAnnotation.objects.filter(pk__exact=annot_id).last()
     return None
 
 
@@ -111,12 +103,8 @@ def read_gff_file(a_file):
 def store_gff(gff_parsed, user):
     """Save in database the gff information"""
     organism = gff_parsed["organism_code"] + "." + gff_parsed["organism_code_version"]
-    if not core.models.Chromosome.objects.filter(
-        chromosome__iexact=organism
-    ).exists():
-        chrom_obj = core.models.Chromosome.objects.create_new_chromosome(
-            organism
-        )
+    if not core.models.Chromosome.objects.filter(chromosome__iexact=organism).exists():
+        chrom_obj = core.models.Chromosome.objects.create_new_chromosome(organism)
     else:
         chrom_obj = core.models.Chromosome.objects.filter(
             chromosome__iexact=organism
