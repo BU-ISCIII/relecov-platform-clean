@@ -506,21 +506,6 @@ if [ $install == true ]; then
             fi
         fi
 
-        echo "Installing Interop"
-        if [ -d /opt/interop ]; then
-            echo "There is already an interop installation"
-            echo "Skipping Interop installation"
-        else
-            cd /opt
-            echo "Downloading interop software"
-            wget https://github.com/Illumina/interop/releases/download/v1.1.15/InterOp-1.1.15-Linux-GNU.tar.gz
-            tar -xf  InterOp-1.1.15-Linux-GNU.tar.gz
-            ln -s InterOp-1.1.15-Linux-GNU interop
-            rm InterOp-1.1.15-Linux-GNU.tar.gz
-            echo "Interop is now installed"
-            cd -
-        fi
-
         if [[ $linux_distribution == "Ubuntu" ]]; then
             echo "Software installation for Ubuntu"
             apt-get update && apt-get upgrade -y
