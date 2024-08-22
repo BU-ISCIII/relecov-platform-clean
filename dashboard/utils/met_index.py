@@ -25,9 +25,7 @@ def schema_fields_utilization():
         "percent": [],
     }
     # get stats utilization fields from LIMS
-    lims_fields = core.utils.rest_api.get_stats_data(
-        {"sample_project_name": "Relecov"}
-    )
+    lims_fields = core.utils.rest_api.get_stats_data({"sample_project_name": "Relecov"})
     if "ERROR" in lims_fields:
         util_data["ERROR"] = lims_fields["ERROR"]
     else:
@@ -53,10 +51,8 @@ def schema_fields_utilization():
         util_data["num_lab_fields"] = len(lims_fields["fields_value"])
 
     # get fields utilization from bioinfo analysis
-    bio_fields = (
-        core.utils.bioinfo_analysis.get_bioinfo_analyis_fields_utilization(
-            schema_obj
-        )
+    bio_fields = core.utils.bioinfo_analysis.get_bioinfo_analyis_fields_utilization(
+        schema_obj
     )
     # if return an empty value skip looking for data
     if not bool(bio_fields):

@@ -55,13 +55,9 @@ def get_variant_data_from_sample(sample_id):
     if sample_obj is None:
         return data
     variant_data = []
-    if core.models.VariantInSample.objects.filter(
-        sampleID_id=sample_obj
-    ).exists():
+    if core.models.VariantInSample.objects.filter(sampleID_id=sample_obj).exists():
         data["heading"] = core.config.HEADING_FOR_VARIANT_TABLE_DISPLAY
-        v_in_s_objs = core.models.VariantInSample.objects.filter(
-            sampleID_id=sample_obj
-        )
+        v_in_s_objs = core.models.VariantInSample.objects.filter(sampleID_id=sample_obj)
         for v_in_s_obj in v_in_s_objs:
             # DP,REF_DP,ALT_DP,AF
             v_in_s_data = v_in_s_obj.get_variant_in_sample_data()
@@ -101,9 +97,7 @@ def get_variant_graphic_from_sample(sample_id):
     """Collect the variant information to send to create the plotly graphic"""
     v_data = {"x": [], "y": [], "v_id": []}
     sample_obj = core.utils.samples.get_sample_obj_from_id(sample_id)
-    if core.models.VariantInSample.objects.filter(
-        sampleID_id=sample_obj
-    ).exists():
+    if core.models.VariantInSample.objects.filter(sampleID_id=sample_obj).exists():
         raw_data = core.models.VariantInSample.objects.filter(
             sampleID_id=sample_obj
         ).values(x=F("variantID_id__pos"), y=F("af"), v_id=F("variantID_id__pk"))
@@ -142,9 +136,7 @@ def get_variant_graphic_from_sample(sample_id):
 
 def get_gene_obj_from_gene_name(gene_name):
     if core.models.Gene.objects.filter(gene_name__iexact=gene_name).exists():
-        return core.models.Gene.objects.filter(
-            gene_name__iexact=gene_name
-        ).last()
+        return core.models.Gene.objects.filter(gene_name__iexact=gene_name).last()
     return None
 
 
@@ -204,9 +196,7 @@ def get_if_chromosomes_exists(chromosome):
 
 def get_gene_objs(chromosome):
     """Get gene objs defined for the chromosome"""
-    chromosome_obj = core.models.Chromosome.objects.filter(
-        chromosome=chromosome
-    ).last()
+    chromosome_obj = core.models.Chromosome.objects.filter(chromosome=chromosome).last()
 
     if core.models.Gene.objects.filter(chromosomeID=chromosome_obj).exists():
         return core.models.Gene.objects.filter(chromosomeID=chromosome_obj)
@@ -229,9 +219,7 @@ def get_alelle_frequency_per_sample(sample_name, chromosome):
     list_of_af = []
     chrom_obj = get_if_chromosomes_exists(chromosome)
     if chrom_obj:
-        sample_obj = core.utils.samples.get_sample_obj_from_sample_name(
-            sample_name
-        )
+        sample_obj = core.utils.samples.get_sample_obj_from_sample_name(sample_name)
         if sample_obj:
             variant_in_sample_objs = core.models.VariantInSample.objects.filter(
                 sampleID_id=sample_obj
@@ -245,19 +233,15 @@ def create_effect_list(sample_name, chromosome):
     list_of_effects = []
     chrom_obj = get_if_chromosomes_exists(chromosome)
     if chrom_obj:
-        sample_obj = core.utils.samples.get_sample_obj_from_sample_name(
-            sample_name
-        )
+        sample_obj = core.utils.samples.get_sample_obj_from_sample_name(sample_name)
         if sample_obj:
             variant_in_sample_objs = core.models.VariantInSample.objects.filter(
                 sampleID_id=sample_obj
             )
             for variant_in_sample_obj in variant_in_sample_objs:
                 variant_obj = variant_in_sample_obj.get_variantID_id()
-                variant_annotation_objs = (
-                    core.models.VariantAnnotation.objects.filter(
-                        variantID_id=variant_obj
-                    )
+                variant_annotation_objs = core.models.VariantAnnotation.objects.filter(
+                    variantID_id=variant_obj
                 )
 
                 for variant_annotation_obj in variant_annotation_objs:
@@ -272,9 +256,7 @@ def get_position_per_sample(sample_name, chromosome):
     list_of_position = []
     chrom_obj = get_if_chromosomes_exists(chromosome)
     if chrom_obj:
-        sample_obj = core.utils.samples.get_sample_obj_from_sample_name(
-            sample_name
-        )
+        sample_obj = core.utils.samples.get_sample_obj_from_sample_name(sample_name)
         if sample_obj:
             variant_in_sample_objs = core.models.VariantInSample.objects.filter(
                 sampleID_id=sample_obj

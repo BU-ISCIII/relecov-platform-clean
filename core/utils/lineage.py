@@ -21,9 +21,7 @@ def get_lineage_data_from_sample(sample_id):
     # Get the schema ID for filtering Fields
     schema_obj = sample_obj.get_schema_obj()
     a_data = []
-    if not core.models.LineageFields.objects.filter(
-        schemaID=schema_obj
-    ).exists():
+    if not core.models.LineageFields.objects.filter(schemaID=schema_obj).exists():
         return None
     a_fields = core.models.LineageFields.objects.filter(schemaID=schema_obj)
     for a_field in a_fields:

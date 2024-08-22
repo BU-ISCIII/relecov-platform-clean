@@ -29,9 +29,7 @@ def analyze_input_samples(request):
     s_json_data = json.loads(request.POST["table_data"])
     heading_in_form = request.POST["heading"].split(",")
     user_lab = (
-        core.models.Profile.objects.filter(user=request.user)
-        .last()
-        .get_lab_name()
+        core.models.Profile.objects.filter(user=request.user).last().get_lab_name()
     )
     submmit_institution = core.utils.generic_functions.get_configuration_value(
         "SUBMITTING_INSTITUTION"
@@ -84,9 +82,7 @@ def assign_samples_to_new_user(data):
         ).update(user=user_obj[0])
         return {"Success": "Success"}
     return {
-        "ERROR": core.config.ERROR_NO_SAMPLES_ARE_ASSIGNED_TO_LAB
-        + " "
-        + data["lab"]
+        "ERROR": core.config.ERROR_NO_SAMPLES_ARE_ASSIGNED_TO_LAB + " " + data["lab"]
     }
 
 
@@ -126,9 +122,7 @@ def create_form_for_batch(schema_obj, user_obj):
     # Remove the characters "schema" if exist in the name of the schema
     if "schema" in schema_name:
         schema_name = schema_name.replace("schema", "").strip()
-    i_sam_proj_raw = core.utils.rest_api.get_sample_project_fields_data(
-        schema_name
-    )
+    i_sam_proj_raw = core.utils.rest_api.get_sample_project_fields_data(schema_name)
     i_sam_proj_data = {}
     # Create the structure from the sample project fields get from iSkyLIMS
     for item in i_sam_proj_raw:
@@ -184,9 +178,7 @@ def create_form_for_sample(schema_obj):
     ).order_by("order")
     schema_name = schema_obj.get_schema_name()
     # Get the properties in schema for mapping
-    s_prop_objs = core.models.SchemaProperties.objects.filter(
-        schemaID=schema_obj
-    )
+    s_prop_objs = core.models.SchemaProperties.objects.filter(schemaID=schema_obj)
     s_prop_dict = {}
     for s_prop_obj in s_prop_objs:
         if s_prop_obj.get_ontology() == "0":
@@ -207,9 +199,7 @@ def create_form_for_sample(schema_obj):
     # Remove the characters "schema" if exist in the name of the schema
     if "schema" in schema_name:
         schema_name = schema_name.replace("schema", "").strip()
-    i_sam_proj_raw = core.utils.rest_api.get_sample_project_fields_data(
-        schema_name
-    )
+    i_sam_proj_raw = core.utils.rest_api.get_sample_project_fields_data(schema_name)
     if "ERROR" in i_sam_proj_raw:
         return {
             "ERROR": core.config.ERROR_UNABLE_FETCH_SAMPLE_PROJECT_FIELDS
@@ -513,9 +503,7 @@ def get_sample_per_date_per_all_lab(detailed=None):
         lab_list = get_all_lab_list()
         for lab in lab_list:
             date_list = (
-                core.models.Sample.objects.filter(
-                    collecting_institution__iexact=lab
-                )
+                core.models.Sample.objects.filter(collecting_institution__iexact=lab)
                 .values_list("sequencing_date", flat=True)
                 .distinct()
                 .order_by("sequencing_date")
@@ -541,9 +529,7 @@ def get_sample_per_date_per_lab(lab_name):
     samples_per_date = OrderedDict()
 
     s_dates = (
-        core.models.Sample.objects.filter(
-            collecting_institution__iexact=lab_name
-        )
+        core.models.Sample.objects.filter(collecting_institution__iexact=lab_name)
         .values_list("sequencing_date", flat=True)
         .distinct()
         .order_by("sequencing_date")
@@ -558,9 +544,7 @@ def get_sample_per_date_per_lab(lab_name):
 
 def get_sample_objs_per_lab(lab_name):
     """Get all sample instance for the lab who the user is responsible"""
-    return core.models.Sample.objects.filter(
-        collecting_institution__iexact=lab_name
-    )
+    return core.models.Sample.objects.filter(collecting_institution__iexact=lab_name)
 
 
 def get_search_data(user_obj):
@@ -590,11 +574,7 @@ def get_user_id_from_collecting_institution(lab):
     if no user is not defined with this lab it retruns None
     """
     if core.models.Profile.objects.filter(laboratory__iexact=lab).exists():
-        return (
-            core.models.Profile.objects.filter(laboratory__iexact=lab)
-            .last()
-            .user.pk
-        )
+        return core.models.Profile.objects.filter(laboratory__iexact=lab).last().user.pk
     return None
 
 
@@ -604,9 +584,7 @@ def join_sample_and_batch(b_data, user_obj, schema_obj):
     """
     join_data = []
     sample_dict = {}
-    if not core.models.TemporalSampleStorage.objects.filter(
-        user=user_obj
-    ).exists():
+    if not core.models.TemporalSampleStorage.objects.filter(user=user_obj).exists():
         return {"ERROR": core.config.ERROR_SAMPLES_NOT_DEFINED_IN_FORM}
     field_list = list(
         core.models.MetadataVisualization.objects.filter(schemaID=schema_obj)
@@ -614,9 +592,7 @@ def join_sample_and_batch(b_data, user_obj, schema_obj):
         .values_list("label_name", flat=True)
     )
     join_data.append(field_list)
-    t_sample_objs = core.models.TemporalSampleStorage.objects.filter(
-        user=user_obj
-    )
+    t_sample_objs = core.models.TemporalSampleStorage.objects.filter(user=user_obj)
     for t_sample_obj in t_sample_objs:
         s_name = t_sample_obj.get_sample_name()
         if s_name not in sample_dict:
@@ -795,26 +771,20 @@ def save_temp_sample_data(samples, user_obj):
     sample_saved_list = []
     for sample in samples:
         for item, value in sample.items():
-            data = {
-                "sample_name": sample[core.config.FIELD_FOR_GETTING_SAMPLE_ID]
-            }
+            data = {"sample_name": sample[core.config.FIELD_FOR_GETTING_SAMPLE_ID]}
             data["field"] = item
             data["value"] = value
             data["user"] = user_obj
             core.models.TemporalSampleStorage.objects.save_temp_data(data)
         # Include Originating Laboratory and Submitting Institution
 
-        sample_saved_list.append(
-            sample[core.config.FIELD_FOR_GETTING_SAMPLE_ID]
-        )
+        sample_saved_list.append(sample[core.config.FIELD_FOR_GETTING_SAMPLE_ID])
     return
 
 
 def write_form_data_to_excel(data, user_obj):
     """Write data to excel using relecov-tools"""
-    samba_folder = core.utils.generic_functions.get_configuration_value(
-        "SAMBA_FOLDER"
-    )
+    samba_folder = core.utils.generic_functions.get_configuration_value("SAMBA_FOLDER")
     os.makedirs(samba_folder, exist_ok=True)
     f_name = os.path.join(samba_folder, "Metadata_lab_" + user_obj.username + ".xlsx")
     relecov_tools.utils.write_to_excel_file(data, f_name, "METADATA_LAB", {})

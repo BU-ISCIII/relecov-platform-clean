@@ -34,9 +34,7 @@ def get_bioinfo_analysis_data_from_sample(sample_id):
     # Get the schema ID for filtering Fields
     schema_obj = sample_obj.get_schema_obj()
     bio_anlys_data = []
-    bioan_fields = core.models.BioinfoAnalysisField.objects.filter(
-        schemaID=schema_obj
-    )
+    bioan_fields = core.models.BioinfoAnalysisField.objects.filter(schemaID=schema_obj)
     if not bioan_fields.exists():
         return None
     for bio_field in bioan_fields:
@@ -60,9 +58,7 @@ def get_bioinfo_analyis_fields_utilization(schema_obj=None):
         schema_obj = core.utils.schema.get_default_schema()
 
     # get field names
-    b_field_objs = core.models.BioinfoAnalysisField.objects.filter(
-        schemaID=schema_obj
-    )
+    b_field_objs = core.models.BioinfoAnalysisField.objects.filter(schemaID=schema_obj)
     if not b_field_objs.exists():
         return b_data
 

@@ -74,8 +74,8 @@ def store_bioinfo_data(s_data, schema_obj):
             .get_lineage_field_id()
         )
         data = {"value": value, "lineage_fieldID": lineage_id}
-        lineage_value_serializer = (
-            core.api.serializers.CreateLineageValueSerializer(data=data)
+        lineage_value_serializer = core.api.serializers.CreateLineageValueSerializer(
+            data=data
         )
 
         if not lineage_value_serializer.is_valid():

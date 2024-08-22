@@ -18,9 +18,7 @@ def remove_md_extension(text):
 
 
 def markdown_to_html(m_file):
-    m_path = os.path.join(
-        settings.BASE_DIR, "docs", "markdown_files", m_file
-    )
+    m_path = os.path.join(settings.BASE_DIR, "docs", "markdown_files", m_file)
     if not os.path.isfile(m_path):
         return {"ERROR": "FILE NOT FOUND"}
     with open(m_path, "r") as fh:

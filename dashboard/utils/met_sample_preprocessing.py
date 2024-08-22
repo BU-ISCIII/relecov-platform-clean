@@ -35,10 +35,8 @@ def sample_processing_graphics():
                 return {"ERROR": "pre-processing not defined"}
             if "ERROR" in result:
                 return result
-            json_data = (
-                dashboard.utils.generic_graphic_data.get_graphic_json_data(
-                    graphic_name
-                )
+            json_data = dashboard.utils.generic_graphic_data.get_graphic_json_data(
+                graphic_name
             )
         # Convert string to float values
         if graphic_name == "calculation_date":
@@ -103,11 +101,9 @@ def sample_processing_graphics():
 
     cts_extraction_data = get_pre_proc_data("extraction_protocol_pcr_1")
 
-    sample_processing["cts_extraction"] = (
-        dashboard.utils.plotly.box_plot_graphic(
-            cts_extraction_data,
-            {"title": "Boxplot Cts / Extraction protocol", "height": 400, "width": 520},
-        )
+    sample_processing["cts_extraction"] = dashboard.utils.plotly.box_plot_graphic(
+        cts_extraction_data,
+        {"title": "Boxplot Cts / Extraction protocol", "height": 400, "width": 520},
     )
     # specimen source graphics
     cts_specimen_data = get_pre_proc_data("specimen_source_pcr_1")
@@ -118,10 +114,8 @@ def sample_processing_graphics():
     )
     # calculate the number of days spent in each state before moved on to the next step
     calculation_date_data = get_pre_proc_data("calculation_date")
-    sample_processing["calculation_date"] = (
-        dashboard.utils.plotly.box_plot_graphic(
-            calculation_date_data,
-            {"title": "Time between sample step actions", "height": 400, "width": 420},
-        )
+    sample_processing["calculation_date"] = dashboard.utils.plotly.box_plot_graphic(
+        calculation_date_data,
+        {"title": "Time between sample step actions", "height": 400, "width": 420},
     )
     return sample_processing

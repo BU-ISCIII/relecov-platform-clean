@@ -18,9 +18,7 @@ def bioinfo_graphics():
         if json_data is None:
             # Execute the pre-processed task to get the data
             if graphic_name == "depth_variant_consensus":
-                result = (
-                    dashboard.utils.generic_process_data.pre_proc_depth_variants()
-                )
+                result = dashboard.utils.generic_process_data.pre_proc_depth_variants()
             elif graphic_name == "depth_samples_in_run":
                 result = (
                     dashboard.utils.generic_process_data.pre_proc_depth_sample_run()
@@ -29,10 +27,8 @@ def bioinfo_graphics():
                 return {"ERROR": "pre-processing not defined"}
             if "ERROR" in result:
                 return result
-            json_data = (
-                dashboard.utils.generic_graphic_data.get_graphic_json_data(
-                    graphic_name
-                )
+            json_data = dashboard.utils.generic_graphic_data.get_graphic_json_data(
+                graphic_name
             )
         tmp_json_float = {}
         for key, values in json_data.items():
@@ -73,11 +69,9 @@ def bioinfo_graphics():
     bioinfo = {}
     percentage_data = get_percentage_data()
     if "ERROR" not in percentage_data:
-        bioinfo["boxplot_comparation"] = (
-            dashboard.utils.plotly.box_plot_graphic(
-                percentage_data,
-                {"title": "Boxplot Percentage", "height": 400, "width": 420},
-            )
+        bioinfo["boxplot_comparation"] = dashboard.utils.plotly.box_plot_graphic(
+            percentage_data,
+            {"title": "Boxplot Percentage", "height": 400, "width": 420},
         )
     depth_variants_data = get_pre_proc_data("depth_variant_consensus")
     if "ERROR" not in depth_variants_data:

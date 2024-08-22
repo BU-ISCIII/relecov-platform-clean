@@ -11,9 +11,7 @@ import dashboard.utils.generic_process_data
 
 
 def get_variant_data_from_lineages(graphic_name=None, lineage=None, chromosome=None):
-    json_data = dashboard.utils.generic_graphic_data.get_graphic_json_data(
-        graphic_name
-    )
+    json_data = dashboard.utils.generic_graphic_data.get_graphic_json_data(graphic_name)
 
     if json_data is None:
         # Execute the pre-processed task to get the data
@@ -23,9 +21,7 @@ def get_variant_data_from_lineages(graphic_name=None, lineage=None, chromosome=N
         if "ERROR" in result:
             return result
 
-    json_data = dashboard.utils.generic_graphic_data.get_graphic_json_data(
-        graphic_name
-    )
+    json_data = dashboard.utils.generic_graphic_data.get_graphic_json_data(graphic_name)
     # Return None to indicate that there is no data stored yet
     if not json_data:
         return None, None

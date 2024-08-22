@@ -43,11 +43,9 @@ def create_dataframe(sample_list, gene_list):
                 sampleID_id=sample_obj
             )
             for variant_in_sample_obj in variant_in_sample_objs:
-                variant_annotation_obj = (
-                    core.models.VariantAnnotation.objects.filter(
-                        variantID_id=variant_in_sample_obj.get_variantID_id()
-                    ).last()
-                )
+                variant_annotation_obj = core.models.VariantAnnotation.objects.filter(
+                    variantID_id=variant_in_sample_obj.get_variantID_id()
+                ).last()
                 if variant_annotation_obj.get_geneID_id() in gene_list:
                     hgvs_p = variant_annotation_obj.get_variant_in_sample_data()[1]
                     list_of_hgvs_p.append(hgvs_p)

@@ -44,13 +44,11 @@ def host_info_graphics():
         host_age_range = OrderedDict()
         for idx in range(max_value + 1):
             try:
-                host_age_range[
-                    dashboard.dashboard_config.HOST_RANGE_AGE_TEXT[idx]
-                ] = tmp_range[idx]
+                host_age_range[dashboard.dashboard_config.HOST_RANGE_AGE_TEXT[idx]] = (
+                    tmp_range[idx]
+                )
             except KeyError:
-                host_age_range[
-                    dashboard.dashboard_config.HOST_RANGE_AGE_TEXT[idx]
-                ] = 0
+                host_age_range[dashboard.dashboard_config.HOST_RANGE_AGE_TEXT[idx]] = 0
         host_age_range_df = pd.DataFrame(
             host_age_range.items(), columns=["range_age", "number"]
         )
@@ -73,9 +71,7 @@ def host_info_graphics():
 
         age_range_list = []
         for idx in range(max_value + 1):
-            age_range_list.append(
-                dashboard.dashboard_config.HOST_RANGE_AGE_TEXT[idx]
-            )
+            age_range_list.append(dashboard.dashboard_config.HOST_RANGE_AGE_TEXT[idx])
         host_age_range_per_key_df["range_age"] = age_range_list
 
         for key in tmp_range_per_key.keys():
