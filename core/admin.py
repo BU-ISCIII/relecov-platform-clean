@@ -190,17 +190,11 @@ admin.site.register(core.models.PropertyOptions, PropertyOptionsAdmin)
 admin.site.register(core.models.PublicDatabaseType, PublicDatabaseTypeAdmin)
 admin.site.register(core.models.PublicDatabaseFields, PublicDatabaseFieldsAdmin)
 admin.site.register(core.models.PublicDatabaseValues, PublicDatabaseValuesAdmin)
-admin.site.register(
-    core.models.MetadataVisualization, MetadataVisualizationAdmin
-)
-admin.site.register(
-    core.models.BioinfoAnalysisField, BioinfoAnalysisFielddAdmin
-)
+admin.site.register(core.models.MetadataVisualization, MetadataVisualizationAdmin)
+admin.site.register(core.models.BioinfoAnalysisField, BioinfoAnalysisFielddAdmin)
 admin.site.register(core.models.BioinfoAnalysisValue, BioinfoAnalysisValueAdmin)
 admin.site.register(core.models.Classification, ClassificationAdmin)
-admin.site.register(
-    core.models.TemporalSampleStorage, TemporalSampleStorageAdmin
-)
+admin.site.register(core.models.TemporalSampleStorage, TemporalSampleStorageAdmin)
 admin.site.register(core.models.Error, ErrorAdmin)
 admin.site.register(core.models.DateUpdateState, DateUpdateStateAdmin)
 admin.site.register(core.models.LineageInfo, LineageInfoAdmin)
