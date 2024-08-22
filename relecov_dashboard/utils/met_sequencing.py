@@ -3,10 +3,10 @@ from statistics import mean
 import pandas as pd
 
 # Local imports
-import relecov_core.utils.rest_api
-import relecov_dashboard.utils.generic_graphic_data
-import relecov_dashboard.utils.plotly
-import relecov_dashboard.utils.generic_process_data
+import core.utils.rest_api
+import dashboard.utils.generic_graphic_data
+import dashboard.utils.plotly
+import dashboard.utils.generic_process_data
 
 
 def sequencing_graphics():
@@ -15,25 +15,25 @@ def sequencing_graphics():
         If there is not data stored for the graphic, it will query to store
         them before calling for the second time
         """
-        json_data = relecov_dashboard.utils.generic_graphic_data.get_graphic_json_data(
+        json_data = dashboard.utils.generic_graphic_data.get_graphic_json_data(
             graphic_name
         )
         if json_data is None:
             # Execute the pre-processed task to get the data
             if graphic_name == "library_kit_pcr_1":
                 result = (
-                    relecov_dashboard.utils.generic_process_data.pre_proc_library_kit_pcr_1()
+                    dashboard.utils.generic_process_data.pre_proc_library_kit_pcr_1()
                 )
             elif graphic_name == "ct_number_of_base_pairs_sequenced":
                 result = (
-                    relecov_dashboard.utils.generic_process_data.pre_proc_based_pairs_sequenced()
+                    dashboard.utils.generic_process_data.pre_proc_based_pairs_sequenced()
                 )
             else:
                 return {"ERROR": "pre-processing not defined"}
             if "ERROR" in result:
                 return result
             json_data = (
-                relecov_dashboard.utils.generic_graphic_data.get_graphic_json_data(
+                dashboard.utils.generic_graphic_data.get_graphic_json_data(
                     graphic_name
                 )
             )
@@ -58,7 +58,7 @@ def sequencing_graphics():
 
     def fetch_sequencing_data(project_field, columns):
         # get stats utilization fields from LIMS
-        lims_data = relecov_core.utils.rest_api.get_stats_data(
+        lims_data = core.utils.rest_api.get_stats_data(
             {
                 "sample_project_name": "Relecov",
                 "project_field": project_field,
@@ -75,7 +75,7 @@ def sequencing_graphics():
     )
     if "ERROR" in inst_platform_df:
         return inst_platform_df
-    sequencing["instrument_platform"] = relecov_dashboard.utils.plotly.bar_graphic(
+    sequencing["instrument_platform"] = dashboard.utils.plotly.bar_graphic(
         data=inst_platform_df,
         col_names=["instrument_platform", "number"],
         legend=[""],
@@ -86,7 +86,7 @@ def sequencing_graphics():
         project_field="sequencing_instrument_model",
         columns=["instrument_model", "number"],
     )
-    sequencing["instrument_model"] = relecov_dashboard.utils.plotly.bar_graphic(
+    sequencing["instrument_model"] = dashboard.utils.plotly.bar_graphic(
         data=inst_model_df,
         col_names=["instrument_model", "number"],
         legend=[""],
@@ -97,7 +97,7 @@ def sequencing_graphics():
         project_field="library_preparation_kit",
         columns=["library_preparation", "number"],
     )
-    sequencing["library_preparation"] = relecov_dashboard.utils.plotly.bar_graphic(
+    sequencing["library_preparation"] = dashboard.utils.plotly.bar_graphic(
         data=lib_preparation_df,
         col_names=["library_preparation", "number"],
         legend=[""],
@@ -108,7 +108,7 @@ def sequencing_graphics():
         project_field="read_length",
         columns=["read_length", "number"],
     )
-    sequencing["read_length"] = relecov_dashboard.utils.plotly.bar_graphic(
+    sequencing["read_length"] = dashboard.utils.plotly.bar_graphic(
         data=read_length_df,
         col_names=["read_length", "number"],
         legend=[""],
@@ -118,7 +118,7 @@ def sequencing_graphics():
     # box plot for library preparation kit
 
     cts_library_data = get_pre_proc_data("library_kit_pcr_1", "list_of_dict")
-    sequencing["cts_library"] = relecov_dashboard.utils.plotly.box_plot_graphic(
+    sequencing["cts_library"] = dashboard.utils.plotly.box_plot_graphic(
         cts_library_data,
         {
             "title": "Boxplot Cts / Library preparation kit",
@@ -128,7 +128,7 @@ def sequencing_graphics():
     )
 
     cts_pcr_1 = get_pre_proc_data("ct_number_of_base_pairs_sequenced", "dict")
-    sequencing["number_of_base"] = relecov_dashboard.utils.plotly.line_graphic(
+    sequencing["number_of_base"] = dashboard.utils.plotly.line_graphic(
         cts_pcr_1["based"],
         cts_pcr_1["cts"],
         {

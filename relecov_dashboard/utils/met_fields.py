@@ -11,8 +11,8 @@ from dash.dependencies import Input, Output
 from django_plotly_dash import DjangoDash
 
 # Local imports
-import relecov_core.models
-import relecov_core.utils.bioinfo_analysis
+import core.models
+import core.utils.bioinfo_analysis
 
 
 # FIXME: This file is not accessed.
@@ -203,7 +203,7 @@ def create_utilization_graphic(lineage):
 def schema_fields_utilization():
     """ """
     schema_fields = (
-        relecov_core.utils.bioinfo_analysis.get_bioinfo_analyis_fields_utilization()
+        core.utils.bioinfo_analysis.get_bioinfo_analyis_fields_utilization()
     )
     for schema_name, fields in schema_fields.items():
         # import pdb; pdb.set_trace()
@@ -226,6 +226,6 @@ def index_dash_fields():
     f_value, n_used = schema_fields_utilization()
     graph_not_empty_fields(f_value, "Bioinfo metadata filled values %")
     # create_utilization_graphic(1)
-    # return render(request, "relecov_dashboard/methodologytest.html" )
+    # return render(request, "dashboard/methodologytest.html" )
     graph_never_used_fields(n_used, "Never used bioinfometada fields")
     return

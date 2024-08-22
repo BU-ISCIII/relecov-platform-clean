@@ -88,7 +88,7 @@ def create_model3D_bn():
     pdb_file = PdbParser(
         os.path.join(
             relecov_platform.settings.BASE_DIR,
-            "relecov_dashboard",
+            "dashboard",
             "assets",
             "pdb_files",
             "7dwz.pdb",

@@ -31,9 +31,9 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include("relecov_core.urls")),
-    path("dashboard/", include("relecov_dashboard.urls")),
-    path("documentation/", include("relecov_documentation.urls")),
+    path("", include("core.urls")),
+    path("dashboard/", include("dashboard.urls")),
+    path("documentation/", include("docs.urls")),
     # API REST FULL using drf spectacular
     path("schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
@@ -43,7 +43,7 @@ urlpatterns = [
         "swagger/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"
     ),
     # REST FRAMEWORK URLS
-    path("api/", include("relecov_core.api.urls")),
+    path("api/", include("core.api.urls")),
     # user accounts
     path("accounts/", include("django.contrib.auth.urls")),
     # path('markdownx/', include('markdownx.urls')),

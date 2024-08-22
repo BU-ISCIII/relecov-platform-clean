@@ -12,7 +12,7 @@ from django.conf import settings
 from django_plotly_dash import DjangoDash
 
 # Local imports
-import relecov_core.models
+import core.models
 
 
 def create_dataframe_from_database():
@@ -25,7 +25,7 @@ def create_dataframe_from_database():
     """
 
     # sample_objs = DateUpdateState.objects.all()
-    sample_objs = relecov_core.models.DateUpdateState.objects.filter(
+    sample_objs = core.models.DateUpdateState.objects.filter(
         stateID__iexact="Defined"
     )
     date_list = []
@@ -68,7 +68,7 @@ def create_dataframe_from_json():
     list_of_lists = []
     input_file = os.path.join(
         settings.BASE_DIR,
-        "relecov_core",
+        "core",
         "docs",
         "processed_converted_metadata_lab.json",
     )

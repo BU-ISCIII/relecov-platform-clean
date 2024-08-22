@@ -5,25 +5,25 @@ from dash.dependencies import Input, Output
 from django_plotly_dash import DjangoDash
 
 # Local imports
-import relecov_core.models
-import relecov_dashboard.utils.generic_graphic_data
-import relecov_dashboard.utils.generic_process_data
+import core.models
+import dashboard.utils.generic_graphic_data
+import dashboard.utils.generic_process_data
 
 
 def get_variant_data_from_lineages(graphic_name=None, lineage=None, chromosome=None):
-    json_data = relecov_dashboard.utils.generic_graphic_data.get_graphic_json_data(
+    json_data = dashboard.utils.generic_graphic_data.get_graphic_json_data(
         graphic_name
     )
 
     if json_data is None:
         # Execute the pre-processed task to get the data
-        result = relecov_dashboard.utils.generic_process_data.pre_proc_variations_per_lineage(
+        result = dashboard.utils.generic_process_data.pre_proc_variations_per_lineage(
             chromosome
         )
         if "ERROR" in result:
             return result
 
-    json_data = relecov_dashboard.utils.generic_graphic_data.get_graphic_json_data(
+    json_data = dashboard.utils.generic_graphic_data.get_graphic_json_data(
         graphic_name
     )
     # Return None to indicate that there is no data stored yet
@@ -36,7 +36,7 @@ def get_variant_data_from_lineages(graphic_name=None, lineage=None, chromosome=N
 
     if lineage is None:
         lineage = (
-            relecov_core.models.LineageValues.objects.filter(
+            core.models.LineageValues.objects.filter(
                 lineage_fieldID__property_name__iexact="lineage_name"
             )
             .values_list("value", flat=True)

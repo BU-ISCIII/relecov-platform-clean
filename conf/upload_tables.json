@@ -1,6 +1,6 @@
 [
 {
-    "model": "relecov_core.configsetting",
+    "model": "core.configsetting",
     "pk": 1,
     "fields": {
         "configuration_name": "ISKYLIMS_SERVER",
@@ -9,7 +9,7 @@
     }
 },
 {
-    "model": "relecov_core.configsetting",
+    "model": "core.configsetting",
     "pk": 2,
     "fields": {
         "configuration_name": "USE_TEMPLATE_FOR_METADATA_FORM",
@@ -18,7 +18,7 @@
     }
 },
 {
-    "model": "relecov_core.configsetting",
+    "model": "core.configsetting",
     "pk": 3,
     "fields": {
         "configuration_name": "ISKYLIMS_USER",
@@ -27,7 +27,7 @@
     }
 },
 {
-    "model": "relecov_core.configsetting",
+    "model": "core.configsetting",
     "pk": 4,
     "fields": {
         "configuration_name": "ISKYLIMS_PASSWORD",
@@ -36,7 +36,7 @@
     }
 },
 {
-    "model": "relecov_core.configsetting",
+    "model": "core.configsetting",
     "pk": 5,
     "fields": {
         "configuration_name": "SUBMITTING_INSTITUTION",
@@ -45,7 +45,7 @@
     }
 },
 {
-    "model": "relecov_core.configsetting",
+    "model": "core.configsetting",
     "pk": 6,
     "fields": {
         "configuration_name": "SAMBA_FOLDER",
@@ -54,7 +54,7 @@
     }
 },
 {
-    "model": "relecov_core.configsetting",
+    "model": "core.configsetting",
     "pk": 7,
     "fields": {
         "configuration_name": "NEXTSTRAIN_URL",
@@ -63,7 +63,7 @@
     }
 },
 {
-    "model": "relecov_core.samplestate",
+    "model": "core.samplestate",
     "pk": 1,
     "fields": {
         "state": "Defined",
@@ -72,7 +72,7 @@
     }
 },
 {
-    "model": "relecov_core.samplestate",
+    "model": "core.samplestate",
     "pk": 2,
     "fields": {
         "state": "Bioinfo",
@@ -81,7 +81,7 @@
     }
 },
 {
-    "model": "relecov_core.samplestate",
+    "model": "core.samplestate",
     "pk": 3,
     "fields": {
         "state": "Variant",
@@ -90,7 +90,7 @@
     }
 },
 {
-    "model": "relecov_core.samplestate",
+    "model": "core.samplestate",
     "pk": 4,
     "fields": {
         "state": "Gisaid",
@@ -99,7 +99,7 @@
     }
 },
 {
-    "model": "relecov_core.samplestate",
+    "model": "core.samplestate",
     "pk": 5,
     "fields": {
         "state": "Ena",
@@ -108,7 +108,7 @@
     }
 },
 {
-    "model": "relecov_core.publicdatabasetype",
+    "model": "core.publicdatabasetype",
     "pk": 4,
     "fields": {
         "public_type_name": "author",
@@ -117,7 +117,7 @@
     }
 },
 {
-    "model": "relecov_core.publicdatabasetype",
+    "model": "core.publicdatabasetype",
     "pk": 5,
     "fields": {
         "public_type_name": "ena",
@@ -126,7 +126,7 @@
     }
 },
 {
-    "model": "relecov_core.publicdatabasetype",
+    "model": "core.publicdatabasetype",
     "pk": 6,
     "fields": {
         "public_type_name": "gisaid",

@@ -13,11 +13,11 @@ from dash.dependencies import Input, Output
 from django_plotly_dash import DjangoDash
 
 # Local imports
-import relecov_core.models
-import relecov_core.utils.samples
+import core.models
+import core.utils.samples
 
 """
-import relecov_core.utils.handling_variant
+import core.utils.handling_variant
 """
 
 
@@ -34,21 +34,21 @@ def create_dataframe(sample_list, effect_list):
     pos_list = []
     # chromosome = "NC_045512"
     for sample_name in sample_list:
-        sample_obj = relecov_core.utils.samples.get_sample_obj_from_sample_name(
+        sample_obj = core.utils.samples.get_sample_obj_from_sample_name(
             sample_name=sample_name
         )
         if sample_obj is not None:
-            variant_in_sample_objs = relecov_core.models.VariantInSample.objects.filter(
+            variant_in_sample_objs = core.models.VariantInSample.objects.filter(
                 sampleID_id=sample_obj
             )
 
             for variant_in_sample_obj in variant_in_sample_objs:
                 variant_annotation_obj = (
-                    relecov_core.models.VariantAnnotation.objects.filter(
+                    core.models.VariantAnnotation.objects.filter(
                         variantID_id=variant_in_sample_obj.get_variantID_id()
                     ).last()
                 )
-                effect_obj = relecov_core.models.Effect.objects.filter(
+                effect_obj = core.models.Effect.objects.filter(
                     effect__iexact=variant_annotation_obj.get_effectID_id()
                 ).last()
                 if effect_obj.get_effect() in effect_list:
@@ -56,12 +56,12 @@ def create_dataframe(sample_list, effect_list):
                     list_of_hgvs_p.append(hgvs_p)
 
                     geneID_id = variant_annotation_obj.get_geneID_id()
-                    gene_obj = relecov_core.models.Gene.objects.filter(
+                    gene_obj = core.models.Gene.objects.filter(
                         gene_name__iexact=geneID_id
                     ).last()
                     gene_list.append(gene_obj.get_gene_name())
 
-                    effect_obj = relecov_core.models.Effect.objects.filter(
+                    effect_obj = core.models.Effect.objects.filter(
                         effect__iexact=variant_annotation_obj.get_effectID_id()
                     ).last()
                     effect_list_df.append(effect_obj.get_effect())

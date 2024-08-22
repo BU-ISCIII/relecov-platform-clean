@@ -1,12 +1,12 @@
 # Local imports
-import relecov_core.utils.samples
-import relecov_core.models
+import core.utils.samples
+import core.models
 
 
 def get_lineages_list():
     """Function gets the lab names and return then in an ordered list"""
     return list(
-        relecov_core.models.LineageValues.objects.all()
+        core.models.LineageValues.objects.all()
         .values_list("value", flat=True)
         .distinct()
         .order_by("value")
@@ -15,19 +15,19 @@ def get_lineages_list():
 
 def get_lineage_data_from_sample(sample_id):
     """Get the bioinfo analysis for the sample"""
-    sample_obj = relecov_core.utils.samples.get_sample_obj_from_id(sample_id)
+    sample_obj = core.utils.samples.get_sample_obj_from_id(sample_id)
     if not sample_obj:
         return None
     # Get the schema ID for filtering Fields
     schema_obj = sample_obj.get_schema_obj()
     a_data = []
-    if not relecov_core.models.LineageFields.objects.filter(
+    if not core.models.LineageFields.objects.filter(
         schemaID=schema_obj
     ).exists():
         return None
-    a_fields = relecov_core.models.LineageFields.objects.filter(schemaID=schema_obj)
+    a_fields = core.models.LineageFields.objects.filter(schemaID=schema_obj)
     for a_field in a_fields:
-        sample_lineage_fields = relecov_core.models.LineageValues.objects.filter(
+        sample_lineage_fields = core.models.LineageValues.objects.filter(
             lineage_fieldID=a_field, sample=sample_obj
         )
         if sample_lineage_fields.exists():

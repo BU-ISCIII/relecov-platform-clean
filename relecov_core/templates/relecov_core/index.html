@@ -1,4 +1,4 @@
-{% extends "relecov_core/base.html" %}
+{% extends "core/base.html" %}
 
 {% load static %}
 
@@ -12,7 +12,7 @@
                 <div class="row text-white">
                     <div class="col-12">
                         <div class="card-img-overlay">
-                            <img src="{% static 'relecov_core/custom/img/virus_crop.jpg' %}" class="card-img" alt="relecov platform" style="z-index:0;">
+                            <img src="{% static 'core/custom/img/virus_crop.jpg' %}" class="card-img" alt="relecov platform" style="z-index:0;">
                         </div> <!--end card image-->
                         <p class="position-relative p-2 text-white text-center fs-1">Relecov Platform</p>
                         <p class="position-relative p-2 text-white text-center fs-3">Platform for viral sequencing and variants evolution monitoring in the context of the Spanish Network for genomics surveillance of SARS-Cov-2</p>
@@ -92,6 +92,6 @@
         </section>
     </div>
     <!-- ======= Services Section ======= -->
-        <script src="{% static 'relecov_core/custom/js/index_functions.js' %}"></script>
+        <script src="{% static 'core/custom/js/index_functions.js' %}"></script>
 </section>
 {% endblock %}

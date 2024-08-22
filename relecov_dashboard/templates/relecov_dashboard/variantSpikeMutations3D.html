@@ -1,17 +1,17 @@
-{% extends 'relecov_core/base.html' %}
+{% extends 'core/base.html' %}
 {% load static %}
 {% load plotly_dash %}
 
 {% block content %}
 
-{% include "relecov_dashboard/sideMenuFuncionality.html" %}
+{% include "dashboard/sideMenuFuncionality.html" %}
 
 <section class="hero-animated d-flex">
     <div class="container position-relative">
         <!-- Page Wrapper -->
         <div id="wrapper">
             <!-- Sidebar -->
-            {% include "relecov_dashboard/variantSideBar.html" %}
+            {% include "dashboard/variantSideBar.html" %}
             <!-- End of Sidebar -->
             <!-- Content Wrapper -->
             <div id="content-wrapper" class="d-flex flex-column">
@@ -37,7 +37,7 @@
                                     <div class="dropdown-menu">
                                         <div class="dropdown-item">
                                             <div class="card dropdown-item" style="width: auto;">
-                                                <!--<img src="{% static 'relecov_dashboard/img/variants_dashboard_images/mutations_in_lineages_dashboard_images/variants_in_lineages_by_sample_tutorial.png' %}"class="card-img-left" alt="mutations in lineages by sample"style="width:85%;">-->
+                                                <!--<img src="{% static 'dashboard/img/variants_dashboard_images/mutations_in_lineages_dashboard_images/variants_in_lineages_by_sample_tutorial.png' %}"class="card-img-left" alt="mutations in lineages by sample"style="width:85%;">-->
                                                 <div class="card-body">
                                                     <p class="card-text">This functionality consists of two parts:</p>
                                                     <ol>
@@ -111,7 +111,7 @@
                                     <div class="dropdown-menu">
                                         <div class="dropdown-item">
                                             <div class="card dropdown-item" style="width: auto;">
-                                            <!--<img src="{% static 'relecov_dashboard/img/variants_dashboard_images/mutations_in_lineages_dashboard_images/variants_in_lineages_by_sample_tutorial.png' %}"class="card-img-left" alt="mutations in lineages by sample"style="width:85%;">-->
+                                            <!--<img src="{% static 'dashboard/img/variants_dashboard_images/mutations_in_lineages_dashboard_images/variants_in_lineages_by_sample_tutorial.png' %}"class="card-img-left" alt="mutations in lineages by sample"style="width:85%;">-->
                                             <div class="card-body">
                                                 <p class="card-text">This functionality consists of two parts:</p>
                                                 <ol>

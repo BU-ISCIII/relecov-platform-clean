@@ -2,8 +2,8 @@
 import re
 
 # Local imports
-import relecov_core.models
-import relecov_core.config
+import core.models
+import core.config
 
 
 def get_annotations():
@@ -11,8 +11,8 @@ def get_annotations():
     list with all
     """
     ann_list = []
-    if relecov_core.models.OrganismAnnotation.objects.all().exists():
-        annotation_objs = relecov_core.models.OrganismAnnotation.objects.all().order_by(
+    if core.models.OrganismAnnotation.objects.all().exists():
+        annotation_objs = core.models.OrganismAnnotation.objects.all().order_by(
             "organism_code"
         )
         for annotation_obj in annotation_objs:
@@ -22,7 +22,7 @@ def get_annotations():
 
 def check_if_annotation_exists(annot_id):
     """check if the annotation id exists on database"""
-    if relecov_core.models.OrganismAnnotation.objects.filter(
+    if core.models.OrganismAnnotation.objects.filter(
         pk__exact=annot_id
     ).exists():
         return True
@@ -31,7 +31,7 @@ def check_if_annotation_exists(annot_id):
 
 def check_if_organism_version_exists(organism, version):
     """Check if the organism and version is already in database"""
-    if relecov_core.models.OrganismAnnotation.objects.filter(
+    if core.models.OrganismAnnotation.objects.filter(
         organism_code__iexact=organism, organism_code_version__iexact=version
     ).exists():
         return True
@@ -46,7 +46,7 @@ def get_annotation_data(annot_id):
     annot_data["organism"] = annot_obj.get_organism_code()
     annot_data["version"] = annot_obj.get_organism_code_version()
 
-    genes_in_chrom = relecov_core.models.Gene.objects.filter(
+    genes_in_chrom = core.models.Gene.objects.filter(
         chromosomeID=chromosome_obj
     )
     if genes_in_chrom.exists():
@@ -57,16 +57,16 @@ def get_annotation_data(annot_id):
             g_info.insert(0, gene_obj.get_gene_name())
             genes.append(g_info)
         annot_data["genes"] = genes
-        annot_data["heading"] = relecov_core.config.HEADING_FOR_ANNOTATION_GENE
+        annot_data["heading"] = core.config.HEADING_FOR_ANNOTATION_GENE
     return annot_data
 
 
 def get_annotation_obj_from_id(annot_id):
     """Return the instace object from the id"""
-    if relecov_core.models.OrganismAnnotation.objects.filter(
+    if core.models.OrganismAnnotation.objects.filter(
         pk__exact=annot_id
     ).exists():
-        return relecov_core.models.OrganismAnnotation.objects.filter(
+        return core.models.OrganismAnnotation.objects.filter(
             pk__exact=annot_id
         ).last()
     return None
@@ -91,7 +91,7 @@ def read_gff_file(a_file):
     if check_if_organism_version_exists(
         f_data["organism_code"], f_data["organism_code_version"]
     ):
-        return {"ERROR": relecov_core.config.ERROR_ANNOTATION_ORGANISM_ALREADY_EXISTS}
+        return {"ERROR": core.config.ERROR_ANNOTATION_ORGANISM_ALREADY_EXISTS}
     f_data["genes"] = []
     for line in lines:
         if line.startswith("#") or line == "":
@@ -111,22 +111,22 @@ def read_gff_file(a_file):
 def store_gff(gff_parsed, user):
     """Save in database the gff information"""
     organism = gff_parsed["organism_code"] + "." + gff_parsed["organism_code_version"]
-    if not relecov_core.models.Chromosome.objects.filter(
+    if not core.models.Chromosome.objects.filter(
         chromosome__iexact=organism
     ).exists():
-        chrom_obj = relecov_core.models.Chromosome.objects.create_new_chromosome(
+        chrom_obj = core.models.Chromosome.objects.create_new_chromosome(
             organism
         )
     else:
-        chrom_obj = relecov_core.models.Chromosome.objects.filter(
+        chrom_obj = core.models.Chromosome.objects.filter(
             chromosome__iexact=organism
         ).last()
     gff_parsed["user"] = user
     gff_parsed["chromosomeID"] = chrom_obj
-    relecov_core.models.OrganismAnnotation.objects.create_new_annotation(gff_parsed)
+    core.models.OrganismAnnotation.objects.create_new_annotation(gff_parsed)
 
     for gene in gff_parsed["genes"]:
         gene["user"] = user
         gene["chromosomeID"] = chrom_obj
-        relecov_core.models.Gene.objects.create_new_gene(gene)
+        core.models.Gene.objects.create_new_gene(gene)
     return

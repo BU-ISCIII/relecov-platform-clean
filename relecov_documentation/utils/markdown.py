@@ -8,7 +8,7 @@ import markdown
 
 def fix_img_folder(text):
     """Change the image folder inside the markdown_files to the the static"""
-    new_text = text.replace("img/", "../../static/relecov_documentation/img/")
+    new_text = text.replace("img/", "../../static/docs/img/")
     return new_text
 
 
@@ -19,7 +19,7 @@ def remove_md_extension(text):
 
 def markdown_to_html(m_file):
     m_path = os.path.join(
-        settings.BASE_DIR, "relecov_documentation", "markdown_files", m_file
+        settings.BASE_DIR, "docs", "markdown_files", m_file
     )
     if not os.path.isfile(m_path):
         return {"ERROR": "FILE NOT FOUND"}

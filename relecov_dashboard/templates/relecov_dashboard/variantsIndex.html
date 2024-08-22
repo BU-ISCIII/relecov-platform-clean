@@ -1,8 +1,8 @@
-{% extends 'relecov_core/base.html' %}
+{% extends 'core/base.html' %}
 {% load static %}
 
 {% block content %}
-{% include "relecov_dashboard/sideMenuFuncionality.html" %}
+{% include "dashboard/sideMenuFuncionality.html" %}
 
 <section class="hero-animated d-flex">
     <div class="container position-relative">
@@ -10,7 +10,7 @@
         <div id="wrapper">
 
             <!-- Sidebar -->
-            {% include "relecov_dashboard/variantSideBar.html" %}
+            {% include "dashboard/variantSideBar.html" %}
             <!-- End of Sidebar -->
 
             <!-- Content Wrapper -->
@@ -32,7 +32,7 @@
                                     <div class="card-title"><h4>Mutations in Lineages</h4></div>
                                     <div class="card-body">
                                         <a href="/dashboard/variants/mutationsInLineage">
-                                        <img src="{% static 'relecov_dashboard/custom/img/mutation_heatmap.png' %}" alt="Mutations in Lineages dashboard" style="width: 80%">
+                                        <img src="{% static 'dashboard/custom/img/mutation_heatmap.png' %}" alt="Mutations in Lineages dashboard" style="width: 80%">
                                         </a>
                                     </div>
                                 </div>
@@ -42,7 +42,7 @@
                                     <div class="card-title"><h4>Lineages VOC</h4></div>
                                     <div class="card-body">
                                         <a href="/dashboard/variants/lineagesVoc">
-                                        <img src="{% static 'relecov_dashboard/custom/img/lineageBarStack.png' %}" alt="lineages VOC dashboard" style="width: 70%">
+                                        <img src="{% static 'dashboard/custom/img/lineageBarStack.png' %}" alt="lineages VOC dashboard" style="width: 70%">
                                         </a>
                                     </div>
                                 </div>

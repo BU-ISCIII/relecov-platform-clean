@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 
 # local imports
-import relecov_core.models
+import core.models
 
 
 def get_configuration_value(parameter_name):
@@ -23,10 +23,10 @@ def get_configuration_value(parameter_name):
     """
 
     parameter_value = "False"
-    if relecov_core.models.ConfigSetting.objects.filter(
+    if core.models.ConfigSetting.objects.filter(
         configuration_name__exact=parameter_name
     ).exists():
-        parameter_obj = relecov_core.models.ConfigSetting.objects.filter(
+        parameter_obj = core.models.ConfigSetting.objects.filter(
             configuration_name__exact=parameter_name
         ).last()
         parameter_value = parameter_obj.get_configuration_value()

@@ -2,19 +2,19 @@
 from datetime import datetime
 
 # Local imports
-import relecov_core.models
-import relecov_core.utils.samples
-import relecov_core.config
+import core.models
+import core.utils.samples
+import core.config
 
 
 def prepare_fields_in_sample(s_data):
     """Add sample state and set to None GISAID and ENA if not set"""
-    if not relecov_core.models.SampleState.objects.filter(
+    if not core.models.SampleState.objects.filter(
         state__exact="Defined"
     ).exists():
-        return {"ERROR": relecov_core.config.ERROR_INTIAL_SETTINGS_NOT_DEFINED}
+        return {"ERROR": core.config.ERROR_INTIAL_SETTINGS_NOT_DEFINED}
     s_data["state"] = (
-        relecov_core.models.SampleState.objects.filter(state__exact="Defined")
+        core.models.SampleState.objects.filter(state__exact="Defined")
         .last()
         .get_state_id()
     )
@@ -57,21 +57,21 @@ def split_sample_data(data):
 
     # add user and state to sample data
     split_data["sample"]["state"] = (
-        relecov_core.models.SampleState.objects.filter(state__exact="Defined")
+        core.models.SampleState.objects.filter(state__exact="Defined")
         .last()
         .get_state_id()
     )
     split_data["sample"]["user"] = (
-        relecov_core.utils.samples.get_user_id_from_collecting_institution(
+        core.utils.samples.get_user_id_from_collecting_institution(
             split_data["sample"]["collecting_institution"]
         )
     )
-    if relecov_core.models.Sample.objects.all().exists():
+    if core.models.Sample.objects.all().exists():
         last_unique_value = (
-            relecov_core.models.Sample.objects.all().last().get_unique_id()
+            core.models.Sample.objects.all().last().get_unique_id()
         )
         split_data["sample"]["sample_unique_id"] = (
-            relecov_core.utils.samples.increase_unique_value(last_unique_value)
+            core.utils.samples.increase_unique_value(last_unique_value)
         )
     else:
         split_data["sample"]["sample_unique_id"] = "AAA-0001"
