@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 # Local imports
-import docs
+import docs.views
 
 urlpatterns = [
     path("", docs.views.index, name="index"),
