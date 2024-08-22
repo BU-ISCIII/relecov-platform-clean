@@ -1,9 +1,9 @@
-{% extends "relecov_core/base.html" %}
+{% extends "core/base.html" %}
 {% load static %}
 
 {% block content %}
-{% include "relecov_core/JExcelFunctionality.html" %}
-{% include "relecov_core/sideMenuFuncionality.html" %}
+{% include "core/JExcelFunctionality.html" %}
+{% include "core/sideMenuFuncionality.html" %}
 
 <style>
     .scrolling-wrapper {
@@ -18,7 +18,7 @@
         <!-- Page Wrapper -->
         <div id="wrapper">
             <!-- Sidebar -->
-            {% include "relecov_core/intranetSideBar.html" %}
+            {% include "core/intranetSideBar.html" %}
             <!-- End of Sidebar -->
 
             <!-- Content Wrapper -->
@@ -93,7 +93,7 @@
                                     </div> <!--// end row -->
                                 {% endif %}
                                 {% if m_form.sample %}
-                                    {% include "relecov_core/JExcelFunctionality.html" %}
+                                    {% include "core/JExcelFunctionality.html" %}
                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item" role="presentation">
                                         <button class="nav-link active" id="sample-tab" data-bs-toggle="tab" data-bs-target="#samples" type="button" role="tab" aria-controls="samples" aria-selected="true">Record Samples</button>

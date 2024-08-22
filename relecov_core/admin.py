@@ -4,7 +4,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
 # Local imports
-import relecov_core.models
+import core.models
 
 
 def custom_date_format(self):
@@ -14,7 +14,7 @@ def custom_date_format(self):
 
 
 class ProfileInLine(admin.StackedInline):
-    model = relecov_core.models.Profile
+    model = core.models.Profile
     can_delete = False
     verbose_name_plural = "Profile"
     fk_name = "user"
@@ -172,36 +172,36 @@ class MetadataVisualizationAdmin(admin.ModelAdmin):
 # Register models
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
-admin.site.register(relecov_core.models.ConfigSetting, ConfigSettingAdmin)
-admin.site.register(relecov_core.models.Filter, FilterAdmin)
-admin.site.register(relecov_core.models.Effect, EffectAdmin)
-admin.site.register(relecov_core.models.Gene, GeneAdmin)
-admin.site.register(relecov_core.models.Chromosome, ChromosomeAdmin)
-admin.site.register(relecov_core.models.LineageFields, LineageFieldsAdmin)
-admin.site.register(relecov_core.models.LineageValues, LineageValuesAdmin)
-admin.site.register(relecov_core.models.Sample, SampleAdmin)
-admin.site.register(relecov_core.models.SampleState, SampleStateAdmin)
-admin.site.register(relecov_core.models.Variant, VariantAdmin)
-admin.site.register(relecov_core.models.VariantInSample, VariantInSampleAdmin)
-admin.site.register(relecov_core.models.VariantAnnotation, VariantAnnotationAdmin)
-admin.site.register(relecov_core.models.Schema, SchemaAdmin)
-admin.site.register(relecov_core.models.SchemaProperties, SchemaPropertiesAdmin)
-admin.site.register(relecov_core.models.PropertyOptions, PropertyOptionsAdmin)
-admin.site.register(relecov_core.models.PublicDatabaseType, PublicDatabaseTypeAdmin)
-admin.site.register(relecov_core.models.PublicDatabaseFields, PublicDatabaseFieldsAdmin)
-admin.site.register(relecov_core.models.PublicDatabaseValues, PublicDatabaseValuesAdmin)
+admin.site.register(core.models.ConfigSetting, ConfigSettingAdmin)
+admin.site.register(core.models.Filter, FilterAdmin)
+admin.site.register(core.models.Effect, EffectAdmin)
+admin.site.register(core.models.Gene, GeneAdmin)
+admin.site.register(core.models.Chromosome, ChromosomeAdmin)
+admin.site.register(core.models.LineageFields, LineageFieldsAdmin)
+admin.site.register(core.models.LineageValues, LineageValuesAdmin)
+admin.site.register(core.models.Sample, SampleAdmin)
+admin.site.register(core.models.SampleState, SampleStateAdmin)
+admin.site.register(core.models.Variant, VariantAdmin)
+admin.site.register(core.models.VariantInSample, VariantInSampleAdmin)
+admin.site.register(core.models.VariantAnnotation, VariantAnnotationAdmin)
+admin.site.register(core.models.Schema, SchemaAdmin)
+admin.site.register(core.models.SchemaProperties, SchemaPropertiesAdmin)
+admin.site.register(core.models.PropertyOptions, PropertyOptionsAdmin)
+admin.site.register(core.models.PublicDatabaseType, PublicDatabaseTypeAdmin)
+admin.site.register(core.models.PublicDatabaseFields, PublicDatabaseFieldsAdmin)
+admin.site.register(core.models.PublicDatabaseValues, PublicDatabaseValuesAdmin)
 admin.site.register(
-    relecov_core.models.MetadataVisualization, MetadataVisualizationAdmin
+    core.models.MetadataVisualization, MetadataVisualizationAdmin
 )
 admin.site.register(
-    relecov_core.models.BioinfoAnalysisField, BioinfoAnalysisFielddAdmin
+    core.models.BioinfoAnalysisField, BioinfoAnalysisFielddAdmin
 )
-admin.site.register(relecov_core.models.BioinfoAnalysisValue, BioinfoAnalysisValueAdmin)
-admin.site.register(relecov_core.models.Classification, ClassificationAdmin)
+admin.site.register(core.models.BioinfoAnalysisValue, BioinfoAnalysisValueAdmin)
+admin.site.register(core.models.Classification, ClassificationAdmin)
 admin.site.register(
-    relecov_core.models.TemporalSampleStorage, TemporalSampleStorageAdmin
+    core.models.TemporalSampleStorage, TemporalSampleStorageAdmin
 )
-admin.site.register(relecov_core.models.Error, ErrorAdmin)
-admin.site.register(relecov_core.models.DateUpdateState, DateUpdateStateAdmin)
-admin.site.register(relecov_core.models.LineageInfo, LineageInfoAdmin)
-admin.site.register(relecov_core.models.OrganismAnnotation, OrganismAnnotationAdmin)
+admin.site.register(core.models.Error, ErrorAdmin)
+admin.site.register(core.models.DateUpdateState, DateUpdateStateAdmin)
+admin.site.register(core.models.LineageInfo, LineageInfoAdmin)
+admin.site.register(core.models.OrganismAnnotation, OrganismAnnotationAdmin)

@@ -1,39 +1,39 @@
 # Local imports
-import relecov_core.models
-import relecov_core.utils.variants
-import relecov_core.api.serializers
-import relecov_core.config
+import core.models
+import core.utils.variants
+import core.api.serializers
+import core.config
 
 
 def create_or_get_filter_obj(filter_value):
     """Return the filter instance or create if not exists"""
-    if relecov_core.models.Filter.objects.filter(filter__iexact=filter_value).exists():
-        return relecov_core.models.Filter.objects.filter(
+    if core.models.Filter.objects.filter(filter__iexact=filter_value).exists():
+        return core.models.Filter.objects.filter(
             filter__iexact=filter_value
         ).last()
-    filter_serializer = relecov_core.api.serializers.CreateFilterSerializer(
+    filter_serializer = core.api.serializers.CreateFilterSerializer(
         data={"filter": filter_value}
     )
     if filter_serializer.is_valid():
         filter_obj = filter_serializer.save()
         return filter_obj
-    return {"ERROR": relecov_core.config.ERROR_UNABLE_TO_STORE_IN_DATABASE}
+    return {"ERROR": core.config.ERROR_UNABLE_TO_STORE_IN_DATABASE}
 
 
 def create_or_get_effect_obj(effect_value):
     """Return the effect instance or create if not exists"""
-    if relecov_core.models.Effect.objects.filter(effect__iexact=effect_value).exists():
-        return relecov_core.models.Effect.objects.filter(
+    if core.models.Effect.objects.filter(effect__iexact=effect_value).exists():
+        return core.models.Effect.objects.filter(
             effect__iexact=effect_value
         ).last()
-    effect_serializer = relecov_core.api.serializers.CreateEffectSerializer(
+    effect_serializer = core.api.serializers.CreateEffectSerializer(
         data={"effect": effect_value}
     )
     if effect_serializer.is_valid():
         effect_obj = effect_serializer.save()
         return effect_obj
 
-    return {"ERROR": relecov_core.config.ERROR_UNABLE_TO_STORE_IN_DATABASE}
+    return {"ERROR": core.config.ERROR_UNABLE_TO_STORE_IN_DATABASE}
 
 
 def delete_created_variancs(v_in_sample_list, v_an_list):
@@ -45,31 +45,31 @@ def delete_created_variancs(v_in_sample_list, v_an_list):
 
 
 def store_variant_annotation(v_ann_data):
-    v_ann_serializer = relecov_core.api.serializers.CreateVariantAnnotationSerializer(
+    v_ann_serializer = core.api.serializers.CreateVariantAnnotationSerializer(
         data=v_ann_data
     )
     if not v_ann_serializer.is_valid():
-        return {"ERROR": relecov_core.config.ERROR_UNABLE_TO_STORE_IN_DATABASE}
+        return {"ERROR": core.config.ERROR_UNABLE_TO_STORE_IN_DATABASE}
     v_ann_obj = v_ann_serializer.save()
     return v_ann_obj
 
 
 def store_variant_in_sample(v_data):
     v_in_sample_serializer = (
-        relecov_core.api.serializers.CreateVariantInSampleSerializer(data=v_data)
+        core.api.serializers.CreateVariantInSampleSerializer(data=v_data)
     )
     if not v_in_sample_serializer.is_valid():
-        return {"ERROR": relecov_core.config.ERROR_UNABLE_TO_STORE_IN_DATABASE}
+        return {"ERROR": core.config.ERROR_UNABLE_TO_STORE_IN_DATABASE}
     v_obj = v_in_sample_serializer.save()
     return v_obj
 
 
 def get_variant_id(data):
     """look out for the necessary reference ids to create the variance instance"""
-    chr_obj = relecov_core.utils.variants.get_if_chromosomes_exists(data["Chromosome"])
+    chr_obj = core.utils.variants.get_if_chromosomes_exists(data["Chromosome"])
     if chr_obj is None:
-        return {"ERROR": relecov_core.config.ERROR_CHROMOSOME_NOT_DEFINED_IN_DATABASE}
-    variant_obj = relecov_core.models.Variant.objects.filter(
+        return {"ERROR": core.config.ERROR_CHROMOSOME_NOT_DEFINED_IN_DATABASE}
+    variant_obj = core.models.Variant.objects.filter(
         chromosomeID_id=chr_obj,
         pos__iexact=data["Variant"]["pos"],
         alt__iexact=data["Variant"]["alt"],
@@ -85,17 +85,17 @@ def get_variant_id(data):
         variant_dict["pos"] = data["Variant"]["pos"]
         variant_dict["alt"] = data["Variant"]["alt"]
         variant_dict["ref"] = data["Variant"]["ref"]
-        variant_serializer = relecov_core.api.serializers.CreateVariantSerializer(
+        variant_serializer = core.api.serializers.CreateVariantSerializer(
             data=variant_dict
         )
         if not variant_serializer.is_valid():
-            return {"ERROR": relecov_core.config.ERROR_UNABLE_TO_STORE_IN_DATABASE}
+            return {"ERROR": core.config.ERROR_UNABLE_TO_STORE_IN_DATABASE}
         variant_obj = variant_serializer.save()
     return variant_obj.get_variant_id()
 
 
 def get_variant_analysis_defined(s_obj):
-    return relecov_core.models.VariantInSample.objects.filter(
+    return core.models.VariantInSample.objects.filter(
         sampleID_id=s_obj
     ).values_list("analysis_date", flat=True)
 
@@ -103,10 +103,10 @@ def get_variant_analysis_defined(s_obj):
 def get_required_variant_ann_id(data):
     """Look for the ids that variant annotation needs"""
     v_ann_ids = {}
-    gene_obj = relecov_core.utils.variants.get_gene_obj_from_gene_name(data["Gene"])
+    gene_obj = core.utils.variants.get_gene_obj_from_gene_name(data["Gene"])
 
     if gene_obj is None:
-        return {"ERROR": relecov_core.config.ERROR_GENE_NOT_DEFINED_IN_DATABASE}
+        return {"ERROR": core.config.ERROR_GENE_NOT_DEFINED_IN_DATABASE}
     v_ann_ids["geneID_id"] = gene_obj.get_gene_id()
     effect_obj = create_or_get_effect_obj(data["Effect"])
     if isinstance(effect_obj, dict):
@@ -140,7 +140,7 @@ def split_variant_data(data, sample_obj, date):
 
 def variant_annotation_exists(data):
     """Check if variant annotation exists. Return True if exists"""
-    if relecov_core.models.VariantAnnotation.objects.filter(
+    if core.models.VariantAnnotation.objects.filter(
         hgvs_c__iexact=data["hgvs_c"],
         hgvs_p__iexact=data["hgvs_p"],
         hgvs_p_1_letter__iexact=data["hgvs_p_1_letter"],

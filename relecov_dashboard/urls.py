@@ -4,7 +4,7 @@ from django.conf.urls.static import static
 from django.urls import include, path
 
 # Local imports
-import relecov_dashboard.views
+import dashboard.views
 
 
 urlpatterns = [
@@ -12,43 +12,43 @@ urlpatterns = [
     # Methodology graphics
     path(
         "methodology",
-        relecov_dashboard.views.methodology_index,
+        dashboard.views.methodology_index,
         name="methodology_index",
     ),
     path(
         "methodology/hostInfo",
-        relecov_dashboard.views.methodology_host_info,
+        dashboard.views.methodology_host_info,
         name="methodology_host_info",
     ),
     path(
         "methodology/sequencing",
-        relecov_dashboard.views.methodology_sequencing,
+        dashboard.views.methodology_sequencing,
         name="methodology_sequencing",
     ),
     path(
         "methodology/sampleProcessing",
-        relecov_dashboard.views.methodology_sample_processing,
+        dashboard.views.methodology_sample_processing,
         name="methodology_sample_processing",
     ),
     path(
         "methodology/bioinfo",
-        relecov_dashboard.views.methodology_bioinfo,
+        dashboard.views.methodology_bioinfo,
         name="methodology_bioinfo",
     ),
-    path("variants", relecov_dashboard.views.variants_index, name="variants_index"),
+    path("variants", dashboard.views.variants_index, name="variants_index"),
     path(
         "variants/mutationsInLineage",
-        relecov_dashboard.views.mutations_in_lineage,
+        dashboard.views.mutations_in_lineage,
         name="mutations_in_lineage",
     ),
     path(
         "variants/spikeMutations3d",
-        relecov_dashboard.views.spike_mutations_3d,
+        dashboard.views.spike_mutations_3d,
         name="spike_mutations_3d",
     ),
     path(
         "variants/lineagesVoc",
-        relecov_dashboard.views.lineages_voc,
+        dashboard.views.lineages_voc,
         name="lineages_voc",
     ),
 ]

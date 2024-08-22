@@ -3,34 +3,34 @@ from collections import OrderedDict
 from statistics import mean
 
 # Local imports
-import relecov_core.models
-import relecov_dashboard.dashboard_config
-import relecov_dashboard.utils.generic_graphic_data
-import relecov_dashboard.utils.plotly
-import relecov_dashboard.utils.generic_process_data
+import core.models
+import dashboard.dashboard_config
+import dashboard.utils.generic_graphic_data
+import dashboard.utils.plotly
+import dashboard.utils.generic_process_data
 
 
 def bioinfo_graphics():
     def get_pre_proc_data(graphic_name):
-        json_data = relecov_dashboard.utils.generic_graphic_data.get_graphic_json_data(
+        json_data = dashboard.utils.generic_graphic_data.get_graphic_json_data(
             graphic_name
         )
         if json_data is None:
             # Execute the pre-processed task to get the data
             if graphic_name == "depth_variant_consensus":
                 result = (
-                    relecov_dashboard.utils.generic_process_data.pre_proc_depth_variants()
+                    dashboard.utils.generic_process_data.pre_proc_depth_variants()
                 )
             elif graphic_name == "depth_samples_in_run":
                 result = (
-                    relecov_dashboard.utils.generic_process_data.pre_proc_depth_sample_run()
+                    dashboard.utils.generic_process_data.pre_proc_depth_sample_run()
                 )
             else:
                 return {"ERROR": "pre-processing not defined"}
             if "ERROR" in result:
                 return result
             json_data = (
-                relecov_dashboard.utils.generic_graphic_data.get_graphic_json_data(
+                dashboard.utils.generic_graphic_data.get_graphic_json_data(
                     graphic_name
                 )
             )
@@ -49,11 +49,11 @@ def bioinfo_graphics():
         per_data = []
         graph_list = ["per_Ns", "per_reads_host", "per_reads_virus", "per_unmapped"]
         for graph in graph_list:
-            if relecov_core.models.BioinfoAnalysisValue.objects.filter(
+            if core.models.BioinfoAnalysisValue.objects.filter(
                 bioinfo_analysis_fieldID__property_name__exact=graph
             ).exists():
                 str_data = list(
-                    relecov_core.models.BioinfoAnalysisValue.objects.filter(
+                    core.models.BioinfoAnalysisValue.objects.filter(
                         bioinfo_analysis_fieldID__property_name__exact=graph
                     ).values_list("value", flat=True)
                 )
@@ -74,14 +74,14 @@ def bioinfo_graphics():
     percentage_data = get_percentage_data()
     if "ERROR" not in percentage_data:
         bioinfo["boxplot_comparation"] = (
-            relecov_dashboard.utils.plotly.box_plot_graphic(
+            dashboard.utils.plotly.box_plot_graphic(
                 percentage_data,
                 {"title": "Boxplot Percentage", "height": 400, "width": 420},
             )
         )
     depth_variants_data = get_pre_proc_data("depth_variant_consensus")
     if "ERROR" not in depth_variants_data:
-        bioinfo["depth_variants"] = relecov_dashboard.utils.plotly.line_graphic(
+        bioinfo["depth_variants"] = dashboard.utils.plotly.line_graphic(
             depth_variants_data["depth"],
             depth_variants_data["variant"],
             {
@@ -94,7 +94,7 @@ def bioinfo_graphics():
         )
     depth_sample_run_data = get_pre_proc_data("depth_samples_in_run")
     if "ERROR" not in depth_sample_run_data:
-        bioinfo["depth_sample_run"] = relecov_dashboard.utils.plotly.line_graphic(
+        bioinfo["depth_sample_run"] = dashboard.utils.plotly.line_graphic(
             depth_sample_run_data["depth"],
             depth_sample_run_data["variant"],
             {
@@ -106,5 +106,5 @@ def bioinfo_graphics():
             },
         )
     if not bioinfo:
-        bioinfo["ERROR"] = relecov_dashboard.dashboard_config.ERROR_NOT_DATA_LOADED_YET
+        bioinfo["ERROR"] = dashboard.dashboard_config.ERROR_NOT_DATA_LOADED_YET
     return bioinfo

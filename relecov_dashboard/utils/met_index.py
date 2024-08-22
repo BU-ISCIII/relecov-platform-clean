@@ -2,20 +2,20 @@
 from statistics import mean
 
 # Local imports
-import relecov_core.utils.bioinfo_analysis
-import relecov_core.utils.rest_api
-import relecov_core.utils.schema
-import relecov_dashboard.dashboard_config
-import relecov_dashboard.utils.plotly
+import core.utils.bioinfo_analysis
+import core.utils.rest_api
+import core.utils.schema
+import dashboard.dashboard_config
+import dashboard.utils.plotly
 
 
 def schema_fields_utilization():
     """Return ERROR when no connection to iSkyLIMS, NO_SCHEMA when there is
     no schema loaded yet, or the data to display graphic
     """
-    schema_obj = relecov_core.utils.schema.get_default_schema()
+    schema_obj = core.utils.schema.get_default_schema()
     if schema_obj is None:
-        return {"NO_SCHEMA": relecov_dashboard.dashboard_config.ERROR_NO_SCHEMA_DEFINED}
+        return {"NO_SCHEMA": dashboard.dashboard_config.ERROR_NO_SCHEMA_DEFINED}
 
     util_data = {"summary": {}}
     util_data["summary"]["group"] = ["Empty Fields", "Total Fields"]
@@ -25,7 +25,7 @@ def schema_fields_utilization():
         "percent": [],
     }
     # get stats utilization fields from LIMS
-    lims_fields = relecov_core.utils.rest_api.get_stats_data(
+    lims_fields = core.utils.rest_api.get_stats_data(
         {"sample_project_name": "Relecov"}
     )
     if "ERROR" in lims_fields:
@@ -54,7 +54,7 @@ def schema_fields_utilization():
 
     # get fields utilization from bioinfo analysis
     bio_fields = (
-        relecov_core.utils.bioinfo_analysis.get_bioinfo_analyis_fields_utilization(
+        core.utils.bioinfo_analysis.get_bioinfo_analyis_fields_utilization(
             schema_obj
         )
     )
@@ -98,7 +98,7 @@ def index_dash_fields():
         if "ERROR_ANALYSIS" in util_data:
             graphics["ERROR_ANALYSIS"] = util_data["ERROR_ANALYSIS"]
             return graphics
-        graphics["grouped_fields"] = relecov_dashboard.utils.plotly.bar_graphic(
+        graphics["grouped_fields"] = dashboard.utils.plotly.bar_graphic(
             data=util_data["summary"],
             col_names=["group", "bio_values"],
             legend=["Bio analysis"],
@@ -108,14 +108,14 @@ def index_dash_fields():
 
     else:
         #  ##### create metadata lab analysis  ######
-        relecov_dashboard.utils.plotly.graph_gauge_percent_values(
+        dashboard.utils.plotly.graph_gauge_percent_values(
             app_name="lims_filled_values",
             value=util_data["lims_f_values"],
             label="Lab filled values %",
         )
         # ##### Create comparison graphics #######
         if "ERROR_ANALYSIS" in util_data:
-            graphics["grouped_fields"] = relecov_dashboard.utils.plotly.bar_graphic(
+            graphics["grouped_fields"] = dashboard.utils.plotly.bar_graphic(
                 data=util_data["summary"],
                 col_names=["group", "lab_values"],
                 legend=["Metada lab"],
@@ -123,7 +123,7 @@ def index_dash_fields():
                 options={"title": "Schema Fields Utilization", "height": 300},
             )
         else:
-            graphics["grouped_fields"] = relecov_dashboard.utils.plotly.bar_graphic(
+            graphics["grouped_fields"] = dashboard.utils.plotly.bar_graphic(
                 data=util_data["summary"],
                 col_names=["group", "lab_values", "bio_values"],
                 legend=["Metada lab", "Bio analysis"],
@@ -133,7 +133,7 @@ def index_dash_fields():
 
     if "ERROR_ANALYSIS" not in util_data:
         #  ##### create Bio info analysis  ######
-        relecov_dashboard.utils.plotly.graph_gauge_percent_values(
+        dashboard.utils.plotly.graph_gauge_percent_values(
             app_name="bio_filled_values",
             value=util_data["bio_f_values"],
             label="Bio filled values %",
@@ -146,7 +146,7 @@ def index_dash_fields():
             colors = lab_colors + bio_colors
         else:
             colors = None
-        graphics["detailed_fields"] = relecov_dashboard.utils.plotly.bar_graphic(
+        graphics["detailed_fields"] = dashboard.utils.plotly.bar_graphic(
             data=util_data["field_detail_data"],
             col_names=["field_name", "field_value"],
             legend=["metadata fields"],

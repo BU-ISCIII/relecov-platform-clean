@@ -38,7 +38,7 @@ def make_lineage_variaton_plot(data, start_date, end_date, select_range, windowS
     the first 14 are eliminated, because the first samples would be calculated with less values than the size
     of the temporal window used.
     """
-    # data = '/home/warlog/biohackathon/relecov-platform/relecov_dashboard/utils/graphics/fisabio_data.csv'
+    # data = '/home/warlog/biohackathon/relecov-platform/dashboard/utils/graphics/fisabio_data.csv'
     # start_date = '2021-01-01'
     # end_date = '2021-12-31'
     # windowSize = 14
@@ -162,7 +162,7 @@ def make_lineage_variaton_plot(data, start_date, end_date, select_range, windowS
 
 
 if __name__ == "__main__":
-    data = "/home/bioinfo/Projects/relecov-platform/relecov_dashboard/utils/csv_files/fisabio_data.csv"
+    data = "/home/bioinfo/Projects/relecov-platform/dashboard/utils/csv_files/fisabio_data.csv"
     plot = make_lineage_variaton_plot(
         data,
         start_date="2021-01-01",

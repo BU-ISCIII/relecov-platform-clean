@@ -1,12 +1,12 @@
 # Local imports
-import relecov_core.utils.plotly_graphics
-import relecov_core.utils.rest_api
-import relecov_core.utils.samples
+import core.utils.plotly_graphics
+import core.utils.rest_api
+import core.utils.samples
 
 
 def received_per_ccaa():
     """Fetch the data from LIMS and show them in a graphic bar"""
-    raw_data = relecov_core.utils.rest_api.get_summarize_data("")
+    raw_data = core.utils.rest_api.get_summarize_data("")
     if "ERROR" in raw_data:
         return raw_data
 
@@ -15,7 +15,7 @@ def received_per_ccaa():
         data["x"].append(key)
         data["y"].append(value)
 
-    return relecov_core.utils.plotly_graphics.bar_graphic(
+    return core.utils.plotly_graphics.bar_graphic(
         data=data,
         col_names=["x", "y"],
         legend=[""],
@@ -26,7 +26,7 @@ def received_per_ccaa():
 
 def received_per_lab():
     """Fetch the data from LIMS and show them in a graphic bar"""
-    raw_data = relecov_core.utils.rest_api.get_summarize_data("")
+    raw_data = core.utils.rest_api.get_summarize_data("")
     if "ERROR" in raw_data:
         return raw_data
 
@@ -35,7 +35,7 @@ def received_per_lab():
         data["x"].append(key)
         data["y"].append(value)
 
-    return relecov_core.utils.plotly_graphics.bar_graphic(
+    return core.utils.plotly_graphics.bar_graphic(
         data=data,
         col_names=["x", "y"],
         legend=[""],
@@ -46,7 +46,7 @@ def received_per_lab():
 
 def received_samples_graph():
     """Fetch the number of samples received in the plaftorm and show them"""
-    r_data = relecov_core.utils.samples.get_all_recieved_samples_with_dates(
+    r_data = core.utils.samples.get_all_recieved_samples_with_dates(
         accumulated=True
     )
     data = {"x": [], "y": []}
@@ -64,6 +64,6 @@ def received_samples_graph():
         "y_title": "Number of samples",
         "title": "",
     }
-    return relecov_core.utils.plotly_graphics.line_graphic(
+    return core.utils.plotly_graphics.line_graphic(
         data["x"], data["y"], options
     )

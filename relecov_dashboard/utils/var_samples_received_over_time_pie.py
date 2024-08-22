@@ -14,7 +14,7 @@ import relecov_platform.settings
 def parse_json_file():
     input_file = os.path.join(
         relecov_platform.settings.BASE_DIR,
-        "relecov_core",
+        "core",
         "docs",
         "data_for_geomap_from_ISkyLims.json",
     )
