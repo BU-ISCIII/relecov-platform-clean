@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     "channels_redis",
     "core",
     "dashboard",
-    "documentation",
+    "docs",
     "django_extensions",
     "rest_framework",
     "drf_spectacular",
