@@ -154,6 +154,32 @@ restore_git_ref() {
     git checkout "$initial_git_ref" --quiet
 }
 
+update_system_deps() {
+
+    if [[ $linux_distribution == "Ubuntu" ]]; then
+        echo "Software installation for Ubuntu"
+        apt-get update && apt-get upgrade -y
+        apt-get install -y \
+            apt-utils wget \
+            libmysqlclient-dev \
+            python3-venv  \
+            libpq-dev \
+            python3-dev python3-pip python3-wheel \
+            apache2-dev\
+            gnuplot
+    fi
+
+    if [[ $linux_distribution == "CentOS" || $linux_distribution == "RedHatEnterprise" ]]; then
+        echo "Software installation for Centos/RedHat"
+        yum groupinstall "Development tools"
+        yum install zlib-devel bzip2-devel openssl-devel \
+                        wget httpd-devel mysql-libs sqlite sqlite-devel \
+                        mariadb-devel libffi-devel \
+                        gnuplot
+    fi
+
+}
+
 # Ensure to recover current git branch/tag/SHA on script exit
 initial_git_ref=$(git rev-parse --abbrev-ref HEAD || git rev-parse HEAD)
 trap restore_git_ref EXIT
@@ -364,6 +390,11 @@ if [ $upgrade == true ]; then
     printf "${YELLOW}------------------${NC}\n\n"
     
     if [ "$upgrade_type" = "full" ] || [ "$upgrade_type" = "dep" ]; then
+        
+        # Linux distribution
+        linux_distribution=$(lsb_release -i | cut -f 2-)
+        update_system_deps
+        
         if [ -d $INSTALL_PATH/virtualenv ]; then
             read -p "Do you want to remove current virtualenv and reinstall? (Y/N) " -n 1 -r
             echo    # (optional) move to a new line
@@ -399,67 +430,67 @@ if [ $upgrade == true ]; then
 
     if [ "$upgrade_type" = "full" ] || [ "$upgrade_type" = "app" ]; then
 
-    # update installation by sinchronize folders
-    echo "Copying files to installation folder"
-    rsync -rlv conf/ $INSTALL_PATH/conf/
-    rsync -rlv --fuzzy --delay-updates --delete-delay \
-        --exclude "logs" --exclude "documents" --exclude "migrations" --exclude "__pycache__" \
-        README.md LICENSE conf $REQUIRED_MODULES $INSTALL_PATH/
-        
-        # update the settings.py and the main urls
-        echo "Update settings and url file."
-        update_settings_and_urls
+        # update installation by sinchronize folders
+        echo "Copying files to installation folder"
+        rsync -rlv conf/ $INSTALL_PATH/conf/
+        rsync -rlv --fuzzy --delay-updates --delete-delay \
+            --exclude "logs" --exclude "documents" --exclude "migrations" --exclude "__pycache__" \
+            README.md LICENSE conf $REQUIRED_MODULES $INSTALL_PATH/
+            
+            # update the settings.py and the main urls
+            echo "Update settings and url file."
+            update_settings_and_urls
 
-        cd $INSTALL_PATH
-        echo "activate the virtualenv"
-        source virtualenv/bin/activate
+            cd $INSTALL_PATH
+            echo "activate the virtualenv"
+            source virtualenv/bin/activate
 
-        echo "Running collect statics..."
-        python manage.py collectstatic
-        echo "Done collect statics"
+            echo "Running collect statics..."
+            python manage.py collectstatic
+            echo "Done collect statics"
 
-        if [ $tables == true ] ; then
-            echo "Loading pre-filled tables..."
-            python manage.py loaddata conf/first_install_tables.json
-            echo "Done loading pre-filled tables..."
+            if [ $tables == true ] ; then
+                echo "Loading pre-filled tables..."
+                python manage.py loaddata conf/first_install_tables.json
+                echo "Done loading pre-filled tables..."
+            fi
+
+            if [ $run_script ]; then
+                for val in "${migration_script[@]}"; do
+                    echo "Running migration script: $val"
+                    python manage.py runscript $val
+                    echo "Done migration script: $val"
+                done
+            fi
+
+            cd -
+
+            # Linux distribution
+            linux_distribution=$(lsb_release -i | cut -f 2-)
+
+            echo ""
+            echo "Restart apache server to update changes"
+            if [[ $linux_distribution == "Ubuntu" ]]; then
+                    apache_daemon="apache2"
+            else
+                    apache_daemon="httpd"
+            fi
+            
+            # systemctl restart $apache_user
+
+            if ! [ $? -eq 0 ]; then
+                echo -e "${ORANGE}Apache server restart failed. trying with sudo{NC}"
+                sudo systemctl restart $apache_daemon
+            fi
         fi
-
-        if [ $run_script ]; then
-            for val in "${migration_script[@]}"; do
-                echo "Running migration script: $val"
-                python manage.py runscript $val
-                echo "Done migration script: $val"
-            done
-        fi
-
-        cd -
-
-        # Linux distribution
-        linux_distribution=$(lsb_release -i | cut -f 2-)
-
-        echo ""
-        echo "Restart apache server to update changes"
-        if [[ $linux_distribution == "Ubuntu" ]]; then
-                apache_daemon="apache2"
-        else
-                apache_daemon="httpd"
-        fi
-        
-        # systemctl restart $apache_user
-
-        if ! [ $? -eq 0 ]; then
-            echo -e "${ORANGE}Apache server restart failed. trying with sudo{NC}"
-            sudo systemctl restart $apache_daemon
-        fi
-    fi
-    printf "\n\n%s"
-    printf "${BLUE}------------------${NC}\n"
-    printf "%s"
-    printf "${BLUE}Successfuly upgrade of $PROJECT_NAME version: ${PLATFORM_VERSION}${NC}\n"
-    printf "%s"
-    printf "${BLUE}------------------${NC}\n\n"
-    # exit once upgrade is finished
-    exit 0
+        printf "\n\n%s"
+        printf "${BLUE}------------------${NC}\n"
+        printf "%s"
+        printf "${BLUE}Successfuly upgrade of $PROJECT_NAME version: ${PLATFORM_VERSION}${NC}\n"
+        printf "%s"
+        printf "${BLUE}------------------${NC}\n\n"
+        # exit once upgrade is finished
+        exit 0
 
 fi
 
@@ -506,27 +537,7 @@ if [ $install == true ]; then
             fi
         fi
 
-        if [[ $linux_distribution == "Ubuntu" ]]; then
-            echo "Software installation for Ubuntu"
-            apt-get update && apt-get upgrade -y
-            apt-get install -y \
-                apt-utils wget \
-                libmysqlclient-dev \
-                python3-venv  \
-                libpq-dev \
-                python3-dev python3-pip python3-wheel \
-                apache2-dev\
-                gnuplot
-        fi
-
-        if [[ $linux_distribution == "CentOS" || $linux_distribution == "RedHatEnterprise" ]]; then
-            echo "Software installation for Centos/RedHat"
-            yum groupinstall "Development tools"
-            yum install zlib-devel bzip2-devel openssl-devel \
-                            wget httpd-devel mysql-libs sqlite sqlite-devel \
-                            mariadb-devel libffi-devel \
-                            gnuplot
-        fi
+        update_system_deps
 
         ## Create the installation folder
         mkdir -p $INSTALL_PATH/conf
@@ -631,7 +642,7 @@ if [ $install == true ]; then
             python manage.py makemigrations django_plotly_dash $MIGRATION_MODULES
             python manage.py migrate
             echo "Loading in database initial data"
-            python manage.py loaddata conf/upload_tables.json
+            python manage.py loaddata conf/first_install_tables.json
 
             echo "Updating Apache configuration"
             if [[ $linux_distribution == "Ubuntu" ]]; then
