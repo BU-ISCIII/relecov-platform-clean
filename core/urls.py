@@ -41,9 +41,7 @@ urlpatterns = [
         core.views.sample_display,
         name="sample_display",
     ),
-    path(
-        "receivedSamples", core.views.received_samples, name="received_samples"
-    ),
+    path("receivedSamples", core.views.received_samples, name="received_samples"),
     path(
         "schemaDisplay=<int:schema_id>",
         core.views.schema_display,

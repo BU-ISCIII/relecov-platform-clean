@@ -25,9 +25,7 @@ urlpatterns = [
         docs.views.metadata_lab_excel,
         name="metadata_lab_excel",
     ),
-    path(
-        "relecovTools/", docs.views.relecov_tools, name="relecov_tools"
-    ),
+    path("relecovTools/", docs.views.relecov_tools, name="relecov_tools"),
     path(
         "intranetOverview/",
         docs.views.intranet_overview,
@@ -73,9 +71,7 @@ urlpatterns = [
         docs.views.howto_nextstrain,
         name="howto_nextstrain",
     ),
-    path(
-        "uploadToEna/", docs.views.upload_to_ena, name="upload_to_ena"
-    ),
+    path("uploadToEna/", docs.views.upload_to_ena, name="upload_to_ena"),
     path(
         "uploadToGisaid/",
         docs.views.upload_to_gisaid,

@@ -42,9 +42,7 @@ def mutations_in_lineage(request):
         return render(
             request,
             "dashboard/variantMutationsInLineage.html",
-            {
-                "ERROR": dashboard.dashboard_config.ERROR_NO_LINEAGES_ARE_DEFINED_YET
-            },
+            {"ERROR": dashboard.dashboard_config.ERROR_NO_LINEAGES_ARE_DEFINED_YET},
         )
     dashboard.utils.var_needle_mutation_graph_by_lineage.create_needle_plot_graph_mutation_by_lineage(
         lineages_list, lineage, mdata
@@ -110,9 +108,7 @@ def samples_received_over_time_pie_laboratory(request):
         data
     )
 
-    return render(
-        request, "dashboard/samplesReceivedOverTimePieLaboratory.html"
-    )
+    return render(request, "dashboard/samplesReceivedOverTimePieLaboratory.html")
 
 
 # FIXME: isn't called from urls.py and html template is not available.
@@ -146,9 +142,7 @@ def variants_mutations_in_lineages_heatmap(request):
             "dashboard/variantsMutationsInLineagesHeatmap.html",
             {"ERROR": core.config.ERROR_GENE_NOT_DEFINED_IN_DATABASE},
         )
-    sample_list = core.utils.variants.get_sample_in_variant_list(
-        chromesome_objs[0]
-    )
+    sample_list = core.utils.variants.get_sample_in_variant_list(chromesome_objs[0])
     if len(sample_list) == 0:
         return render(
             request,
@@ -165,9 +159,7 @@ def variants_mutations_in_lineages_heatmap(request):
 @login_required
 def methodology_index(request):
     graphics = dashboard.utils.met_index.index_dash_fields()
-    return render(
-        request, "dashboard/methodologyIndex.html", {"graphics": graphics}
-    )
+    return render(request, "dashboard/methodologyIndex.html", {"graphics": graphics})
 
 
 @login_required
@@ -219,6 +211,4 @@ def methodology_sample_processing(request):
 @login_required
 def methodology_bioinfo(request):
     bioinfo = dashboard.utils.met_bioinfo.bioinfo_graphics()
-    return render(
-        request, "dashboard/methodologyBioinfo.html", {"bioinfo": bioinfo}
-    )
+    return render(request, "dashboard/methodologyBioinfo.html", {"bioinfo": bioinfo})
