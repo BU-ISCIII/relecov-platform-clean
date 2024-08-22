@@ -409,24 +409,6 @@ if [ $upgrade == true ]; then
         # update the settings.py and the main urls
         echo "Update settings and url file."
         update_settings_and_urls
-        # update illumina template files.# Copy illumina sample sheet templates
-        mkdir -p $INSTALL_PATH/documents/wetlab/templates/
-        cp $INSTALL_PATH/conf/*_template.csv $INSTALL_PATH/documents/templates/
-        cp $INSTALL_PATH/conf/samples_template.xlsx $INSTALL_PATH/documents/templates/
-
-        # update logging configuration file
-        cp $INSTALL_PATH/conf/template_logging_config.ini $INSTALL_PATH/logging_config.ini
-        sed -i "s@INSTALL_PATH@${INSTALL_PATH}@g" $INSTALL_PATH/logging_config.ini
-        # update the sample sheet folder and name
-        if [ -d "$INSTALL_PATH/documents/wetlab/SampleSheets" ]; then
-            echo "Updating sample sheet folder name"
-            mv $INSTALL_PATH/documents/SampleSheets $INSTALL_PATH/documents/sample_sheet
-        fi
-
-        if [ -d "$INSTALL_PATH/documents/SampleSheets4LibPrep" ]; then
-            echo "Updating sample sheet for libary preparationfolder name"
-            mv $INSTALL_PATH/documents/SampleSheets4LibPrep $INSTALL_PATH/documents/sample_sheets_lib_prep
-        fi
 
         cd $INSTALL_PATH
         echo "activate the virtualenv"
@@ -645,28 +627,6 @@ if [ $install == true ]; then
         rsync -rlv README.md LICENSE conf $REQUIRED_MODULES $INSTALL_PATH/
 
         cd $INSTALL_PATH
-
-        # Create necessary folders
-        echo "Created documents structure"
-        mkdir -p $INSTALL_PATH/documents
-        mkdir -p $INSTALL_PATH/documents/tmp
-        mkdir -p $INSTALL_PATH/documents/sample_sheet
-        mkdir -p $INSTALL_PATH/documents/images_plot
-        mkdir -p $INSTALL_PATH/documents/templates
-        mkdir -p $INSTALL_PATH/documents/sample_sheets_lib_prep
-        mkdir -p $INSTALL_PATH/documents
-        mkdir -p $INSTALL_PATH/documents/service_files
-
-        chown -R $user:$apache_group $INSTALL_PATH/documents
-        chmod 775 $INSTALL_PATH/documents
-        
-        # Copy illumina sample sheet templates
-        cp $INSTALL_PATH/conf/*_template.csv $INSTALL_PATH/documents/templates/
-        cp $INSTALL_PATH/conf/samples_template.xlsx $INSTALL_PATH/documents/templates/
-
-        # update logging configuration file
-        cp $INSTALL_PATH/conf/template_logging_config.ini $INSTALL_PATH/logging_config.ini
-        sed -i "s|INSTALL_PATH|${INSTALL_PATH}|g" $INSTALL_PATH/logging_config.ini
 
         # Starting platform
         echo "activate the virtualenv"
