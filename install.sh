@@ -537,6 +537,19 @@ if [ $install == true ]; then
             fi
         fi
 
+        echo "Starting $PROJECT_NAME installation"
+        if [ -d $INSTALL_PATH ]; then
+            echo "There already is an installation of $PROJECT_NAME in $INSTALL_PATH."
+            read -p "Do you want to remove current installation and reinstall? (Y/N) " -n 1 -r
+            echo    # (optional) move to a new line
+            if [[ ! $REPLY =~ ^[Yy]$ ]] ; then
+                echo "Exiting without running $PROJECT_NAME installation"
+                exit 1
+            else
+                rm -rf $INSTALL_PATH
+            fi
+        fi
+
         update_system_deps
 
         ## Create the installation folder
@@ -600,13 +613,18 @@ if [ $install == true ]; then
     fi
 
     #================================================================
-    # INSTALL iSkyLIMS PLATFORM APPLICATION
+    # INSTALL RELECOV PLATFORM APPLICATION
     #================================================================
 
     if [ "$install_type" == "full" ] || [ "$install_type" == "app" ]; then
 
         if [ $LOG_TYPE == "symbolic_link" ]; then
             if [ -d $LOG_PATH ]; then
+                if [ ! -d $INSTALL_PATH/logs ]; then
+                    echo "Deleting existing symbolin link" 
+                    rm $INSTALL_PATH/logs
+                fi
+                echo "Creating symbolic link to log folder"
                 ln -s $LOG_PATH  $INSTALL_PATH/logs
                 chmod 775 $LOG_PATH
             else
@@ -614,9 +632,13 @@ if [ $install == true ]; then
             exit 1
             fi
         else
-            mkdir -p $INSTALL_PATH/logs
-            chown $user:$apache_group $INSTALL_PATH/logs
-            chmod 775 $INSTALL_PATH/logs
+            if  [ ! -d $INSTALL_PATH/logs ]; then
+                mkdir -p $INSTALL_PATH/logs
+                chown $user:$apache_group $INSTALL_PATH/logs
+                chmod 775 $INSTALL_PATH/logs
+            else
+                echo "Log folder path: $INSTALL_PATH/logs already exist."
+            fi
         fi
 
         mkdir -p $INSTALL_PATH/$PROJECT_NAME
