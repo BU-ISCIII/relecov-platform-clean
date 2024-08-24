@@ -7,9 +7,6 @@ from django.dispatch import receiver
 # Local imports
 import core.config
 
-# Comentarios de modificacion
-# Comentarios de modificacion
-
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
