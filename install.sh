@@ -437,60 +437,88 @@ if [ $upgrade == true ]; then
             --exclude "logs" --exclude "documents" --exclude "migrations" --exclude "__pycache__" \
             README.md LICENSE conf $REQUIRED_MODULES $INSTALL_PATH/
             
-            # update the settings.py and the main urls
-            echo "Update settings and url file."
-            update_settings_and_urls
+        # update the settings.py and the main urls
+        echo "Update settings and url file."
+        update_settings_and_urls
 
-            cd $INSTALL_PATH
-            echo "activate the virtualenv"
-            source virtualenv/bin/activate
+        cd $INSTALL_PATH
+        echo "activate the virtualenv"
+        source virtualenv/bin/activate
 
-            echo "Running collect statics..."
-            python manage.py collectstatic
-            echo "Done collect statics"
-
-            if [ $tables == true ] ; then
-                echo "Loading pre-filled tables..."
-                python manage.py loaddata conf/first_install_tables.json
-                echo "Done loading pre-filled tables..."
-            fi
-
-            if [ $run_script ]; then
-                for val in "${migration_script[@]}"; do
-                    echo "Running migration script: $val"
-                    python manage.py runscript $val
-                    echo "Done migration script: $val"
-                done
-            fi
-
-            cd -
-
-            # Linux distribution
-            linux_distribution=$(lsb_release -i | cut -f 2-)
-
-            echo ""
-            echo "Restart apache server to update changes"
-            if [[ $linux_distribution == "Ubuntu" ]]; then
-                    apache_daemon="apache2"
+        if python manage.py makemigrations | grep -q "No changes"; then
+            # check for pending migrations
+            if ./manage.py showmigrations | grep '\[ \]'; then
+                echo "There are pending migrations"
+                read -p "Do you want to update database with the pending migrations? (Y/N) " -n 1 -r
+                echo    #  move to a new line
+                if [[ ! $REPLY =~ ^[Yy]$ ]] ; then
+                    echo "Continue running script without running migrate command."
+                else
+                    echo "Running migrate..."
+                    python manage.py migrate
+                    echo "Done migrate command."
+                fi
             else
-                    apache_daemon="httpd"
+                echo "No migration is required"
             fi
-            
-            # systemctl restart $apache_user
-
-            if ! [ $? -eq 0 ]; then
-                echo -e "${ORANGE}Apache server restart failed. trying with sudo{NC}"
-                sudo systemctl restart $apache_daemon
+        else
+            read -p "Do you want to proceed with the migrate command? (Y/N) " -n 1 -r
+            echo    # (optional) move to a new line
+            if [[ ! $REPLY =~ ^[Yy]$ ]] ; then
+                echo "Exiting without running migrate command."
+                exit 1
             fi
+            echo "Running migrate..."
+            python manage.py migrate
+            echo "Done migrate command."
         fi
-        printf "\n\n%s"
-        printf "${BLUE}------------------${NC}\n"
-        printf "%s"
-        printf "${BLUE}Successfuly upgrade of $PROJECT_NAME version: ${PLATFORM_VERSION}${NC}\n"
-        printf "%s"
-        printf "${BLUE}------------------${NC}\n\n"
-        # exit once upgrade is finished
-        exit 0
+
+        echo "Running collect statics..."
+        python manage.py collectstatic
+        echo "Done collect statics"
+
+        if [ $tables == true ] ; then
+            echo "Loading pre-filled tables..."
+            python manage.py loaddata conf/first_install_tables.json
+            echo "Done loading pre-filled tables..."
+        fi
+
+        if [ $run_script ]; then
+            for val in "${migration_script[@]}"; do
+                echo "Running migration script: $val"
+                python manage.py runscript $val
+                echo "Done migration script: $val"
+            done
+        fi
+
+        cd -
+
+        # Linux distribution
+        linux_distribution=$(lsb_release -i | cut -f 2-)
+
+        echo ""
+        echo "Restart apache server to update changes"
+        if [[ $linux_distribution == "Ubuntu" ]]; then
+                apache_daemon="apache2"
+        else
+                apache_daemon="httpd"
+        fi
+        
+        # systemctl restart $apache_user
+
+        if ! [ $? -eq 0 ]; then
+            echo -e "${ORANGE}Apache server restart failed. trying with sudo{NC}"
+            sudo systemctl restart $apache_daemon
+        fi
+    fi
+    printf "\n\n%s"
+    printf "${BLUE}------------------${NC}\n"
+    printf "%s"
+    printf "${BLUE}Successfuly upgrade of $PROJECT_NAME version: ${PLATFORM_VERSION}${NC}\n"
+    printf "%s"
+    printf "${BLUE}------------------${NC}\n\n"
+    # exit once upgrade is finished
+    exit 0
 
 fi
 
