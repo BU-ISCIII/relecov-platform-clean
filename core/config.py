@@ -108,17 +108,17 @@ NO_SELECTED_LABEL_WAS_DONE = (
 
 ISKLIMS_REST_API = "/wetlab/api/"
 # REST API TO iSkyLIMS
-ISKLIMS_GET_LABORATORY_PARAMETERS = ["laboratoryData", "laboratory"]
-ISKLIMS_PUT_LABORATORY_PARAMETER = "updateLab"
-ISKLIMS_GET_SAMPLE_FIELDS = "sampleFields"
-ISKLIMS_GET_SAMPLE_INFORMATION = ["fetchSampleInformation", "sample"]
-ISKLIMS_GET_SAMPLE_PARAMETER_INFORMATION = ["fetchSampleInformation", "parameter"]
-ISKLIMS_GET_SAMPLE_PROJECT_PARAMETER_INFORMATION = ["fetchSampleInformation"]
-ISKLIMS_GET_SAMPLE_PROJECT_FIELDS = ["sampleProjectFields", "project"]
-ISKLIMS_GET_SUMMARIZE_DATA = "summarizeDataInformation"
-ISKLIMS_GET_STATS_DATA = "statisticsInformation"
-ISKLIMS_FETCH_SAMPLES_ON_CONDITION = ["fetchSampleInformation", "parameter"]
-ISKLIMS_POST_SAMPLE_DATA = "createSampleData"
+ISKLIMS_GET_LABORATORY_PARAMETERS = ["lab-data", "laboratory"]
+ISKLIMS_PUT_LABORATORY_PARAMETER = "update-lab"
+ISKLIMS_GET_SAMPLE_FIELDS = "sample-fields"
+ISKLIMS_GET_SAMPLE_INFORMATION = ["sample-info", "sample"]
+ISKLIMS_GET_SAMPLE_PARAMETER_INFORMATION = ["sample-info", "parameter"]
+ISKLIMS_GET_SAMPLE_PROJECT_PARAMETER_INFORMATION = ["sample-info"]
+ISKLIMS_GET_SAMPLE_PROJECT_FIELDS = ["sample-fields", "project"]
+ISKLIMS_GET_SUMMARIZE_DATA = "summarize-info"
+ISKLIMS_GET_STATS_DATA = "stats-info"
+ISKLIMS_FETCH_SAMPLES_ON_CONDITION = ["sample-info", "parameter"]
+ISKLIMS_POST_SAMPLE_DATA = "create-sample"
 
 # API requested information
 FIELDS_ON_SAMPLE_TABLE = [
