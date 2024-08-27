@@ -14,7 +14,7 @@ class Profile(models.Model):
     code_id = models.CharField(max_length=40, null=True, blank=True)
 
     class Meta:
-        db_table = "profile"
+        db_table = "core_profile"
 
     def __str__(self):
         return self.user.username
@@ -39,7 +39,7 @@ class BioinfoMetadataFile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=("created at"))
 
     class Meta:
-        db_table = "bioinfo_metadata_file"
+        db_table = "core_bioinfo_metadata_file"
 
     def __str__(self):
         return "%s" % (self.title)
@@ -79,7 +79,7 @@ class Schema(models.Model):
     generated_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     class Meta:
-        db_table = "metadata_schema"
+        db_table = "core_metadata_schema"
 
     def __str__(self):
         return "%s_%s" % (self.schema_name, self.schema_version)
@@ -121,7 +121,7 @@ class Classification(models.Model):
     generated_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     class Meta:
-        db_table = "metadata_classification"
+        db_table = "core_metadata_classification"
 
     def __str__(self):
         return "%s" % (self.classification_name)
@@ -185,7 +185,7 @@ class SchemaProperties(models.Model):
     fill_mode = models.CharField(max_length=50, null=True, blank=True)
 
     class Meta:
-        db_table = "metadata_schema_properties"
+        db_table = "core_metadata_schema_properties"
 
     def __str__(self):
         return "%s" % (self.property)
@@ -248,7 +248,7 @@ class PropertyOptions(models.Model):
     ontology = models.CharField(max_length=40, null=True, blank=True)
 
     class Meta:
-        db_table = "metadata_schema_property_option"
+        db_table = "core_metadata_schema_property_option"
 
     def __str__(self):
         return "%s" % (self.enum)
@@ -282,7 +282,7 @@ class MetadataVisualization(models.Model):
     generated_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     class Meta:
-        db_table = "metadata_visualization"
+        db_table = "core_metadata_visualization"
 
     def __str__(self):
         return "%s" % (self.label_name)
@@ -318,7 +318,7 @@ class BioinfoAnalysisField(models.Model):
     generated_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     class Meta:
-        db_table = "bioinfo_analysis_field"
+        db_table = "core_bioinfo_analysis_field"
 
     def __str__(self):
         return "%s" % (self.property_name)
@@ -358,7 +358,7 @@ class BioinfoAnalysisValue(models.Model):
     generated_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     class Meta:
-        db_table = "bioinfo_analysis_value"
+        db_table = "core_bioinfo_analysis_value"
 
     def __str__(self):
         return "%s" % (self.value)
@@ -381,7 +381,7 @@ class LineageInfo(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = "lineage_info"
+        db_table = "core_lineage_info"
 
     def __str__(self):
         return "%s" % (self.lineage_name)
@@ -409,7 +409,7 @@ class LineageFields(models.Model):
     generated_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     class Meta:
-        db_table = "lineage_field"
+        db_table = "core_lineage_field"
 
     def __str__(self):
         return "%s" % (self.property_name)
@@ -429,7 +429,7 @@ class LineageValues(models.Model):
     generated_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     class Meta:
-        db_table = "lineage_value"
+        db_table = "core_lineage_value"
 
     def __str__(self):
         return "%s" % (self.value)
@@ -449,7 +449,7 @@ class Filter(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=("created at"))
 
     class Meta:
-        db_table = "vcf_filter"
+        db_table = "core_vcf_filter"
 
     def __str__(self):
         return "%s" % (self.filter)
@@ -466,7 +466,7 @@ class Effect(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=("created at"))
 
     class Meta:
-        db_table = "vcf_effect"
+        db_table = "core_vcf_effect"
 
     def __str__(self):
         return "%s" % (self.effect)
@@ -489,7 +489,7 @@ class Chromosome(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=("created at"))
 
     class Meta:
-        db_table = "chromosome"
+        db_table = "core_chromosome"
 
     def __str__(self):
         return "%s" % (self.chromosome)
@@ -529,7 +529,7 @@ class OrganismAnnotation(models.Model):
     organism_code_version = models.CharField(max_length=10)
 
     class Meta:
-        db_table = "organism_annotation"
+        db_table = "core_organism_annotation"
 
     def __str__(self):
         return "%s.%s" % (self.organism_code, self.organism_code_version)
@@ -583,7 +583,7 @@ class Gene(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = "gene"
+        db_table = "core_gene"
 
     def __str__(self):
         return "%s" % (self.gene_name)
@@ -606,7 +606,7 @@ class SampleState(models.Model):
     description = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
-        db_table = "sample_state"
+        db_table = "core_sample_state"
 
     def __str__(self):
         return "%s" % (self.state)
@@ -628,7 +628,7 @@ class Error(models.Model):
     generated_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     class Meta:
-        db_table = "error"
+        db_table = "core_error"
 
     def __str__(self):
         return "%s" % (self.error_name)
@@ -691,7 +691,7 @@ class Sample(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = "sample"
+        db_table = "core_sample"
 
     def __str__(self):
         return "%s" % (self.sequencing_sample_id)
@@ -785,7 +785,7 @@ class PublicDatabaseType(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = "public_database_type"
+        db_table = "core_public_database_type"
 
     def __str__(self):
         return "%s" % (self.public_type_name)
@@ -817,7 +817,7 @@ class PublicDatabaseFields(models.Model):
     generated_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = "public_database_field"
+        db_table = "core_public_database_field"
 
     def __str__(self):
         return "%s" % (self.property_name)
@@ -845,7 +845,7 @@ class PublicDatabaseValues(models.Model):
     generated_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     class Meta:
-        db_table = "public_database_value"
+        db_table = "core_public_database_value"
 
     def __str__(self):
         return "%s" % (self.value)
@@ -863,7 +863,7 @@ class DateUpdateState(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = "date_update_state"
+        db_table = "core_date_update_state"
 
     def __str__(self):
         return "%s_%s" % (self.stateID, self.sampleID)
@@ -897,7 +897,7 @@ class Variant(models.Model):
     alt = models.CharField(max_length=100, null=True, blank=True)
 
     class Meta:
-        db_table = "variant"
+        db_table = "core_variant"
 
     def __str__(self):
         return "%s_%s" % (self.pos, self.alt)
@@ -936,7 +936,7 @@ class VariantInSample(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=("created at"))
 
     class Meta:
-        db_table = "variant_in_sample"
+        db_table = "core_variant_in_sample"
 
     def __str__(self):
         return "%s_%s" % (self.sampleID_id, self.variantID_id)
@@ -1002,7 +1002,7 @@ class VariantAnnotation(models.Model):
     hgvs_p_1_letter = models.CharField(max_length=100)
 
     class Meta:
-        db_table = "variant_annotation"
+        db_table = "core_variant_annotation"
 
     def __str__(self):
         return "%s" % (self.variantID_id)
@@ -1043,7 +1043,7 @@ class TemporalSampleStorage(models.Model):
     generated_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = "temporal_sample_storage"
+        db_table = "core_temporal_sample_storage"
 
     def __str__(self):
         return "%s,%s" % (self.sample_name, self.field)
@@ -1076,7 +1076,7 @@ class ConfigSetting(models.Model):
     generated_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = "config_setting"
+        db_table = "core_config_setting"
 
     def __str__(self):
         return "%s" % (self.configuration_name)
@@ -1088,5 +1088,6 @@ class ConfigSetting(models.Model):
         self.configuration_value = new_value
         self.save()
         return self
+
 
     objects = ConfigSettingManager()
