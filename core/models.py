@@ -1089,5 +1089,4 @@ class ConfigSetting(models.Model):
         self.save()
         return self
 
-
     objects = ConfigSettingManager()
