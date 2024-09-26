@@ -28,5 +28,5 @@ The website stores all the processed data and metadata, and allows the visualiza
 
 
 ## Relecov-tools
-relecov tools is a python package with helper functions for data management in the project. Read more [here](relecov_tools.md)
+relecov tools is a python package with helper functions for data management in the project. Read more [here](https://github.com/BU-ISCIII/buisciii-tools)
 
