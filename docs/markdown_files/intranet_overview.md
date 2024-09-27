@@ -19,7 +19,7 @@ To access Intranet click on the "Intranet" button.
 If you do not have login credential yet, contact with your manager to request
 them for you.
 
-For **admin** user follow the instructions provide in [Create new user](/documentation/createNewUSer) to add new user.
+For **admin** user follow the instructions provide in [Create new user](../create_new_user.md) to add new user.
 
 ---
 

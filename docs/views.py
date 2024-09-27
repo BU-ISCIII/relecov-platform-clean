@@ -125,9 +125,7 @@ def intranet_contact_data(request):
 
 @login_required
 def intranet_sample_search(request):
-    converted_to_html = docs.utils.markdown.markdown_to_html(
-        "intranet_sample_search.md"
-    )
+    converted_to_html = docs.utils.markdown.markdown_to_html("intranet_sample_search.md")
     if isinstance(converted_to_html, dict):
         return render(request, "docs/error_404.html")
     converted_to_html = docs.utils.markdown.fix_img_folder(converted_to_html)
@@ -140,9 +138,7 @@ def intranet_sample_search(request):
 
 @login_required
 def intranet_received_samples(request):
-    converted_to_html = docs.utils.markdown.markdown_to_html(
-        "intranet_received_samples.md"
-    )
+    converted_to_html = docs.utils.markdown.markdown_to_html("intranet_received_samples.md")
     if isinstance(converted_to_html, dict):
         return render(request, "docs/error_404.html")
     converted_to_html = docs.utils.markdown.fix_img_folder(converted_to_html)
@@ -155,9 +151,7 @@ def intranet_received_samples(request):
 
 @login_required
 def intranet_upload_metadata(request):
-    converted_to_html = docs.utils.markdown.markdown_to_html(
-        "intranet_upload_metadata.md"
-    )
+    converted_to_html = docs.utils.markdown.markdown_to_html("intranet_upload_metadata.md")
     if isinstance(converted_to_html, dict):
         return render(request, "docs/error_404.html")
     converted_to_html = docs.utils.markdown.fix_img_folder(converted_to_html)
@@ -248,7 +242,7 @@ def upload_to_gisaid(request):
 
 @login_required
 def create_new_user_account(request):
-    converted_to_html = docs.utils.markdown.markdown_to_html("createNewUserAccount.md")
+    converted_to_html = docs.utils.markdown.markdown_to_html("create_new_user_account.md")
     if isinstance(converted_to_html, dict):
         return render(request, "docs/error_404.html")
     converted_to_html = docs.utils.markdown.fix_img_folder(converted_to_html)
@@ -261,7 +255,7 @@ def create_new_user_account(request):
 
 @login_required
 def upload_metadata(request):
-    converted_to_html = docs.utils.markdown.markdown_to_html("uploadMetadata.md")
+    converted_to_html = docs.utils.markdown.markdown_to_html("upload_metadata.md")
     if isinstance(converted_to_html, dict):
         return render(request, "docs/error_404.html")
     converted_to_html = docs.utils.markdown.fix_img_folder(converted_to_html)
@@ -300,7 +294,7 @@ def howto_api(request):
 
 @login_required
 def create_new_user(request):
-    converted_to_html = docs.utils.markdown.markdown_to_html("createNewUserAccount.md")
+    converted_to_html = docs.utils.markdown.markdown_to_html("create_new_user.md")
     if isinstance(converted_to_html, dict):
         return render(request, "docs/error_404.html")
     converted_to_html = docs.utils.markdown.fix_img_folder(converted_to_html)

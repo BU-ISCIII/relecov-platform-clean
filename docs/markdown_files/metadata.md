@@ -26,4 +26,4 @@ Ph4age classification fields have been extended according to their nature:
 8. Pathogen diagnostic testing
 9. Public databases
 
-An excel file has been generated including the fields belonging to the labs to facilitate its collection and upload to the platform. [See next section](metadata_lab_excel.md)
+An excel file has been generated including the fields belonging to the labs to facilitate its collection and upload to the platform. [See next section](../metadata_lab_excel.md)

@@ -15,10 +15,10 @@
     - [relecov-tools](relecov_tools.md)
 
 - Intranet
-    - [Overview](intranetOverview.md)
-    - [Upload Metadata](intranetUploadMetadata.md)
-    - [Contact data](intranetContactData.md)
-    - [Sample Processing](sampleProcessing.md)
+    - [Overview](intranet_overview.md)
+    - [Upload Metadata](intranet_upload_metadata.md)
+    - [Contact data](intranet_contact_data.md)
+    - [Sample Processing](intranet_received_samples.md)
 
 - Dashboards
     - [Variant dashboard](variant_dashboard.md)
