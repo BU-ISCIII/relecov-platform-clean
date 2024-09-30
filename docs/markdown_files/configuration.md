@@ -163,4 +163,4 @@ displaying is limited to the samples that the laboratory that user belongs to.
 
 As the process of user creation is part of the maintenance activity we have
 create a separate chapter inside FAQ. To check the documentation for user creation
-click on  a new user now [How to create new user](createNewUserAccount.md)
+click on  a new user now [How to create new user](../create_new_user.md)

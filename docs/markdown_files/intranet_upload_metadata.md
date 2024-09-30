@@ -12,7 +12,7 @@ The option 1 (Filling the information in metadata lab form) you do not need to p
 
 Option 2 (Upload Metadata Excel file). You need to fill in advance the Metadata Lab excel file
 
-The last alternative (Using SFTP server) is not available from relecov. You need to upload the Excel metadata file to the sftp server. Detailed information how to do upload this file is described in [How to fill metadata lab excel](/documentation/metadataLabExcel)
+The last alternative (Using SFTP server) is not available from relecov. You need to upload the Excel metadata file to the sftp server. Detailed information how to do upload this file is described in [How to fill metadata lab excel](../metadata_lab_excel.md)
 
 
 If you decide to use the alternative 1 or 2, click on the left side menu the "Upload Metadata" link, to display the page to upload your metadata.
@@ -46,7 +46,7 @@ As you will see in this form there are 3 types of data:
 - Select. Press on the cell to display and choose the option that fit in your case.
 
 ---
-If you have any doubt for any field you can have a look to [How to fill metadata lab excel](/documentation/metadataLabExcel)
+If you have any doubt for any field you can have a look to [How to fill metadata lab excel](../metadata_lab_excel.md)
 
 ---
 
