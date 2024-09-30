@@ -247,21 +247,6 @@ def upload_to_gisaid(request):
 
 
 @login_required
-def create_new_user_account(request):
-    converted_to_html = docs.utils.markdown.markdown_to_html(
-        "create_new_user_account.md"
-    )
-    if isinstance(converted_to_html, dict):
-        return render(request, "docs/error_404.html")
-    converted_to_html = docs.utils.markdown.fix_img_folder(converted_to_html)
-    return render(
-        request,
-        "docs/base.html",
-        {"html": converted_to_html},
-    )
-
-
-@login_required
 def upload_metadata(request):
     converted_to_html = docs.utils.markdown.markdown_to_html("upload_metadata.md")
     if isinstance(converted_to_html, dict):
