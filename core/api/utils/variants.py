@@ -67,8 +67,8 @@ def get_variant_id(data):
         return {"ERROR": core.config.ERROR_CHROMOSOME_NOT_DEFINED_IN_DATABASE}
     variant_obj = core.models.Variant.objects.filter(
         chromosomeID_id=chr_obj,
-        pos__iexact=data["Variant"]["pos"],
-        alt__iexact=data["Variant"]["alt"],
+        pos__iexact=data["pos"],
+        alt__iexact=data["alt"],
     ).last()
     if variant_obj is None:
         # Create the variant
@@ -78,9 +78,9 @@ def get_variant_id(data):
         variant_dict = {}
         variant_dict["chromosomeID_id"] = chr_obj.get_chromosome_id()
         variant_dict["filterID_id"] = filter_obj.get_filter_id()
-        variant_dict["pos"] = data["Variant"]["pos"]
-        variant_dict["alt"] = data["Variant"]["alt"]
-        variant_dict["ref"] = data["Variant"]["ref"]
+        variant_dict["pos"] = data["pos"]
+        variant_dict["alt"] = data["alt"]
+        variant_dict["ref"] = data["ref"]
         variant_serializer = core.api.serializers.CreateVariantSerializer(
             data=variant_dict
         )
@@ -104,7 +104,7 @@ def get_required_variant_ann_id(data):
     if gene_obj is None:
         return {"ERROR": core.config.ERROR_GENE_NOT_DEFINED_IN_DATABASE}
     v_ann_ids["geneID_id"] = gene_obj.get_gene_id()
-    effect_obj = create_or_get_effect_obj(data["Effect"])
+    effect_obj = create_or_get_effect_obj(data["effect"])
     if isinstance(effect_obj, dict):
         return effect_obj
     v_ann_ids["geneID_id"] = gene_obj.get_gene_id()
@@ -122,6 +122,8 @@ def split_variant_data(data, sample_obj, date):
     split_data["variant_in_sample"]["variantID_id"] = variant_id
     split_data["variant_in_sample"]["analysis_date"] = date
 
+    var_keys = ["dp", "ref_dp", "alt_dp", "af"]
+    data["VariantInSample"] = {x:y for x,y in data.items() if x in var_keys}
     split_data["variant_in_sample"].update(data["VariantInSample"])
 
     v_ann_id = get_required_variant_ann_id(data)
@@ -129,7 +131,9 @@ def split_variant_data(data, sample_obj, date):
         return v_ann_id
     split_data["variant_ann"] = v_ann_id
     split_data["variant_ann"]["variantID_id"] = variant_id
-
+    
+    annot_keys = ["hgvs_c", "hgvs_p", "hgvs_p_1_letter"]
+    data["VariantAnnotation"] = {x:y for x,y in data.items() if x in annot_keys}
     split_data["variant_ann"].update(data["VariantAnnotation"])
     return split_data
 
