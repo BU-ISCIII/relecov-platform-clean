@@ -258,6 +258,8 @@ def intranet(request):
                 intra_data["ena_graph"] = core.utils.public_db.percentage_graphic(
                     len(sample_lab_objs), len(ena_acc), ""
                 )
+        else:
+            intra_data = f"No samples found for selected laboratory: {lab_name}"
         return render(request, "core/intranet.html", {"intra_data": intra_data})
     else:
         # loged user belongs to Relecov Manager group
