@@ -62,7 +62,7 @@ def store_variant_in_sample(v_data):
 
 def get_variant_id(data):
     """look out for the necessary reference ids to create the variance instance"""
-    chr_obj = core.utils.variants.get_if_chromosomes_exists(data["Chromosome"])
+    chr_obj = core.utils.variants.get_if_chromosomes_exists(data["chromosome"])
     if chr_obj is None:
         return {"ERROR": core.config.ERROR_CHROMOSOME_NOT_DEFINED_IN_DATABASE}
     variant_obj = core.models.Variant.objects.filter(
@@ -72,7 +72,7 @@ def get_variant_id(data):
     ).last()
     if variant_obj is None:
         # Create the variant
-        filter_obj = create_or_get_filter_obj(data["Filter"])
+        filter_obj = create_or_get_filter_obj(data["filter"])
         if isinstance(filter_obj, dict):
             return filter_obj
         variant_dict = {}
@@ -99,7 +99,7 @@ def get_variant_analysis_defined(s_obj):
 def get_required_variant_ann_id(data):
     """Look for the ids that variant annotation needs"""
     v_ann_ids = {}
-    gene_obj = core.utils.variants.get_gene_obj_from_gene_name(data["Gene"])
+    gene_obj = core.utils.variants.get_gene_obj_from_gene_name(data["gene"])
 
     if gene_obj is None:
         return {"ERROR": core.config.ERROR_GENE_NOT_DEFINED_IN_DATABASE}
