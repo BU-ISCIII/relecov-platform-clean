@@ -432,11 +432,10 @@ def get_sample_display_data(sample_id, user):
             )
         s_data["actions"] = actions
 
-    # FIXME: This sample id should be based on sequencing_sample_id
     lab_sample = sample_obj.get_collecting_lab_sample_id()
     # Fetch information from iSkyLIMS
     if lab_sample != "":
-        iskylims_data = core.utils.rest_api.get_sample_information(lab_sample)
+        iskylims_data = core.utils.rest_api.get_sample_information(lab_sample)[0]
         if "ERROR" not in iskylims_data:
             s_data["iskylims_basic"] = []
             s_data["iskylims_p_data"] = []
@@ -446,7 +445,7 @@ def get_sample_display_data(sample_id, user):
                         s_data["iskylims_p_data"].append([p_key, p_data])
                 else:
                     s_data["iskylims_basic"].append([key, i_data])
-            s_data["iskylims_project"] = iskylims_data["Sample Project"]
+            s_data["iskylims_project"] = iskylims_data["sample_project"]
     return s_data
 
 
