@@ -123,7 +123,7 @@ def split_variant_data(data, sample_obj, date):
     split_data["variant_in_sample"]["analysis_date"] = date
 
     var_keys = ["dp", "ref_dp", "alt_dp", "af"]
-    data["VariantInSample"] = {x:y for x,y in data.items() if x in var_keys}
+    data["VariantInSample"] = {x: y for x, y in data.items() if x in var_keys}
     split_data["variant_in_sample"].update(data["VariantInSample"])
 
     v_ann_id = get_required_variant_ann_id(data)
@@ -131,9 +131,9 @@ def split_variant_data(data, sample_obj, date):
         return v_ann_id
     split_data["variant_ann"] = v_ann_id
     split_data["variant_ann"]["variantID_id"] = variant_id
-    
+
     annot_keys = ["hgvs_c", "hgvs_p", "hgvs_p_1_letter"]
-    data["VariantAnnotation"] = {x:y for x,y in data.items() if x in annot_keys}
+    data["VariantAnnotation"] = {x: y for x, y in data.items() if x in annot_keys}
     split_data["variant_ann"].update(data["VariantAnnotation"])
     return split_data
 
