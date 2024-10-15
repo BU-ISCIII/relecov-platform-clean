@@ -52,7 +52,7 @@ def create_lineages_variations_graphic(date_range=None):
                             {"label": "Last 6 months", "value": "180"},
                             {"label": "Last 3 months", "value": "90"},
                             {"label": "Last month", "value": "30"},
-                            {"label": "Last week", "value": "7"}
+                            {"label": "Last week", "value": "7"},
                         ],
                     ),
                 ],
