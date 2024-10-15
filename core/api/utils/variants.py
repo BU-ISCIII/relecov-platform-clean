@@ -10,7 +10,7 @@ def create_or_get_filter_obj(filter_value):
     if core.models.Filter.objects.filter(filter__iexact=filter_value).exists():
         return core.models.Filter.objects.filter(filter__iexact=filter_value).last()
     filter_serializer = core.api.serializers.CreateFilterSerializer(
-        data={"filter": filter_value}
+        data={"Filter": filter_value}
     )
     if filter_serializer.is_valid():
         filter_obj = filter_serializer.save()
@@ -72,7 +72,7 @@ def get_variant_id(data):
     ).last()
     if variant_obj is None:
         # Create the variant
-        filter_obj = create_or_get_filter_obj(data["filter"])
+        filter_obj = create_or_get_filter_obj(data["Filter"])
         if isinstance(filter_obj, dict):
             return filter_obj
         variant_dict = {}
