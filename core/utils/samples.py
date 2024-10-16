@@ -210,13 +210,13 @@ def create_form_for_sample(schema_obj):
     # Format the information from sample Project to have label as key
     # format of the field and the option list in aa list
     for item in i_sam_proj_raw:
-        key = item["sampleProjectFieldDescription"]
+        key = item["sample_project_field_description"]
         i_sam_proj_data[key] = {}
-        i_sam_proj_data[key]["format"] = item["sampleProjectFieldType"]
-        if item["sampleProjectFieldType"] == "Options List":
+        i_sam_proj_data[key]["format"] = item["sample_project_field_type"]
+        if item["sample_project_field_type"] == "Options List":
             i_sam_proj_data[key]["options"] = []
-            for opt in item["sampleProjectOptionList"]:
-                i_sam_proj_data[key]["options"].append(opt["optionValue"])
+            for opt in item["sample_project_option_list"]:
+                i_sam_proj_data[key]["options"].append(opt["option_value"])
     # Map fields using ontology
     iskylims_sample_data = {}
     for key, values in iskylims_sample_raw.items():
