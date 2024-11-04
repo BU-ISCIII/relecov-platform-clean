@@ -21,3 +21,4 @@ django-markdownx==4.0.7
 relecov-tools
 dash-daq==0.5.0
 numpy==2.1.0
+setuptools==75.2.0
