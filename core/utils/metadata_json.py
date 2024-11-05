@@ -53,7 +53,7 @@ def load_metadata_json(json_file):
     except json.decoder.JSONDecodeError:
         return {"ERROR": core.config.ERROR_INVALID_JSON}
     data["file_name"] = core.utils.generic_functions.store_file(
-        json_file, core.config.METADATA_JSON_UPLOAD_FOLDER
+        json_file, core.config.SCHEMAS_UPLOAD_FOLDER
     )
     return data
 

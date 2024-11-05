@@ -4,7 +4,6 @@ import os
 from datetime import datetime
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.models import User
-from django.conf import settings
 
 # local imports
 import core.models
@@ -56,11 +55,10 @@ def store_file(user_file, folder):
     """
     filename, file_extension = os.path.splitext(user_file.name)
     file_name = filename + "_" + str(time.strftime("%Y%m%d-%H%M%S")) + file_extension
-    path_file = os.path.join(folder, file_name)
-    saved_file = os.path.join(settings.MEDIA_ROOT, path_file)
+    store_filepath = os.path.join(folder, file_name)
     fs = FileSystemStorage()
-    fs.save(saved_file, user_file)
-    return path_file
+    fs.save(store_filepath, user_file)
+    return store_filepath
 
 
 def check_valid_date_format(date):
