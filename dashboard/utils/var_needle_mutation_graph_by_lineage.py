@@ -13,7 +13,7 @@ import dashboard.utils.generic_process_data
 def get_variant_data_from_lineages(graphic_name=None, lineage=None, chromosome=None):
     json_data = dashboard.utils.generic_graphic_data.get_graphic_json_data(graphic_name)
 
-    if json_data is None:
+    if not json_data:
         # Execute the pre-processed task to get the data
         result = dashboard.utils.generic_process_data.pre_proc_variations_per_lineage(
             chromosome
