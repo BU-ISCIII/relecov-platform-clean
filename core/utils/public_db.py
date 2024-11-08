@@ -7,7 +7,6 @@ def get_public_accession_from_sample_lab(p_field, sample_objs=None):
     """Get the list of the accesion values with their sample.
     If not samples are given it gets the information for all samples
     """
-    import pdb; pdb.set_trace()
     if sample_objs is None:
         return (
             core.models.PublicDatabaseValues.objects.filter(
