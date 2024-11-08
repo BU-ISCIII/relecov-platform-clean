@@ -39,7 +39,6 @@ def bioinfo_graphics():
         for key, values in json_data_sorted.items():
             data["depth"].append(float(key))
             data["variant"].append(mean(values))
-        import pdb; pdb.set_trace()
         return data
 
     def get_percentage_data():
