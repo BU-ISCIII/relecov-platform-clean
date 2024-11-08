@@ -311,7 +311,6 @@ def intranet(request):
                         num_of_samples["Defined"], len(ena_acc), ""
                     )
                 )
-        import pdb; pdb.set_trace()
         return render(
             request,
             "core/intranet.html",
