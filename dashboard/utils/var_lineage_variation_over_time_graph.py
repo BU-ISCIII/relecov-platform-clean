@@ -42,18 +42,11 @@ def create_lineages_variations_graphic(date_range=None):
             html.Div(
                 [
                     dbc.Label("Select period of time"),
-                    dcc.Dropdown(
-                        id="periodTime",
-                        options=[
-                            {"label": "Select Period", "value": ""},
-                            {"label": "Last 4 years", "value": "1460"},
-                            {"label": "Last 2 years", "value": "730"},
-                            {"label": "Last year", "value": "365"},
-                            {"label": "Last 6 months", "value": "180"},
-                            {"label": "Last 3 months", "value": "90"},
-                            {"label": "Last month", "value": "30"},
-                            {"label": "Last week", "value": "7"},
-                        ],
+                    dcc.DatePickerRange(
+                        id="datePickerRange",
+                        start_date_placeholder_text="Start Date",
+                        end_date_placeholder_text="End Date",
+                        calendar_orientation="horizontal",
                     ),
                 ],
             ),
