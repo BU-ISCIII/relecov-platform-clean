@@ -46,7 +46,7 @@ def create_lineages_variations_graphic(date_range=None):
                         id="datePickerRange",
                         start_date_placeholder_text="Start Date",
                         end_date_placeholder_text="End Date",
-                        calendar_orientation="horizontal",
+                        calendar_orientation="vertical",
                     ),
                 ],
             ),
@@ -81,23 +81,25 @@ def create_lineages_variations_graphic(date_range=None):
 
     @app.callback(
         Output("lineageGraph", "figure"),
-        Input("periodTime", "value"),
+        [Input('datePickerRange', 'start_date'),
+        Input('datePickerRange', 'end_date')]
     )
-    def update_graph(periodTime):
-        if periodTime is None or periodTime == "":
+    def update_graph(start_date, end_date):
+        if start_date is None or end_date is None:
             # Select the samples from year 2021
             sub_data_df = data_df.loc[
                 (data_df["Collection date"] >= "2021-01-01")
                 & (data_df["Collection date"] < "2021-12-31")
             ]
         else:
-            n_days = int(periodTime)
+            start_date_obj = datetime.strptime(start_date, '%Y-%m-%d')
+            end_date_obj = datetime.strptime(end_date, '%Y-%m-%d')
             sub_data_df = data_df.loc[
                 (
                     data_df["Collection date"]
-                    >= datetime.today() - timedelta(days=n_days)
+                    >= start_date_obj
                 )
-                & (data_df["Collection date"] < datetime.today())
+                & (data_df["Collection date"] < end_date_obj)
             ]
 
         samples_df = pd.DataFrame()
