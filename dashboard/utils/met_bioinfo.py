@@ -15,7 +15,7 @@ def bioinfo_graphics():
         json_data = dashboard.utils.generic_graphic_data.get_graphic_json_data(
             graphic_name
         )
-        if json_data is None:
+        if not json_data:
             # Execute the pre-processed task to get the data
             if graphic_name == "depth_variant_consensus":
                 result = dashboard.utils.generic_process_data.pre_proc_depth_variants()

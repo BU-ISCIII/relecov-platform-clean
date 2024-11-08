@@ -19,7 +19,7 @@ def create_lineages_variations_graphic(date_range=None):
     json_data = dashboard.utils.generic_graphic_data.get_graphic_json_data(
         "variant_graphic_data"
     )
-    if json_data is None:
+    if not json_data:
         # Execute the pre-processed task to get the data
         result = dashboard.utils.generic_process_data.pre_proc_variant_graphic()
         if "ERROR" in result:
