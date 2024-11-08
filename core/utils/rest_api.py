@@ -50,7 +50,6 @@ def get_laboratory_data(lab_name):
     r_api = relecov_tools.rest_api.RestApi(iskylims_server, iskylims_url)
     data = r_api.get_request(request, param, lab_name)
     if "ERROR" in data:
-        import pdb; pdb.set_trace()
         return {"ERROR": data}
     return data
 

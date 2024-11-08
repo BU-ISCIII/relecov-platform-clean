@@ -403,7 +403,6 @@ def pre_proc_depth_variants():
         if d_value not in depth_variant:
             depth_variant[d_value] = []
         depth_variant[d_value].append(int(item["value"]))
-    import pdb; pdb.set_trace()
     # depth_variant_ordered = dict(sorted(depth_variant.items()))
     # depth.append(tmp_depth[item["sample__collecting_lab_sample_id"]])
     # variant.append(int(item["value"]))
