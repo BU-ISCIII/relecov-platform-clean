@@ -35,6 +35,8 @@ def create_lineages_variations_graphic():
     app = DjangoDash(
         "variationLineageOverTime", external_stylesheets=[dbc.themes.BOOTSTRAP]
     )
+    first_date = data_df["Collection date"].min()
+    last_date = data_df["Collection date"].max()
     # plot_div = plot(fig, output_type="div", config={"displaylogo": False})
     controls = dbc.Card(
         [
@@ -45,8 +47,10 @@ def create_lineages_variations_graphic():
                         id="datePickerRange",
                         start_date_placeholder_text="Start Date",
                         end_date_placeholder_text="End Date",
+                        min_date_allowed=first_date,
+                        max_date_allowed=last_date,
                         calendar_orientation="horizontal",
-                        number_of_months_shown=6
+                        number_of_months_shown=3
                     ),
                 ],
             ),
@@ -56,7 +60,7 @@ def create_lineages_variations_graphic():
     period_text = dbc.Card(
         [
             html.Div(
-                "When no Selection period is set, the graphic show data form January to December of 2021"
+                "When no Selection period is set, data from January to December of 2021 is displayed"
             )
         ]
     )
