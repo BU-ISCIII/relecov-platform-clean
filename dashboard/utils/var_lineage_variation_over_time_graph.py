@@ -14,7 +14,7 @@ import dashboard.utils.generic_graphic_data
 import dashboard.utils.generic_process_data
 
 
-def create_lineages_variations_graphic(date_range=None):
+def create_lineages_variations_graphic():
     """Collect the pre-processed data from database"""
     json_data = dashboard.utils.generic_graphic_data.get_graphic_json_data(
         "variant_graphic_data"
@@ -32,7 +32,7 @@ def create_lineages_variations_graphic(date_range=None):
 
     data_df["Collection date"] = pd.to_datetime(data_df["Collection date"])
     data_df["samples"] = data_df["samples"].astype(int)
-
+    import pdb; pdb.set_trace()
     app = DjangoDash(
         "variationLineageOverTime", external_stylesheets=[dbc.themes.BOOTSTRAP]
     )
