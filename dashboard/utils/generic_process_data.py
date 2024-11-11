@@ -84,10 +84,10 @@ def pre_proc_calculation_date():
 
     # send request to iSkyLIMS
     collection_date = core.utils.rest_api.get_sample_parameter_data(
-        "collectionSampleDate"
+        "collection_sample_date"
     )
     collection_date = convert_data_to_sample_dict(
-        collection_date, "Sample Name", "collectionSampleDate"
+        collection_date, "Sample Name", "collection_sample_date"
     )
     collection_date, invalid_samples = convert_str_to_datetime(
         collection_date, "-", invalid_samples
@@ -133,7 +133,7 @@ def pre_proc_variant_graphic():
     """
 
     in_date_samples = core.utils.rest_api.fetch_samples_on_condition(
-        "collectionSampleDate"
+        "collection_sample_date"
     )
     if "ERROR" in in_date_samples:
         return in_date_samples
@@ -141,9 +141,9 @@ def pre_proc_variant_graphic():
     date_sample = {}
     date_variant = {}
     for s_data in in_date_samples["DATA"]:
-        if s_data["collectionSampleDate"] not in date_sample:
-            date_sample[s_data["collectionSampleDate"]] = []
-        date_sample[s_data["collectionSampleDate"]].append(s_data["Sample Name"])
+        if s_data["collection_sample_date"] not in date_sample:
+            date_sample[s_data["collection_sample_date"]] = []
+        date_sample[s_data["collection_sample_date"]].append(s_data["Sample Name"])
 
     for date, samples in date_sample.items():
         variant_samples = (
@@ -208,6 +208,7 @@ def pre_proc_variant_graphic():
         "graphic_name": "variant_graphic_data",
         "graphic_data": variant_var_data,
     }
+    import pdb; pdb.set_trace()
     dashboard.models.GraphicJsonFile.objects.create_new_graphic_json(json_data)
 
     return {"SUCCESS": "Success"}
