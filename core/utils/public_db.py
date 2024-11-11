@@ -1,7 +1,7 @@
 # Local imports
 import core.models
 import core.utils.plotly_graphics
-
+from django.db.models import Q
 
 def get_public_accession_from_sample_lab(p_field, sample_objs=None):
     """Get the list of the accesion values with their sample.
@@ -12,7 +12,7 @@ def get_public_accession_from_sample_lab(p_field, sample_objs=None):
             core.models.PublicDatabaseValues.objects.filter(
                 public_database_fieldID__property_name__exact=p_field,
             )
-            .exclude(value__icontains="Not Provided")
+            .exclude(Q(value__icontains="Not Provided") | Q(value="None"))
             .values_list(
                 "sampleID__collecting_institution",
                 "sampleID__sequencing_sample_id",
@@ -25,7 +25,7 @@ def get_public_accession_from_sample_lab(p_field, sample_objs=None):
                 sampleID__in=sample_objs,
                 public_database_fieldID__property_name__exact=p_field,
             )
-            .exclude(value__icontains="Not Provided")
+            .exclude(Q(value__icontains="Not Provided") | Q(value="None"))
             .values_list("sampleID__sequencing_sample_id", "value")
         )
 
