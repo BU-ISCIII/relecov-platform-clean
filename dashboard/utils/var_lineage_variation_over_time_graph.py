@@ -134,7 +134,6 @@ def create_lineages_variations_graphic(date_range=None):
         # Do the percentage calculation
         value_per_df = (graph_df.div(graph_df.sum(axis=1), axis=0) * 100).round(2)
         # value_per_df = value_per_df
-        import pdb; pdb.set_trace()
         # Create figure with secondary y-axis
         fig = make_subplots(specs=[[{"secondary_y": True}]])
 

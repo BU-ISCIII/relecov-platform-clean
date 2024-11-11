@@ -208,7 +208,6 @@ def pre_proc_variant_graphic():
         "graphic_name": "variant_graphic_data",
         "graphic_data": variant_var_data,
     }
-    import pdb; pdb.set_trace()
     dashboard.models.GraphicJsonFile.objects.create_new_graphic_json(json_data)
 
     return {"SUCCESS": "Success"}
