@@ -32,7 +32,6 @@ def create_lineages_variations_graphic():
 
     data_df["Collection date"] = pd.to_datetime(data_df["Collection date"])
     data_df["samples"] = data_df["samples"].astype(int)
-    import pdb; pdb.set_trace()
     app = DjangoDash(
         "variationLineageOverTime", external_stylesheets=[dbc.themes.BOOTSTRAP]
     )
