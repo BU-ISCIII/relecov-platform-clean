@@ -19,14 +19,14 @@ def create_lineages_variations_graphic():
     json_data = dashboard.utils.generic_graphic_data.get_graphic_json_data(
         "variant_graphic_data"
     )
-    #if json_data is None:
-    # Execute the pre-processed task to get the data
-    result = dashboard.utils.generic_process_data.pre_proc_variant_graphic()
-    if "ERROR" in result:
-        return result
-    json_data = dashboard.utils.generic_graphic_data.get_graphic_json_data(
-        "variant_graphic_data"
-    )
+    if json_data is None:
+        # Execute the pre-processed task to get the data
+        result = dashboard.utils.generic_process_data.pre_proc_variant_graphic()
+        if "ERROR" in result:
+            return result
+        json_data = dashboard.utils.generic_graphic_data.get_graphic_json_data(
+            "variant_graphic_data"
+        )
 
     data_df = pd.DataFrame(json_data)
 
@@ -45,7 +45,8 @@ def create_lineages_variations_graphic():
                         id="datePickerRange",
                         start_date_placeholder_text="Start Date",
                         end_date_placeholder_text="End Date",
-                        calendar_orientation="vertical",
+                        calendar_orientation="horizontal",
+                        number_of_months_shown=6
                     ),
                 ],
             ),
