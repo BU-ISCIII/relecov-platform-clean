@@ -19,7 +19,7 @@ def create_lineages_variations_graphic(date_range=None):
     json_data = dashboard.utils.generic_graphic_data.get_graphic_json_data(
         "variant_graphic_data"
     )
-    if not json_data:
+    if json_data is None:
         # Execute the pre-processed task to get the data
         result = dashboard.utils.generic_process_data.pre_proc_variant_graphic()
         if "ERROR" in result:
@@ -134,7 +134,7 @@ def create_lineages_variations_graphic(date_range=None):
         # Do the percentage calculation
         value_per_df = (graph_df.div(graph_df.sum(axis=1), axis=0) * 100).round(2)
         # value_per_df = value_per_df
-
+        import pdb; pdb.set_trace()
         # Create figure with secondary y-axis
         fig = make_subplots(specs=[[{"secondary_y": True}]])
 
