@@ -131,6 +131,7 @@ def host_info_graphics():
         yaxis={"title": "Number of samples"},
         options={"title": "Samples received for host age", "height": 300},
     )
+    import pdb; pdb.set_trace()
     if invalid_data > 0:
         host_info["invalid_data"] = invalid_data
     return host_info
