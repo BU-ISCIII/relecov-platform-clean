@@ -52,7 +52,7 @@ def create_lineages_variations_graphic():
                         min_date_allowed=first_date,
                         max_date_allowed=last_date,
                         calendar_orientation="horizontal",
-                        number_of_months_shown=3
+                        number_of_months_shown=3,
                     ),
                 ],
             ),
@@ -87,8 +87,7 @@ def create_lineages_variations_graphic():
 
     @app.callback(
         Output("lineageGraph", "figure"),
-        [Input('datePickerRange', 'start_date'),
-        Input('datePickerRange', 'end_date')]
+        [Input("datePickerRange", "start_date"), Input("datePickerRange", "end_date")],
     )
     def update_graph(start_date, end_date):
         if start_date is None or end_date is None:
@@ -98,13 +97,10 @@ def create_lineages_variations_graphic():
                 & (data_df["Collection date"] < "2021-12-31")
             ]
         else:
-            start_date_obj = datetime.strptime(start_date, '%Y-%m-%d')
-            end_date_obj = datetime.strptime(end_date, '%Y-%m-%d')
+            start_date_obj = datetime.strptime(start_date, "%Y-%m-%d")
+            end_date_obj = datetime.strptime(end_date, "%Y-%m-%d")
             sub_data_df = data_df.loc[
-                (
-                    data_df["Collection date"]
-                    >= start_date_obj
-                )
+                (data_df["Collection date"] >= start_date_obj)
                 & (data_df["Collection date"] < end_date_obj)
             ]
 
