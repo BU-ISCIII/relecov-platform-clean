@@ -82,6 +82,7 @@ def host_info_graphics():
                 except KeyError:
                     age_range_list.append(0)
             host_age_range_per_key_df[key] = age_range_list
+        import pdb; pdb.set_trace()
 
         return host_age_range_per_key_df, invalid_data
 
@@ -131,7 +132,6 @@ def host_info_graphics():
         yaxis={"title": "Number of samples"},
         options={"title": "Samples received for host age", "height": 300},
     )
-    import pdb; pdb.set_trace()
     if invalid_data > 0:
         host_info["invalid_data"] = invalid_data
     return host_info
