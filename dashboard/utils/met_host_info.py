@@ -82,7 +82,6 @@ def host_info_graphics():
                 except KeyError:
                     age_range_list.append(0)
             host_age_range_per_key_df[key] = age_range_list
-        import pdb; pdb.set_trace()
         return host_age_range_per_key_df, invalid_data
 
     def fetching_data_for_gender():

@@ -48,7 +48,7 @@ def create_needle_plot_graph_mutation_by_lineage(lineage_list, lineage, mdata):
     options = []
     for lin in lineage_list:
         options.append({"label": lin, "value": lin})
-    import pdb; pdb.set_trace()
+
     app = DjangoDash("needlePlotMutationByLineage")
 
     app.layout = html.Div(
