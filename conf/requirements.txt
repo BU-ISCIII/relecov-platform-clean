@@ -22,3 +22,5 @@ relecov-tools
 dash-daq==0.5.0
 numpy==2.1.0
 setuptools==75.2.0
+django-crontab==0.7.1
+
