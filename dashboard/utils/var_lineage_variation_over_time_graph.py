@@ -1,5 +1,5 @@
 # Generic imports
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import dash_bootstrap_components as dbc
 import pandas as pd
