@@ -37,6 +37,7 @@ def create_lineages_variations_graphic():
     )
     first_date = data_df["Collection date"].min()
     last_date = data_df["Collection date"].max()
+    import pdb; pdb.set_trace()
     # plot_div = plot(fig, output_type="div", config={"displaylogo": False})
     controls = dbc.Card(
         [
