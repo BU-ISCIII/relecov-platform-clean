@@ -275,6 +275,7 @@ def pre_proc_variations_per_lineage(chromosome=None):
         mutation_data["y"] = list_of_af
         mutation_data["mutationGroups"] = list_of_effects
         mutation_data["domains"] = domains
+        mutation_data["SamplesWithLineage"] = number_samples_wlineage
 
         lineage_data[lineage] = mutation_data
 
