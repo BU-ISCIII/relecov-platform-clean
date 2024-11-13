@@ -16,6 +16,7 @@ def pre_proc_calculation_date():
 
     def convert_data_to_sample_dict(data, data_1, data_2):
         out_data = {}
+        import pdb; pdb.set_trace()
         for item in data:
             if item[data_1] not in out_data:
                 out_data[item[data_1]] = item[data_2]
@@ -71,6 +72,7 @@ def pre_proc_calculation_date():
     analysis_date = convert_data_to_sample_dict(
         analysis_date, "sample__collecting_lab_sample_id", "value"
     )
+    import pdb; pdb.set_trace()
     analysis_date, invalid_samples = convert_str_to_datetime(
         analysis_date, None, invalid_samples
     )
