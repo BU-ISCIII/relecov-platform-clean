@@ -16,7 +16,6 @@ def pre_proc_calculation_date():
 
     def convert_data_to_sample_dict(data, data_1, data_2):
         out_data = {}
-        import pdb; pdb.set_trace()
         for item in data:
             if item[data_1] not in out_data:
                 out_data[item[data_1]] = item[data_2]
@@ -72,7 +71,6 @@ def pre_proc_calculation_date():
     analysis_date = convert_data_to_sample_dict(
         analysis_date, "sample__collecting_lab_sample_id", "value"
     )
-    import pdb; pdb.set_trace()
     analysis_date, invalid_samples = convert_str_to_datetime(
         analysis_date, None, invalid_samples
     )
@@ -350,10 +348,8 @@ def pre_proc_based_pairs_sequenced():
     )
     if "ERROR" in pcr_ct_1_values:
         return pcr_ct_1_values
-    # import pdb; pdb.set_trace()
     for ct_value in pcr_ct_1_values:
         sample_name = ct_value["Sample name"]
-        # import pdb; pdb.set_trace()
         base_value = (
             core.models.BioinfoAnalysisValue.objects.filter(
                 bioinfo_analysis_fieldID__property_name__exact="number_of_base_pairs_sequenced",
