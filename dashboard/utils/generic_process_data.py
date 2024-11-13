@@ -95,9 +95,9 @@ def pre_proc_calculation_date():
         collection_date, "-", invalid_samples
     )
 
-    recorded_date = core.utils.rest_api.get_sample_parameter_data("sampleEntryDate")
+    recorded_date = core.utils.rest_api.get_sample_parameter_data("sample_entry_date")
     recorded_date = convert_data_to_sample_dict(
-        recorded_date, "Sample Name", "sampleEntryDate"
+        recorded_date, "Sample Name", "sample_entry_date"
     )
     recorded_date, invalid_samples = convert_str_to_datetime(
         recorded_date, "-", invalid_samples
