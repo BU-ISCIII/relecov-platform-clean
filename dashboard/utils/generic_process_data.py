@@ -435,8 +435,9 @@ def pre_proc_depth_sample_run():
     for item in depth_sample_list:
         try:
             tmp_depth[item["sample__collecting_lab_sample_id"]] = float(item["value"])
+            int(item["number_of_samples_in_run"])
         except ValueError:
-            # ignore the entry if value cannot converted to float
+            # ignore the entry if values cannot converted to float/int
             continue
     for item in sample_in_run:
         if item["Sample name"] not in tmp_depth:
