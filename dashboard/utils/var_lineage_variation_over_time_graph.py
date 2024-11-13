@@ -31,6 +31,8 @@ def create_lineages_variations_graphic():
     data_df = pd.DataFrame(json_data)
     data_df = data_df.dropna()
     data_df["Collection date"] = pd.to_datetime(data_df["Collection date"])
+    # TODO: Clean database so this date filter is not necessary
+    data_df = data_df[data_df["Collection date"] >= "2020-01-01"]
     data_df["samples"] = data_df["samples"].astype(int)
     app = DjangoDash(
         "variationLineageOverTime", external_stylesheets=[dbc.themes.BOOTSTRAP]
