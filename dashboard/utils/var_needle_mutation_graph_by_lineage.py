@@ -13,7 +13,7 @@ import dashboard.utils.generic_process_data
 def get_variant_data_from_lineages(graphic_name=None, lineage=None, chromosome=None):
     json_data = dashboard.utils.generic_graphic_data.get_graphic_json_data(graphic_name)
 
-    if not json_data:
+    if json_data is None:
         # Execute the pre-processed task to get the data
         result = dashboard.utils.generic_process_data.pre_proc_variations_per_lineage(
             chromosome
@@ -48,7 +48,7 @@ def create_needle_plot_graph_mutation_by_lineage(lineage_list, lineage, mdata):
     options = []
     for lin in lineage_list:
         options.append({"label": lin, "value": lin})
-
+    import pdb; pdb.set_trace()
     app = DjangoDash("needlePlotMutationByLineage")
 
     app.layout = html.Div(
