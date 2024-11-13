@@ -1,5 +1,6 @@
 # Generic imports
 import inspect
+import datetime
 from collections import defaultdict
 
 
@@ -31,11 +32,13 @@ def remove_older_graphic_jsons(graphic_name, date):
 
 
 def update_graphic_json_data():
-    """The function is called from crontab to update graphic json data
+    """This function is called from crontab to update graphic json data.
+    It also removes all the previous graphic jsons except for the last.
+    In the end, there should remain 2 graphic jsons for each category, 
+    the last one and the newly created one.
 
-    Args:
-        days_to_check (int, optional): Graphic jsons older than this num will be 
-        deleted, keeping the most recent ones. Defaults to 7.
+    NOTE: this crontab should be updated if any new graphic json is
+    included in the platform by including a method call along with the rest 
     """
     names_and_dates = dashboard.models.GraphicJsonFile.objects.values("graphic_name", "creation_date")
     grouped_jsons = defaultdict(list)
@@ -48,12 +51,15 @@ def update_graphic_json_data():
     
     # Start updating all graphic jsons
     print("Starting graphic jsons update...")
+    print("Timestamp: ", datetime.now())
     print("Running pre_proc_calculation_date()")
     dashboard.utils.generic_process_data.pre_proc_calculation_date()
     print("Running pre_proc_variant_graphic()")
     dashboard.utils.generic_process_data.pre_proc_variant_graphic()
     print("Running pre_proc_specimen_source_pcr_1()")
     dashboard.utils.generic_process_data.pre_proc_specimen_source_pcr_1()
+    print("Running pre_proc_extraction_protocol_pcr_1()")
+    dashboard.utils.generic_process_data.pre_proc_extraction_protocol_pcr_1()
     print("Running pre_proc_library_kit_pcr_1()")
     dashboard.utils.generic_process_data.pre_proc_library_kit_pcr_1()
     print("Running pre_proc_based_pairs_sequenced()")
@@ -71,5 +77,7 @@ def update_graphic_json_data():
         dashboard.utils.generic_process_data.pre_proc_variations_per_lineage(
             chromosome=chromosome
         )
+    print("Graphic jsons update finished")
+    print(datetime.now())
 
 
