@@ -56,7 +56,7 @@ def update_graphic_json_data():
 
     # Start updating all graphic jsons
     print("Starting graphic jsons update...")
-    print("Timestamp: ", datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
+    print("Start timestamp: ", datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
     print("Running pre_proc_calculation_date()")
     dashboard.utils.generic_process_data.pre_proc_calculation_date()
     print("Running pre_proc_variant_graphic()")
@@ -84,4 +84,4 @@ def update_graphic_json_data():
             chromosome=chromosome
         )
     print("Graphic jsons update finished")
-    print(datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
+    print("End timestamp: ",datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
