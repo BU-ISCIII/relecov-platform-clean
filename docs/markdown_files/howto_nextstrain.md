@@ -7,7 +7,7 @@ Once you have nextstrain installed, you can clone https://github.com/BU-ISCIII/n
 Following the instructions explained [here](https://docs.nextstrain.org/en/latest/tutorials/creating-a-workflow.html) you will need to create the necessary files to run Nextstrain build. 
 
 '/data' should contain all the sequences in a single FASTA file and a corresponding table of metadata describing those sequences in a tab-delimited text file. 
-Each virus sequence record looks like the following, with the virus’s strain ID as the sequence name in the header line followed by the virus sequence.
+Each virus sequence record looks like the following, with the virus's strain ID as the sequence name in the header line followed by the virus sequence.
 ```
 >PAN/CDC_259359_V1_V3/2015
 gaatttgaagcgaatgctaacaacagtatcaacaggttttattttggatttggaaacgag
