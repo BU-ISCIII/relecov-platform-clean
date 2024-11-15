@@ -21,7 +21,7 @@ def markdown_to_html(m_file):
     m_path = os.path.join(settings.BASE_DIR, "docs", "markdown_files", m_file)
     if not os.path.isfile(m_path):
         return {"ERROR": "FILE NOT FOUND"}
-    with open(m_path, "r") as fh:
+    with open(m_path, "r", encoding='utf-8') as fh:
         text = fh.read()
         text = remove_md_extension(text)
     html = markdown.markdown(text, extensions=["toc", "extra", "codehilite"])
