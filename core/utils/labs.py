@@ -10,11 +10,13 @@ def get_lab_contact_details(user_obj):
         data = core.utils.rest_api.get_laboratory_data(lab_name)
         if "ERROR" in data:
             return data["ERROR"]
-        lab_data["lab_contact_email"] = data["DATA"]["labEmail"]
-        lab_data["lab_contact_telephone"] = data["DATA"]["labPhone"]
-        lab_data["lab_contact_name"] = data["DATA"]["labContactName"]
-        lab_data["lab_name"] = lab_name
-        return lab_data
+        for key in ["labEmail", "labPhone", "labContactName"]:
+            if key not in data["DATA"].keys():
+                break
+            lab_data[key] = data["DATA"][key]
+        else:
+            lab_data["lab_name"] = lab_name
+            return lab_data
     return ""
 
 

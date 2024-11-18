@@ -1,5 +1,5 @@
 # Generic imports
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import dash_bootstrap_components as dbc
 import pandas as pd
@@ -14,7 +14,7 @@ import dashboard.utils.generic_graphic_data
 import dashboard.utils.generic_process_data
 
 
-def create_lineages_variations_graphic(date_range=None):
+def create_lineages_variations_graphic():
     """Collect the pre-processed data from database"""
     json_data = dashboard.utils.generic_graphic_data.get_graphic_json_data(
         "variant_graphic_data"
@@ -29,31 +29,30 @@ def create_lineages_variations_graphic(date_range=None):
         )
 
     data_df = pd.DataFrame(json_data)
-
+    data_df = data_df.dropna()
     data_df["Collection date"] = pd.to_datetime(data_df["Collection date"])
+    # TODO: Clean database so this date filter is not necessary
+    data_df = data_df[data_df["Collection date"] >= "2020-01-01"]
     data_df["samples"] = data_df["samples"].astype(int)
-
     app = DjangoDash(
         "variationLineageOverTime", external_stylesheets=[dbc.themes.BOOTSTRAP]
     )
+    first_date = data_df["Collection date"].min()
+    last_date = data_df["Collection date"].max()
     # plot_div = plot(fig, output_type="div", config={"displaylogo": False})
     controls = dbc.Card(
         [
             html.Div(
                 [
                     dbc.Label("Select period of time"),
-                    dcc.Dropdown(
-                        id="periodTime",
-                        options=[
-                            {"label": "Select Period", "value": ""},
-                            {"label": "Last 4 years", "value": "1460"},
-                            {"label": "Last 2 years", "value": "730"},
-                            {"label": "Last year", "value": "365"},
-                            {"label": "Last 6 months", "value": "180"},
-                            {"label": "Last 3 months", "value": "90"},
-                            {"label": "Last month", "value": "30"},
-                            {"label": "Last week", "value": "7"},
-                        ],
+                    dcc.DatePickerRange(
+                        id="datePickerRange",
+                        start_date_placeholder_text="Start Date",
+                        end_date_placeholder_text="End Date",
+                        min_date_allowed=first_date,
+                        max_date_allowed=last_date,
+                        calendar_orientation="horizontal",
+                        number_of_months_shown=3,
                     ),
                 ],
             ),
@@ -63,7 +62,7 @@ def create_lineages_variations_graphic(date_range=None):
     period_text = dbc.Card(
         [
             html.Div(
-                "When no Selection period is set, the graphic show data form January to December of 2021"
+                "When no Selection period is set, data from January to December of 2021 is displayed"
             )
         ]
     )
@@ -88,23 +87,21 @@ def create_lineages_variations_graphic(date_range=None):
 
     @app.callback(
         Output("lineageGraph", "figure"),
-        Input("periodTime", "value"),
+        [Input("datePickerRange", "start_date"), Input("datePickerRange", "end_date")],
     )
-    def update_graph(periodTime):
-        if periodTime is None or periodTime == "":
+    def update_graph(start_date, end_date):
+        if start_date is None or end_date is None:
             # Select the samples from year 2021
             sub_data_df = data_df.loc[
                 (data_df["Collection date"] >= "2021-01-01")
                 & (data_df["Collection date"] < "2021-12-31")
             ]
         else:
-            n_days = int(periodTime)
+            start_date_obj = datetime.strptime(start_date, "%Y-%m-%d")
+            end_date_obj = datetime.strptime(end_date, "%Y-%m-%d")
             sub_data_df = data_df.loc[
-                (
-                    data_df["Collection date"]
-                    >= datetime.today() - timedelta(days=n_days)
-                )
-                & (data_df["Collection date"] < datetime.today())
+                (data_df["Collection date"] >= start_date_obj)
+                & (data_df["Collection date"] < end_date_obj)
             ]
 
         samples_df = pd.DataFrame()
@@ -139,7 +136,6 @@ def create_lineages_variations_graphic(date_range=None):
         # Do the percentage calculation
         value_per_df = (graph_df.div(graph_df.sum(axis=1), axis=0) * 100).round(2)
         # value_per_df = value_per_df
-
         # Create figure with secondary y-axis
         fig = make_subplots(specs=[[{"secondary_y": True}]])
 

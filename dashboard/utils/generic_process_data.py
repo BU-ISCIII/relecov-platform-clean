@@ -84,18 +84,18 @@ def pre_proc_calculation_date():
 
     # send request to iSkyLIMS
     collection_date = core.utils.rest_api.get_sample_parameter_data(
-        "collectionSampleDate"
+        "collection_sample_date"
     )
     collection_date = convert_data_to_sample_dict(
-        collection_date, "Sample Name", "collectionSampleDate"
+        collection_date, "Sample Name", "collection_sample_date"
     )
     collection_date, invalid_samples = convert_str_to_datetime(
         collection_date, "-", invalid_samples
     )
 
-    recorded_date = core.utils.rest_api.get_sample_parameter_data("sampleEntryDate")
+    recorded_date = core.utils.rest_api.get_sample_parameter_data("sample_entry_date")
     recorded_date = convert_data_to_sample_dict(
-        recorded_date, "Sample Name", "sampleEntryDate"
+        recorded_date, "Sample Name", "sample_entry_date"
     )
     recorded_date, invalid_samples = convert_str_to_datetime(
         recorded_date, "-", invalid_samples
@@ -133,7 +133,7 @@ def pre_proc_variant_graphic():
     """
 
     in_date_samples = core.utils.rest_api.fetch_samples_on_condition(
-        "collectionSampleDate"
+        "collection_sample_date"
     )
     if "ERROR" in in_date_samples:
         return in_date_samples
@@ -141,9 +141,9 @@ def pre_proc_variant_graphic():
     date_sample = {}
     date_variant = {}
     for s_data in in_date_samples["DATA"]:
-        if s_data["collectionSampleDate"] not in date_sample:
-            date_sample[s_data["collectionSampleDate"]] = []
-        date_sample[s_data["collectionSampleDate"]].append(s_data["Sample Name"])
+        if s_data["collection_sample_date"] not in date_sample:
+            date_sample[s_data["collection_sample_date"]] = []
+        date_sample[s_data["collection_sample_date"]].append(s_data["Sample Name"])
 
     for date, samples in date_sample.items():
         variant_samples = (
@@ -275,6 +275,7 @@ def pre_proc_variations_per_lineage(chromosome=None):
         mutation_data["y"] = list_of_af
         mutation_data["mutationGroups"] = list_of_effects
         mutation_data["domains"] = domains
+        mutation_data["SamplesWithLineage"] = number_samples_wlineage
 
         lineage_data[lineage] = mutation_data
 
@@ -348,10 +349,8 @@ def pre_proc_based_pairs_sequenced():
     )
     if "ERROR" in pcr_ct_1_values:
         return pcr_ct_1_values
-    # import pdb; pdb.set_trace()
     for ct_value in pcr_ct_1_values:
         sample_name = ct_value["Sample name"]
-        # import pdb; pdb.set_trace()
         base_value = (
             core.models.BioinfoAnalysisValue.objects.filter(
                 bioinfo_analysis_fieldID__property_name__exact="number_of_base_pairs_sequenced",
@@ -437,6 +436,11 @@ def pre_proc_depth_sample_run():
             # ignore the entry if value cannot converted to float
             continue
     for item in sample_in_run:
+        try:
+            int(item["number_of_samples_in_run"])
+        except ValueError:
+            # ignore the entry if number_of_samples cannot converted to int
+            continue
         if item["Sample name"] not in tmp_depth:
             continue
         d_value = tmp_depth[item["Sample name"]]

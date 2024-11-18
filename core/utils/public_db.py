@@ -1,6 +1,7 @@
 # Local imports
 import core.models
 import core.utils.plotly_graphics
+from django.db.models import Q
 
 
 def get_public_accession_from_sample_lab(p_field, sample_objs=None):
@@ -8,20 +9,26 @@ def get_public_accession_from_sample_lab(p_field, sample_objs=None):
     If not samples are given it gets the information for all samples
     """
     if sample_objs is None:
-        return core.models.PublicDatabaseValues.objects.filter(
-            public_database_fieldID__property_name__exact=p_field,
-            value__icontains="EPI_ISL",
-        ).values_list(
-            "sampleID__collecting_institution",
-            "sampleID__sequencing_sample_id",
-            "value",
+        return (
+            core.models.PublicDatabaseValues.objects.filter(
+                public_database_fieldID__property_name__exact=p_field,
+            )
+            .exclude(Q(value__icontains="Not Provided") | Q(value__isnull=True))
+            .values_list(
+                "sampleID__collecting_institution",
+                "sampleID__sequencing_sample_id",
+                "value",
+            )
         )
     else:
-        return core.models.PublicDatabaseValues.objects.filter(
-            sampleID__in=sample_objs,
-            public_database_fieldID__property_name__exact=p_field,
-            value__icontains="EPI_ISL",
-        ).values_list("sampleID__sequencing_sample_id", "value")
+        return (
+            core.models.PublicDatabaseValues.objects.filter(
+                sampleID__in=sample_objs,
+                public_database_fieldID__property_name__exact=p_field,
+            )
+            .exclude(Q(value__icontains="Not Provided") | Q(value__isnull=True))
+            .values_list("sampleID__sequencing_sample_id", "value")
+        )
 
 
 def percentage_graphic(len_sample, len_acc, title):

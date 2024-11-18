@@ -137,7 +137,7 @@
                                                                 <div class="card">
                                                                     <div class="card-header"><h2 style="text-align:center">ENA Samples accession</h2> </div>
                                                                     <div class="card-body">
-                                                                        {% if intra_data.ena_accession %}
+                                                                        {% if manager_intra_data.ena_accession %}
                                                                             <table id="enaTable" class="table table-striped table-bordered">
                                                                                 <thead>
                                                                                     <tr scope="row">
@@ -146,7 +146,7 @@
                                                                                     </tr>
                                                                                 </thead>
                                                                                 <tbody>
-                                                                                    {% for sample, acc in intra_data.ena_accession %}
+                                                                                    {% for lab, sample, acc in manager_intra_data.ena_accession %}
                                                                                         <tr>
                                                                                             <td>{{sample}}</td>
                                                                                             <td>{{acc}}</td>
@@ -176,13 +176,13 @@
                                                                     </div> <!-- end card body-->
                                                                 </div> <!-- end card  -->
                                                             </div> <!-- end col-md-10 -->
-                                                            {% if intra_data.ena_graph %}
+                                                            {% if manager_intra_data.ena_graph %}
                                                                 <div class="col-md-4">
                                                                     <div class="card">
                                                                         <div class="card-header"><h4 style="text-align:center">ENA Upload </h4> </div>
                                                                         <div class="card-body">
                                                                             <h5>Percentage of ENA upload samples</h5>
-                                                                            {{intra_data.ena_graph | safe}}
+                                                                            {{manager_intra_data.ena_graph | safe}}
                                                                         </div> <!-- end card body-->
                                                                     </div> <!-- end card  -->
                                                                 </div> <!-- end col-md-9 -->
