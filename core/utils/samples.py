@@ -435,11 +435,12 @@ def get_sample_display_data(sample_id, user):
     lab_sample = sample_obj.get_collecting_lab_sample_id()
     # Fetch information from iSkyLIMS
     if lab_sample != "":
-        iskylims_data = core.utils.rest_api.get_sample_information(lab_sample)[0]
+        iskylims_data = core.utils.rest_api.get_sample_information(lab_sample)
         if "ERROR" not in iskylims_data:
             s_data["iskylims_basic"] = []
             s_data["iskylims_p_data"] = []
-            for key, i_data in iskylims_data.items():
+            # iskylims_data is a list with one element. Then get the first element
+            for key, i_data in iskylims_data[0].items():
                 if key == "Project values":
                     for p_key, p_data in iskylims_data["Project values"].items():
                         s_data["iskylims_p_data"].append([p_key, p_data])
