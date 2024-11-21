@@ -146,6 +146,7 @@ def create_sample_data(request):
             if (
                 split_data["ena"]["ena_sample_accession"] != "Not Provided"
                 and split_data["ena"]["ena_sample_accession"] != ""
+                and split_data["ena"]["ena_sample_accession"] is not None
             ):
                 result = core.api.utils.public_db.store_pub_databases_data(
                     split_data["ena"], "ena", schema_obj, sample_id
