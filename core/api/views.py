@@ -143,16 +143,17 @@ def create_sample_data(request):
 
         # Save ENA info if included
         if len(split_data["ena"]) > 0:
+            result = core.api.utils.public_db.store_pub_databases_data(
+                split_data["ena"], "ena", schema_obj, sample_id
+            )
+            if "ERROR" in result:
+                return Response(result, status=status.HTTP_206_PARTIAL_CONTENT)
+            # check that the ena_sample_accession is not empty or "Not Provided"
             if (
                 split_data["ena"]["ena_sample_accession"] != "Not Provided"
                 and split_data["ena"]["ena_sample_accession"] != ""
                 and split_data["ena"]["ena_sample_accession"] is not None
             ):
-                result = core.api.utils.public_db.store_pub_databases_data(
-                    split_data["ena"], "ena", schema_obj, sample_id
-                )
-                if "ERROR" in result:
-                    return Response(result, status=status.HTTP_400_BAD_REQUEST)
                 # Save entry in update state table
                 sample_obj.update_state("Ena")
                 state_id = (
@@ -161,11 +162,11 @@ def create_sample_data(request):
                     .get_state_id()
                 )
                 data = {"sampleID": sample_id, "stateID": state_id}
-                date_serilizer = (
-                    core.api.serializers.CreateDateAfterChangeStateSerializer(data=data)
-                )
-                if date_serilizer.is_valid():
-                    date_serilizer.save()
+            date_serilizer = (
+                core.api.serializers.CreateDateAfterChangeStateSerializer(data=data)
+            )
+            if date_serilizer.is_valid():
+                date_serilizer.save()
         # Save GISAID info if included
         if len(split_data["gisaid"]) > 0:
             if "EPI_ISL" in split_data["gisaid"]["gisaid_accession_id"]:
