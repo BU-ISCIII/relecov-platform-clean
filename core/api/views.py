@@ -154,7 +154,7 @@ def create_sample_data(request):
                 and split_data["ena"]["ena_sample_accession"] != ""
                 and split_data["ena"]["ena_sample_accession"] is not None
             ):
-                # Save entry in update state table
+                # Save entry in update state table for valid ena_sample_accession
                 sample_obj.update_state("Ena")
                 state_id = (
                     core.models.SampleState.objects.filter(state__exact="Ena")
@@ -162,11 +162,11 @@ def create_sample_data(request):
                     .get_state_id()
                 )
                 data = {"sampleID": sample_id, "stateID": state_id}
-            date_serilizer = (
-                core.api.serializers.CreateDateAfterChangeStateSerializer(data=data)
-            )
-            if date_serilizer.is_valid():
-                date_serilizer.save()
+                date_serilizer = (
+                    core.api.serializers.CreateDateAfterChangeStateSerializer(data=data)
+                )
+                if date_serilizer.is_valid():
+                    date_serilizer.save()
         # Save GISAID info if included
         if len(split_data["gisaid"]) > 0:
             if "EPI_ISL" in split_data["gisaid"]["gisaid_accession_id"]:
