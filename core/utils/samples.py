@@ -440,7 +440,8 @@ def get_sample_display_data(sample_id, user):
             s_data["iskylims_basic"] = []
             s_data["iskylims_p_data"] = []
             # iskylims_data is a list with one element. Then get the first element
-            for key, i_data in iskylims_data[0].items():
+            iskylims_data = iskylims_data[0]
+            for key, i_data in iskylims_data.items():
                 if key == "Project values":
                     for p_key, p_data in iskylims_data["Project values"].items():
                         s_data["iskylims_p_data"].append([p_key, p_data])
