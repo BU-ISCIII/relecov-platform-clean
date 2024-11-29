@@ -62,7 +62,7 @@ def create_lineages_variations_graphic():
     period_text = dbc.Card(
         [
             html.Div(
-                "When no Selection period is set, data from January to December of 2021 is displayed"
+                "When no Selection period is set, data from the first registered date until today is shown"
             )
         ]
     )
@@ -91,10 +91,10 @@ def create_lineages_variations_graphic():
     )
     def update_graph(start_date, end_date):
         if start_date is None or end_date is None:
-            # Select the samples from year 2021
+            # Select the samples from all registered years
             sub_data_df = data_df.loc[
-                (data_df["Collection date"] >= "2021-01-01")
-                & (data_df["Collection date"] < "2021-12-31")
+                (data_df["Collection date"] >= first_date)
+                & (data_df["Collection date"] < last_date)
             ]
         else:
             start_date_obj = datetime.strptime(start_date, "%Y-%m-%d")
