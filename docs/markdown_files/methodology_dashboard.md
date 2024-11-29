@@ -1,19 +1,19 @@
 # Methodology dashboard.
 
-Methodology dashboard displays statistic information collected from Metadata 
-Lab, and data for all process done in the Bioinformatic analysis.
+Methodology dashboard displays statistic information collected from laboratories 
+metadata, and data for all process done in the Bioinformatic analysis.
 
 When you open the Methodology dashboard you will see that some graphics are showed.
 
-The first graphic row displays how the metadata lab and Bioinfo metadata are filled
+The first graphic row displays how the laboratories metadata and Bioinfo metadata are filled
 
 ![m_dashboard_index_1](img/m_dashboard_index_1.png)
 
 The first graphic on the left side shows the number of fields that for all samples 
 they are never filled with any value.
 
-With this information can help you to identify if there are some fields that could 
-be eliminate from Metadata lab or Biofinfo Metada. 
+This information can help you to identify if there are some fields that could 
+be eliminated from the samples lab metadata or Biofinfo Metadata. 
 But handle this information keeping in mind that 
 there are parameters that are set because in some situation this field is required.
 
@@ -39,7 +39,7 @@ The percentage showed in the graphic will be, the mean of (100% , 100%, 60%, 100
 
 Second row display the number of samples that contains a value for each field.
 
-The blue color are the fields related to Metadata Lab and the green color belongs
+The blue color are the fields related to lab's metadata and the green color belongs
 to Bioinfo Metadata.
 
 
