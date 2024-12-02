@@ -1,0 +1,11 @@
+name: Feature request
+description: Suggest an idea to improve BIPLAT-CIBERINFEC/patho-webcore 
+labels: enhancement
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description of feature
+      description: You can provide here your suggestion for a new feature.
+    validations:
+      required: true

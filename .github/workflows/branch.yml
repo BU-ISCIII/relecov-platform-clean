@@ -1,0 +1,45 @@
+name: Main Branch Protection
+
+# This workflow triggers on pull requests to the `main` branch
+# It fails if a pull request is made to the `main` branch from any branch other than `develop` or branches prefixed with `patch`
+on:
+  pull_request_target:
+    branches: [main]
+
+jobs:
+  check-pr-source:
+    runs-on: ubuntu-latest
+    steps:
+      # Validate that pull requests to `main` only originate from `develop` or `patch` branches
+      - name: Validate Pull Request Source
+        run: |
+          if [[ ${{ github.event.pull_request.head.repo.full_name }} == "${{ github.repository }}" ]] && [[ ${{ github.event.pull_request.head.ref }} != "develop" && ${{ github.event.pull_request.head.ref }} != patch* ]]; then
+            echo "Pull Requests to 'main' are only allowed from 'develop' or branches prefixed with 'patch'."
+            exit 1
+          fi
+
+      # If the validation fails, post a comment on the pull request explaining the issue
+      # NOTE: This will not work for pull requests originating from forks due to GitHub Actions limitations with secrets
+      - name: Post Comment on Invalid Pull Request
+        if: failure()
+        uses: mshick/add-pr-comment@b8f338c590a895d50bcbfa6c5859251edc8952fc # v2
+        with:
+          message: |
+            ## Invalid Pull Request to the `main` branch :x:
+
+            Pull requests targeting the `main` branch must originate from either the `develop` branch or a branch prefixed with `patch`.
+
+            ### What you should do:
+            1. Do **not** close this pull request.
+            2. Click on the "Edit" button at the top of this page.
+            3. Change the target branch to `develop` or create a new branch prefixed with `patch` for hotfixes.
+
+            After making the changes, you must push a new commit to ensure this workflow passes.
+
+            **Important:** The `main` branch is reserved for release-ready code.
+
+            If you need assistance, feel free to ask in the discussion or reach out to the repository maintainers.
+
+            Thank you for your understanding and contributions!
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          allow-repeats: false
