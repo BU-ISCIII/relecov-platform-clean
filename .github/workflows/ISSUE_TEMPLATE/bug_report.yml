@@ -1,0 +1,62 @@
+name: Bug report
+description: Report an issue or malfunction in the repository
+labels: bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to report an issue! Please ensure you've checked the following before submitting:
+
+        - **Read the project documentation**:
+          - [Repository Documentation](https://your-repo-docs-link-here)
+        - **Check if this issue has already been reported**:
+          - Search existing issues in this repository.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description of the issue
+      description: Provide a clear and concise description of the problem.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: Steps to reproduce
+      description: List the exact steps needed to reproduce the issue.
+      placeholder: |
+        1. Go to...
+        2. Click on...
+        3. See the error...
+
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: Expected behavior
+      description: Describe what you expected to happen instead of the issue observed.
+      placeholder: The system should...
+
+  - type: textarea
+    id: actual_behavior
+    attributes:
+      label: Actual behavior
+      description: Describe what actually happened.
+      placeholder: The system displayed...
+
+  - type: textarea
+    id: logs_and_files
+    attributes:
+      label: Logs and relevant files
+      description: |
+        Please upload logs and any relevant files that can help diagnose the problem. If file extensions are not allowed, create a `.zip` archive.
+        Examples of useful files:
+        - **Error logs**
+        - **Configuration files**
+        - **Screenshots of errors**
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional context
+      description: Add any other context or screenshots about the problem here.
