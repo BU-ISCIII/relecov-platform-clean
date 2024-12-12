@@ -41,7 +41,7 @@ class BioinfoMetadataFile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=("created at"))
 
     class Meta:
-        db_table = "core_bioinfo_metadata_file"
+        db_table = "core_metdata_values_file"
 
     def __str__(self):
         return "%s" % (self.title)
@@ -304,63 +304,34 @@ class MetadataVisualization(models.Model):
     objects = MetadataVisualizationManager()
 
 
-class BioinfoAnalysisFieldManager(models.Manager):
-    def create_new_field(self, data):
-        new_field = self.create(
-            property_name=data["property_name"],
-            label_name=data["label_name"],
-        )
-        return new_field
-
-
-class BioinfoAnalysisField(models.Model):
-    schemaID = models.ManyToManyField(Schema)
-    property_name = models.CharField(max_length=60)
-    label_name = models.CharField(max_length=80)
-    generated_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-
-    class Meta:
-        db_table = "core_bioinfo_analysis_field"
-
-    def __str__(self):
-        return "%s" % (self.property_name)
-
-    def get_id(self):
-        return "%s" % (self.pk)
-
-    def get_property(self):
-        return "%s" % (self.property_name)
-
-    def get_label(self):
-        return "%s" % (self.label_name)
-
-    def get_classification_name(self):
-        if self.classificationID is not None:
-            return self.classificationID.get_classification()
-        return None
-
-    objects = BioinfoAnalysisFieldManager()
-
-
-class BioinfoAnalysisValueManager(models.Manager):
+class MetadataValuesManager(models.Manager):
     def create_new_value(self, data):
         new_value = self.create(
             value=data["value"],
-            bioinfo_analysis_fieldID=data["bioinfo_analysis_fieldID"],
-            sampleID_id=data["sampleID_id"],
+            analysis_date=data["analysis_date"],
+            sample=data["sample_id"],
+            schema_property=data["schema_property_id"]
         )
         return new_value
 
 
-class BioinfoAnalysisValue(models.Model):
+class MetadataValues(models.Model):
     value = models.CharField(max_length=240, null=True, blank=True)
-    bioinfo_analysis_fieldID = models.ForeignKey(
-        BioinfoAnalysisField, on_delete=models.CASCADE
-    )
     generated_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    analysis_date = models.DateField()
+    sample = models.ForeignKey(
+        'core.Sample',
+        on_delete=models.CASCADE,
+        related_name="metadata_values"
+    )
+    schema_property = models.ForeignKey(
+        'core.SchemaProperties',
+        on_delete=models.CASCADE,
+        related_name="metadata_values"
+    )
 
     class Meta:
-        db_table = "core_bioinfo_analysis_value"
+        db_table = "core_metadata_values"
 
     def __str__(self):
         return "%s" % (self.value)
@@ -373,6 +344,8 @@ class BioinfoAnalysisValue(models.Model):
 
     def get_b_process_field_id(self):
         return "%s" % (self.bioinfo_analysis_fieldID)
+
+    objects = MetadataValuesManager()
 
 
 class LineageInfo(models.Model):
@@ -674,7 +647,6 @@ class Sample(models.Model):
     )
     lineage_values = models.ManyToManyField(LineageValues, blank=True)
     lineage_info = models.ManyToManyField(LineageInfo, blank=True)
-    bio_analysis_values = models.ManyToManyField(BioinfoAnalysisValue, blank=True)
 
     sample_unique_id = models.CharField(max_length=12)
     microbiology_lab_sample_id = models.CharField(max_length=80, null=True, blank=True)

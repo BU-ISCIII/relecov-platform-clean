@@ -33,13 +33,8 @@ class AnalysisPerformedAdmin(admin.ModelAdmin):
     list_display = ["typeID", "sampleID"]
 
 
-class BioinfoAnalysisFielddAdmin(admin.ModelAdmin):
-    list_display = ["property_name", "label_name"]
-    search_fields = ("property_name__icontains",)
-
-
-class BioinfoAnalysisValueAdmin(admin.ModelAdmin):
-    list_display = ["value", "bioinfo_analysis_fieldID"]
+class MetadataValuesAdmin(admin.ModelAdmin):
+    list_display = ["value", "sample", "schema_property", "analysis_date"]
     search_fields = ("value__icontains",)
 
 
@@ -191,8 +186,7 @@ admin.site.register(core.models.PublicDatabaseType, PublicDatabaseTypeAdmin)
 admin.site.register(core.models.PublicDatabaseFields, PublicDatabaseFieldsAdmin)
 admin.site.register(core.models.PublicDatabaseValues, PublicDatabaseValuesAdmin)
 admin.site.register(core.models.MetadataVisualization, MetadataVisualizationAdmin)
-admin.site.register(core.models.BioinfoAnalysisField, BioinfoAnalysisFielddAdmin)
-admin.site.register(core.models.BioinfoAnalysisValue, BioinfoAnalysisValueAdmin)
+admin.site.register(core.models.MetadataValues, MetadataValuesAdmin)
 admin.site.register(core.models.Classification, ClassificationAdmin)
 admin.site.register(core.models.TemporalSampleStorage, TemporalSampleStorageAdmin)
 admin.site.register(core.models.Error, ErrorAdmin)

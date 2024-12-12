@@ -5,9 +5,9 @@ from rest_framework import serializers
 import core.models
 
 
-class CreateBioinfoAnalysisValueSerializer(serializers.ModelSerializer):
+class CreateMetadataValueSerializer(serializers.ModelSerializer):
     class Meta:
-        model = core.models.BioinfoAnalysisValue
+        model = core.models.MetadataValues
         fields = "__all__"
 
 
