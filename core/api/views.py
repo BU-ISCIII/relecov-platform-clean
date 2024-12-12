@@ -23,7 +23,7 @@ import core.models
 import core.utils.samples
 import core.api.serializers
 import core.api.utils.samples
-import core.api.utils.bioinfo_metadata
+import core.api.utils.metadata_values
 import core.api.utils.public_db
 import core.api.utils.variants
 import core.api.utils.common_functions
@@ -268,7 +268,7 @@ def create_sample_data(request):
         )
     ],
     request=inline_serializer(
-        name="create_bioinfo_metadata",
+        name="create_metadata_value",
         fields={
             "analysis_date": serializers.CharField(),
             "assembly": serializers.CharField(),
@@ -344,7 +344,7 @@ def create_sample_data(request):
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def create_bioinfo_metadata(request):
+def create_metadata_value(request):
     if request.method == "POST":
         data = request.data
 
@@ -369,7 +369,7 @@ def create_bioinfo_metadata(request):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    analysis_defined = core.api.utils.bioinfo_metadata.get_analysis_defined(sample_obj)
+    analysis_defined = core.api.utils.metadata_values.get_analysis_defined(sample_obj)
     analysis_date = data.get("analysis_date", None)
     if analysis_date is not None:
         if analysis_date in list(analysis_defined):
@@ -378,12 +378,8 @@ def create_bioinfo_metadata(request):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-    split_data = core.api.utils.bioinfo_metadata.split_bioinfo_data(data, schema_obj)
-    if "ERROR" in split_data:
-        return Response(split_data, status=status.HTTP_400_BAD_REQUEST)
-
-    stored_data = core.api.utils.bioinfo_metadata.store_bioinfo_data(
-        split_data, schema_obj
+    stored_data = core.api.utils.metadata_values.store_metadata_values(
+        data, schema_obj, analysis_date
     )
     if "ERROR" in stored_data:
         return Response(stored_data, status=status.HTTP_400_BAD_REQUEST)
