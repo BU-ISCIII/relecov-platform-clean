@@ -348,77 +348,6 @@ class MetadataValues(models.Model):
     objects = MetadataValuesManager()
 
 
-class LineageInfo(models.Model):
-    lineage_name = models.CharField(max_length=100)
-    pango_lineages = models.CharField(max_length=100)
-    variant_name = models.CharField(max_length=100)
-    nextclade = models.CharField(max_length=100)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        db_table = "core_lineage_info"
-
-    def __str__(self):
-        return "%s" % (self.lineage_name)
-
-    def get_lineage_name(self):
-        return "%s" % (self.lineage_name)
-
-    def get_lineage_id(self):
-        return "%s" % (self.pk)
-
-
-class LineageFieldsManager(models.Manager):
-    def create_new_field(self, data):
-        new_field = self.create(
-            property_name=data["property_name"],
-            label_name=data["label_name"],
-        )
-        return new_field
-
-
-class LineageFields(models.Model):
-    schemaID = models.ManyToManyField(Schema)
-    property_name = models.CharField(max_length=60)
-    label_name = models.CharField(max_length=80)
-    generated_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-
-    class Meta:
-        db_table = "core_lineage_field"
-
-    def __str__(self):
-        return "%s" % (self.property_name)
-
-    def get_lineage_property_name(self):
-        return "%s" % (self.property_name)
-
-    def get_lineage_field_id(self):
-        return "%s" % (self.pk)
-
-    objects = LineageFieldsManager()
-
-
-class LineageValues(models.Model):
-    lineage_fieldID = models.ForeignKey(LineageFields, on_delete=models.CASCADE)
-    value = models.CharField(max_length=240, null=True, blank=True)
-    generated_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-
-    class Meta:
-        db_table = "core_lineage_value"
-
-    def __str__(self):
-        return "%s" % (self.value)
-
-    def get_value(self):
-        return "%s" % (self.value)
-
-    def get_id(self):
-        return "%s" % (self.pk)
-
-    def get_lineage_field(self):
-        return "%s" % (self.lineage_fieldID)
-
-
 class Filter(models.Model):
     filter = models.CharField(max_length=70)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=("created at"))
@@ -645,8 +574,6 @@ class Sample(models.Model):
     schema_obj = models.ForeignKey(
         Schema, on_delete=models.CASCADE, null=True, blank=True
     )
-    lineage_values = models.ManyToManyField(LineageValues, blank=True)
-    lineage_info = models.ManyToManyField(LineageInfo, blank=True)
 
     sample_unique_id = models.CharField(max_length=12)
     microbiology_lab_sample_id = models.CharField(max_length=80, null=True, blank=True)
@@ -672,9 +599,6 @@ class Sample(models.Model):
 
     def get_sample_name(self):
         return "%s" % (self.sequencing_sample_id)
-
-    def get_lineage_values(self):
-        return "%s" % (self.lineage_values)
 
     def get_sample_id(self):
         return "%s" % (self.pk)
