@@ -1,5 +1,5 @@
 name: Feature request
-description: Suggest an idea to improve BIPLAT-CIBERINFEC/patho-webcore 
+description: Suggest an idea to improve BIPLAT-CIBERINFEC/pathoweb-core 
 labels: enhancement
 body:
   - type: textarea

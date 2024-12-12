@@ -1,6 +1,6 @@
-# Patho-webcore: Contributing Guidelines
+# pathoweb-core: Contributing Guidelines
 
-Thank you for considering contributing to the Patho-webcore project! Below, you'll find an outline of how to contribute effectively to our project. Please read through these guidelines before starting.
+Thank you for considering contributing to the pathoweb-core project! Below, you'll find an outline of how to contribute effectively to our project. Please read through these guidelines before starting.
 
 ## Contribution workflow
 <!-- Add details about the workflow for contributing, such as creating issues, branching conventions, submitting pull requests, and the review process. -->
