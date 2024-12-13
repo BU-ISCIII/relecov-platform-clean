@@ -525,7 +525,7 @@ class SampleState(models.Model):
         return "%s" % (self.display_string)
 
 
-class Error(models.Model):
+class ErrorName(models.Model):
     error_name = models.CharField(max_length=100)
     display_string = models.CharField(max_length=100)
     description = models.CharField(max_length=100)
@@ -569,7 +569,7 @@ class Sample(models.Model):
     state = models.ForeignKey(SampleState, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     error_type = models.ForeignKey(
-        Error, on_delete=models.CASCADE, null=True, blank=True
+        ErrorName, on_delete=models.CASCADE, null=True, blank=True
     )
     schema_obj = models.ForeignKey(
         Schema, on_delete=models.CASCADE, null=True, blank=True
@@ -755,23 +755,27 @@ class PublicDatabaseValues(models.Model):
         return "%s" % (self.pk)
 
 
-class DateUpdateState(models.Model):
-    stateID = models.ForeignKey(SampleState, on_delete=models.CASCADE)
-    sampleID = models.ForeignKey(Sample, on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now_add=True)
+class SampleStateHistory(models.Model):
+    is_current = models.BooleanField(default=True)
+    changed_at = models.DateTimeField(auto_now_add=True)
+
+    sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
+    state = models.ForeignKey(SampleState, on_delete=models.CASCADE)
+    error_type = models.ForeignKey(ErrorName, on_delete=models.CASCADE)
 
     class Meta:
-        db_table = "core_date_update_state"
+        db_table = "core_sample_state_history"
 
     def __str__(self):
-        return "%s_%s" % (self.stateID, self.sampleID)
+        return "%s_%s" % (self.sample, self.sample)
 
+    # TODO: refactor needed
     def get_sample_id(self):
-        return "%s" % (self.sampleID)
+        return "%s" % (self.sample)
 
     def get_state_name(self):
         if self.stateID is not None:
-            return "%s" % (self.stateID.get_state())
+            return "%s" % (self.sample.get_state())
         return ""
 
     def get_state_display_name(self):
@@ -780,7 +784,18 @@ class DateUpdateState(models.Model):
         return ""
 
     def get_date(self):
-        return self.date.strftime("%d-%B-%Y")
+        return self.changed_at.strftime("%d-%B-%Y")
+    # FIXME: Candidate methods to be implemented here (copied & adaptd from model Sample)
+    #def get_state(self):
+    #    if self.state:
+    #        return "%s" % (self.state.get_state())
+    #    return None
+    #def update_state(self, state):
+    #    if not SampleState.objects.filter(state__exact=state).exists():
+    #        return False
+    #    self.state = SampleState.objects.filter(state__exact=state).last()
+    #    self.save()
+    #    return self
 
 
 class Variant(models.Model):

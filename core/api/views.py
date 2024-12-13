@@ -381,6 +381,7 @@ def create_metadata_value(request):
     stored_data = core.api.utils.metadata_values.store_metadata_values(
         data, schema_obj, analysis_date
     )
+    # FIXME: needs refactoring
     if "ERROR" in stored_data:
         return Response(stored_data, status=status.HTTP_400_BAD_REQUEST)
     state_id = (
@@ -604,6 +605,7 @@ def create_variant_data(request):
         500: OpenApiResponse(description="Internal Server Error"),
     },
 )
+# FIXME: This needs to be updated  
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 @api_view(["PUT"])
@@ -621,6 +623,7 @@ def update_state(request):
                 {"ERROR": core.config.ERROR_SAMPLE_NOT_DEFINED},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        # TODO all the pk can be accessed via object_name.id. Consider replacing get_sample_id() methods. 
         sample_id = sample_obj.get_sample_id()
         # if state exists,
         if core.models.SampleState.objects.filter(state=data["state"]).exists():
@@ -643,7 +646,7 @@ def update_state(request):
 
         if "error_type" in data and "Error" in data["state"]:
             error_type_id = (
-                core.models.Error.objects.filter(error_name=data["error_type"])
+                core.models.ErrorName.objects.filter(error_name=data["error_type"])
                 .last()
                 .get_error_id()
             )
