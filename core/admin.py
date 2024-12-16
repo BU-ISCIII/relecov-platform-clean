@@ -70,6 +70,18 @@ class ChromosomeAdmin(admin.ModelAdmin):
     list_display = ["chromosome"]
 
 
+class LineageInfoAdmin(admin.ModelAdmin):
+    list_display = ["lineage_name"]
+
+
+class LineageFieldsAdmin(admin.ModelAdmin):
+    list_display = ["property_name", "label_name"]
+
+
+class LineageValuesAdmin(admin.ModelAdmin):
+    list_display = ["value", "lineage_fieldID"]
+
+
 class OrganismAnnotationAdmin(admin.ModelAdmin):
     list_display = ["organism_code", "gff_version", "sequence_region"]
 
@@ -160,6 +172,8 @@ admin.site.register(core.models.Filter, FilterAdmin)
 admin.site.register(core.models.Effect, EffectAdmin)
 admin.site.register(core.models.Gene, GeneAdmin)
 admin.site.register(core.models.Chromosome, ChromosomeAdmin)
+admin.site.register(core.models.LineageFields, LineageFieldsAdmin)
+admin.site.register(core.models.LineageValues, LineageValuesAdmin)
 admin.site.register(core.models.Sample, SampleAdmin)
 admin.site.register(core.models.SampleState, SampleStateAdmin)
 admin.site.register(core.models.Variant, VariantAdmin)
@@ -177,4 +191,5 @@ admin.site.register(core.models.Classification, ClassificationAdmin)
 admin.site.register(core.models.TemporalSampleStorage, TemporalSampleStorageAdmin)
 admin.site.register(core.models.Error, ErrorAdmin)
 admin.site.register(core.models.DateUpdateState, DateUpdateStateAdmin)
+admin.site.register(core.models.LineageInfo, LineageInfoAdmin)
 admin.site.register(core.models.OrganismAnnotation, OrganismAnnotationAdmin)
