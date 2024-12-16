@@ -11,9 +11,9 @@ class CreateMetadataValueSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class SampleStateHistorySerializer(serializers.ModelSerializer):
+class CreateDateAfterChangeStateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = core.models.SampleStateHistory
+        model = core.models.DateUpdateState
         fields = "__all__"
 
 

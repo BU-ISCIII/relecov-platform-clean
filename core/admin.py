@@ -46,16 +46,16 @@ class ConfigSettingAdmin(admin.ModelAdmin):
     list_display = ["configuration_name", "configuration_value"]
 
 
-class SampleStateHistoryAdmin(admin.ModelAdmin):
-    list_display = ["is_current", custom_date_format ,"sample_id", "state_id", "error_type_id"]
+class DateUpdateStateAdmin(admin.ModelAdmin):
+    list_display = ["sampleID", "stateID", custom_date_format]
 
 
 class EffectAdmin(admin.ModelAdmin):
     list_display = ["effect"]
 
 
-class ErrorNameAdmin(admin.ModelAdmin):
-    list_display = ["error_name", "description"]
+class ErrorAdmin(admin.ModelAdmin):
+    list_display = ["error_name", "display_string"]
 
 
 class FilterAdmin(admin.ModelAdmin):
@@ -175,6 +175,6 @@ admin.site.register(core.models.MetadataVisualization, MetadataVisualizationAdmi
 admin.site.register(core.models.MetadataValues, MetadataValuesAdmin)
 admin.site.register(core.models.Classification, ClassificationAdmin)
 admin.site.register(core.models.TemporalSampleStorage, TemporalSampleStorageAdmin)
-admin.site.register(core.models.ErrorName, ErrorNameAdmin)
-admin.site.register(core.models.SampleStateHistory, SampleStateHistoryAdmin)
+admin.site.register(core.models.Error, ErrorAdmin)
+admin.site.register(core.models.DateUpdateState, DateUpdateStateAdmin)
 admin.site.register(core.models.OrganismAnnotation, OrganismAnnotationAdmin)
