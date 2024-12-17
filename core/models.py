@@ -310,7 +310,7 @@ class MetadataValuesManager(models.Manager):
             value=data["value"],
             analysis_date=data["analysis_date"],
             sample=data["sample_id"],
-            schema_property=data["schema_property_id"]
+            schema_property=data["schema_property_id"],
         )
         return new_value
 
@@ -320,14 +320,12 @@ class MetadataValues(models.Model):
     generated_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     analysis_date = models.DateField()
     sample = models.ForeignKey(
-        'core.Sample',
-        on_delete=models.CASCADE,
-        related_name="metadata_values"
+        "core.Sample", on_delete=models.CASCADE, related_name="metadata_values"
     )
     schema_property = models.ForeignKey(
-        'core.SchemaProperties',
+        "core.SchemaProperties",
         on_delete=models.CASCADE,
-        related_name="metadata_values"
+        related_name="metadata_values",
     )
 
     class Meta:

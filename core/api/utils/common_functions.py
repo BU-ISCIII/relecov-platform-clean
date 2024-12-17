@@ -75,12 +75,13 @@ def add_sample_state_history(sample_obj, state_id, error_name=None):
         # Assign the 'No Error' entry with pk=1 as default
         error_obj = core.models.ErrorName.objects.filter(pk=1).first()
         if not error_obj:
-            raise ValueError("Default error entry with pk=1 does not exist in the database.")
+            raise ValueError(
+                "Default error entry with pk=1 does not exist in the database."
+            )
 
     # Mark previous states as not current
     core.models.SampleStateHistory.objects.filter(
-        sample=sample_obj,
-        is_current=True
+        sample=sample_obj, is_current=True
     ).update(is_current=False)
 
     # Add the new state history

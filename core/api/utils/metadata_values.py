@@ -28,20 +28,17 @@ def store_metadata_values(s_data, schema_obj, analysis_date):
         sequencing_sample_id__iexact=s_data["sequencing_sample_id"]
     ).last()
     for field, value in s_data.items():
-        property_name = (
-            core.models.SchemaProperties.objects.filter(
-                schemaID=schema_obj, property__iexact=field
-            )
-            .last()
-        )
+        property_name = core.models.SchemaProperties.objects.filter(
+            schemaID=schema_obj, property__iexact=field
+        ).last()
         data = {
             "value": value,
             "sample": sample_obj.id,
             "schema_property": property_name.id,
-            "analysis_date": analysis_date
+            "analysis_date": analysis_date,
         }
-        meta_value_serializer = (
-            core.api.serializers.CreateMetadataValueSerializer(data=data)
+        meta_value_serializer = core.api.serializers.CreateMetadataValueSerializer(
+            data=data
         )
         if not meta_value_serializer.is_valid():
             return {
