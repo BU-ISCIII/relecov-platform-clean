@@ -314,6 +314,7 @@ def delete_temporary_sample_table(user_obj):
         core.models.TemporalSampleStorage.objects.filter(user=user_obj).delete()
     return True
 
+
 # TODO: Replace the outdated DateUpdateState with the new SampleStateHistory
 def get_lab_last_actions(lab_name=None):
     """Get the last action performed on the samples for a specific lab.
@@ -389,6 +390,7 @@ def get_public_database_fields(schema_obj, db_type):
             schemaID=schema_obj, database_type__public_type_name__iexact=db_type
         )
     return None
+
 
 # TODO: Replace the outdated DateUpdateState with the new SampleStateHistory
 def get_sample_display_data(sample_id, user):
@@ -715,6 +717,7 @@ def save_excel_form_in_samba_folder(m_file, user_name):
     # moving file
     shutil.move(os.path.join(settings.MEDIA_ROOT, f_name), f_path)
     return
+
 
 # TODO: Replace the outdated DateUpdateState with the new SampleStateHistory
 def search_samples(sample_name, lab_name, sample_state, s_date, user):

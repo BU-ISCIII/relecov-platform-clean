@@ -94,7 +94,6 @@ import core.config
         500: OpenApiResponse(description="Internal Server Error"),
     },
 )
-
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -138,7 +137,6 @@ def create_sample_data(request):
 
         # Add initial state history (after creating the sample)
         is_first_entry = not core.models.SampleStateHistory.objects.filter(sample=sample_obj).exists()
-        
         if is_first_entry:
             error_name_obj = core.models.ErrorName.objects.filter(pk=1).first()
             try:
@@ -173,7 +171,7 @@ def create_sample_data(request):
                     core.api.utils.common_functions.add_sample_state_history(
                         sample_obj,
                         state_id=state_id,
-                        error_name=None # TODO: do not know what to do with this at this point
+                        error_name=None  # TODO: do not know what to do with this at this point
                     )
                 except ValueError as e:
                     return Response({"ERROR": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -197,7 +195,7 @@ def create_sample_data(request):
                     core.api.utils.common_functions.add_sample_state_history(
                         sample_obj,
                         state_id=state_id,
-                        error_name=None # TODO: do not know what to do with this at this point
+                        error_name=None  # TODO: do not know what to do with this at this point
                     )
                 except ValueError as e:
                     return Response({"ERROR": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -397,7 +395,7 @@ def create_metadata_value(request):
     )
     if "ERROR" in stored_data:
         return Response(stored_data, status=status.HTTP_400_BAD_REQUEST)
-    
+
     # Update state of sample:
     state_id = (
         core.models.SampleState.objects.filter(state__exact="Bioinfo")
@@ -408,14 +406,14 @@ def create_metadata_value(request):
         core.api.utils.common_functions.add_sample_state_history(
             sample_obj,
             state_id=state_id,
-            error_name=None # TODO: do not know what to do with this at this point
+            error_name=None  # TODO: do not know what to do with this at this point
         )
     except ValueError as e:
         return Response({"ERROR": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     # FIXME: this might be not necessary. It depends whether we add the serializer (here or in api.utils.add_sample_state_history())
     # Validate serializer
-    #if date_serializer.is_valid():
+    # if date_serializer.is_valid():
     #    date_serializer.save()
 
     return Response(status=status.HTTP_201_CREATED)
