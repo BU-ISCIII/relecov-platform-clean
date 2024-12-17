@@ -314,7 +314,7 @@ def delete_temporary_sample_table(user_obj):
         core.models.TemporalSampleStorage.objects.filter(user=user_obj).delete()
     return True
 
-
+# TODO: Replace the outdated DateUpdateState with the new SampleStateHistory
 def get_lab_last_actions(lab_name=None):
     """Get the last action performed on the samples for a specific lab.
     If no lab is given it returns the info for all labs
