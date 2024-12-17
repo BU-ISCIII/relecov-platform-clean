@@ -595,15 +595,13 @@ class SampleState(models.Model):
     def get_state_display_string(self):
         return "%s" % (self.display_string)
 
-
-class Error(models.Model):
+class ErrorName(models.Model):
     error_name = models.CharField(max_length=100)
-    display_string = models.CharField(max_length=100)
-    description = models.CharField(max_length=100)
-    generated_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    error_code = models.CharField(max_length=10)
+    error_text = models.CharField(max_length=100, null=True, blank=True)
 
     class Meta:
-        db_table = "core_error"
+        db_table = "core_error_name"
 
     def __str__(self):
         return "%s" % (self.error_name)
@@ -614,34 +612,28 @@ class Error(models.Model):
     def get_error_id(self):
         return "%s" % (self.pk)
 
-    def get_display_string(self):
-        return "%s" % (self.display_string)
+    def get_error_code(self):
+        return "%s" % (self.error_code)
 
     def get_description(self):
-        return "%s" % (self.description)
+        return "%s" % (self.error_text)
 
 
 class SampleManager(models.Manager):
     def create_new_sample(self, data):
-        state = SampleState.objects.filter(state__exact=data["state"]).last()
         # FIXME: Sequencing_date is not supposed to be mandatory, collecting date is
         new_sample = self.create(
             sample_unique_id=data["sample_unique_id"],
             sequencing_sample_id=data["sequencing_sample_id"],
             sequencing_date=data["sequencing_date"],
             metadata_file=data["metadata_file"],
-            state=state,
             user=data["user"],
         )
         return new_sample
 
 
 class Sample(models.Model):
-    state = models.ForeignKey(SampleState, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    error_type = models.ForeignKey(
-        Error, on_delete=models.CASCADE, null=True, blank=True
-    )
     schema_obj = models.ForeignKey(
         Schema, on_delete=models.CASCADE, null=True, blank=True
     )
@@ -742,7 +734,7 @@ class Sample(models.Model):
         data.append(self.sequence_file_R1_md5)
         data.append(self.sequence_file_R2_md5)
         return data
-
+    # TODO: consider removing this
     def update_state(self, state):
         if not SampleState.objects.filter(state__exact=state).exists():
             return False
@@ -831,32 +823,38 @@ class PublicDatabaseValues(models.Model):
         return "%s" % (self.pk)
 
 
-class DateUpdateState(models.Model):
-    stateID = models.ForeignKey(SampleState, on_delete=models.CASCADE)
-    sampleID = models.ForeignKey(Sample, on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now_add=True)
+class SampleStateHistory(models.Model):
+    sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
+    state = models.ForeignKey(SampleState, on_delete=models.CASCADE)
+    error_name = models.ForeignKey(ErrorName, on_delete=models.CASCADE)
+
+    is_current = models.BooleanField(default=True)
+    changed_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = "core_date_update_state"
+        db_table = "core_sample_state_history"
 
     def __str__(self):
-        return "%s_%s" % (self.stateID, self.sampleID)
+        return "%s_%s" % (self.sample, self.sample)
 
     def get_sample_id(self):
-        return "%s" % (self.sampleID)
-
-    def get_state_name(self):
-        if self.stateID is not None:
-            return "%s" % (self.stateID.get_state())
-        return ""
-
-    def get_state_display_name(self):
-        if self.stateID is not None:
-            return "%s" % (self.stateID.get_state_display_string())
-        return ""
+        return "%s" % (self.sample)
 
     def get_date(self):
-        return self.date.strftime("%d-%B-%Y")
+        return self.changed_at.strftime("%d-%B-%Y")
+
+    def get_state(self):
+        if self.state:
+            return "%s" % (self.state.get_state())
+        return None
+
+    # FIXME: Consider to refactor this. 
+    #def update_state(self, state):
+    #    if not SampleState.objects.filter(state__exact=state).exists():
+    #        return False
+    #    self.state = SampleState.objects.filter(state__exact=state).last()
+    #    self.save()
+    #    return self
 
 
 class Variant(models.Model):
