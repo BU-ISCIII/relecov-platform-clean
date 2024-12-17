@@ -47,7 +47,13 @@ class ConfigSettingAdmin(admin.ModelAdmin):
 
 
 class SampleStateHistoryAdmin(admin.ModelAdmin):
-    list_display = ["is_current", custom_date_format, "sample_id", "state_id", "error_name_id"]
+    list_display = [
+        "is_current",
+        custom_date_format,
+        "sample_id",
+        "state_id",
+        "error_name_id",
+    ]
 
 
 class EffectAdmin(admin.ModelAdmin):
