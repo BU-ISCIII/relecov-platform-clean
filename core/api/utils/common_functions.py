@@ -5,6 +5,7 @@ from django.utils import timezone
 from rest_framework.response import Response
 from rest_framework import status
 
+
 def get_schema_version_if_exists(data):
     """Check if schema name and schema version exists"""
     apps_name = __package__.split(".")[0]
@@ -55,6 +56,7 @@ def handle_sample_errors(dict_error):
     # Return the identified or assigned ErrorName object
     return error_name_obj
 
+
 # TODO: Would it be possilbe to return a serializer object instead?
 def add_sample_state_history(sample_obj, state_id, error_name=None):
     """
@@ -87,9 +89,9 @@ def add_sample_state_history(sample_obj, state_id, error_name=None):
         "changed_at": timezone.now(),
         "sample": sample_obj.pk,
         "state": state_obj.pk,
-        "error_name": error_obj.pk
+        "error_name": error_obj.pk,
     }
-    # TODO: needs is_valid assestment. 
+    # TODO: needs is_valid assestment.
     state_serializer = core.api.serializers.SampleStateHistorySerializer(
         data=state_data
     )

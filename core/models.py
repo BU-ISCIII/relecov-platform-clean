@@ -595,6 +595,7 @@ class SampleState(models.Model):
     def get_state_display_string(self):
         return "%s" % (self.display_string)
 
+
 class ErrorName(models.Model):
     error_name = models.CharField(max_length=100)
     error_code = models.CharField(max_length=10)
@@ -734,6 +735,7 @@ class Sample(models.Model):
         data.append(self.sequence_file_R1_md5)
         data.append(self.sequence_file_R2_md5)
         return data
+
     # TODO: consider removing this
     def update_state(self, state):
         if not SampleState.objects.filter(state__exact=state).exists():
@@ -848,8 +850,8 @@ class SampleStateHistory(models.Model):
             return "%s" % (self.state.get_state())
         return None
 
-    # FIXME: Consider to refactor this. 
-    #def update_state(self, state):
+    # FIXME: Consider to refactor this.
+    # def update_state(self, state):
     #    if not SampleState.objects.filter(state__exact=state).exists():
     #        return False
     #    self.state = SampleState.objects.filter(state__exact=state).last()

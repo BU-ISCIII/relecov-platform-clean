@@ -3,6 +3,7 @@ import core.models
 import core.utils.samples
 import core.utils.schema
 
+
 # TODO: Replace the outdated DateUpdateState with the new SampleStateHistory
 def get_bio_analysis_stats_from_lab(lab_name=None):
     """Get the number of samples that are analized and compare with the number

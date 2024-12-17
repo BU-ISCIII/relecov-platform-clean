@@ -47,7 +47,7 @@ class ConfigSettingAdmin(admin.ModelAdmin):
 
 
 class SampleStateHistoryAdmin(admin.ModelAdmin):
-    list_display = ["is_current", custom_date_format ,"sample_id", "state_id", "error_name_id"]
+    list_display = ["is_current", custom_date_format, "sample_id", "state_id", "error_name_id"]
 
 
 class EffectAdmin(admin.ModelAdmin):
@@ -175,7 +175,7 @@ admin.site.register(core.models.Filter, FilterAdmin)
 admin.site.register(core.models.Effect, EffectAdmin)
 admin.site.register(core.models.Gene, GeneAdmin)
 admin.site.register(core.models.Chromosome, ChromosomeAdmin)
-#TODO: Remove the line below when we remove lineage things
+# TODO: Remove the line below when we remove lineage things
 admin.site.register(core.models.LineageFields, LineageFieldsAdmin)
 admin.site.register(core.models.LineageValues, LineageValuesAdmin)
 admin.site.register(core.models.Sample, SampleAdmin)
