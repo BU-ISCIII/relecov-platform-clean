@@ -390,7 +390,7 @@ def get_public_database_fields(schema_obj, db_type):
         )
     return None
 
-
+# TODO: Replace the outdated DateUpdateState with the new SampleStateHistory
 def get_sample_display_data(sample_id, user):
     """Check if user is allowed to see the data and if true collect all info
     from sample to display
@@ -716,7 +716,7 @@ def save_excel_form_in_samba_folder(m_file, user_name):
     shutil.move(os.path.join(settings.MEDIA_ROOT, f_name), f_path)
     return
 
-
+# TODO: Replace the outdated DateUpdateState with the new SampleStateHistory
 def search_samples(sample_name, lab_name, sample_state, s_date, user):
     """Search the samples that match with the query conditions"""
     sample_list = []
