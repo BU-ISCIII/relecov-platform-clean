@@ -16,6 +16,7 @@ from drf_spectacular.utils import (
 )
 from rest_framework import serializers
 from django.http import QueryDict
+from django.utils import timezone
 
 # Local imports
 import core.urls
@@ -23,7 +24,7 @@ import core.models
 import core.utils.samples
 import core.api.serializers
 import core.api.utils.samples
-import core.api.utils.bioinfo_metadata
+import core.api.utils.metadata_values
 import core.api.utils.public_db
 import core.api.utils.variants
 import core.api.utils.common_functions
@@ -107,15 +108,18 @@ def create_sample_data(request):
             error = {"ERROR": "schema name and version is not defined"}
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
         schema_id = schema_obj.get_schema_id()
+
         # check if sample id field and collecting_institution are in the request
         if "sequencing_sample_id" not in data or "collecting_institution" not in data:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
         # check if sample is already defined
         if core.utils.samples.get_sample_obj_from_sample_name(
             data["sequencing_sample_id"]
         ):
             error = {"ERROR": "sample already defined"}
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
         # get the user to assign the sample based on the collecting_institution
         # value. If lab is not define user field is set t
         split_data = core.api.utils.samples.split_sample_data(data)
@@ -130,16 +134,21 @@ def create_sample_data(request):
             )
         sample_obj = sample_serializer.save()
         sample_id = sample_obj.get_sample_id()
-        # update sample state date
-        data = {
-            "sampleID": sample_id,
-            "stateID": split_data["sample"]["state"],
-        }
-        date_serilizer = core.api.serializers.CreateDateAfterChangeStateSerializer(
-            data=data
-        )
-        if date_serilizer.is_valid():
-            date_serilizer.save()
+
+        # Add initial state history (after creating the sample)
+        is_first_entry = not core.models.SampleStateHistory.objects.filter(
+            sample=sample_obj
+        ).exists()
+        if is_first_entry:
+            error_name_obj = core.models.ErrorName.objects.filter(pk=1).first()
+            try:
+                core.api.utils.common_functions.add_sample_state_history(
+                    sample_obj,
+                    state_id=split_data["sample"]["state"],
+                    error_name=error_name_obj,
+                )
+            except ValueError as e:
+                return Response({"ERROR": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         # Save ENA info if included
         if len(split_data["ena"]) > 0:
@@ -155,18 +164,22 @@ def create_sample_data(request):
                 and split_data["ena"]["ena_sample_accession"] is not None
             ):
                 # Save entry in update state table for valid ena_sample_accession
-                sample_obj.update_state("Ena")
                 state_id = (
                     core.models.SampleState.objects.filter(state__exact="Ena")
                     .last()
                     .get_state_id()
                 )
-                data = {"sampleID": sample_id, "stateID": state_id}
-                date_serilizer = (
-                    core.api.serializers.CreateDateAfterChangeStateSerializer(data=data)
-                )
-                if date_serilizer.is_valid():
-                    date_serilizer.save()
+                try:
+                    core.api.utils.common_functions.add_sample_state_history(
+                        sample_obj,
+                        state_id=state_id,
+                        error_name=None,  # TODO: do not know what to do with this at this point
+                    )
+                except ValueError as e:
+                    return Response(
+                        {"ERROR": str(e)}, status=status.HTTP_400_BAD_REQUEST
+                    )
+
         # Save GISAID info if included
         if len(split_data["gisaid"]) > 0:
             if "EPI_ISL" in split_data["gisaid"]["gisaid_accession_id"]:
@@ -182,12 +195,17 @@ def create_sample_data(request):
                     .last()
                     .get_state_id()
                 )
-                data = {"sampleID": sample_id, "stateID": state_id}
-                date_serilizer = (
-                    core.api.serializers.CreateDateAfterChangeStateSerializer(data=data)
-                )
-                if date_serilizer.is_valid():
-                    date_serilizer.save()
+                try:
+                    core.api.utils.common_functions.add_sample_state_history(
+                        sample_obj,
+                        state_id=state_id,
+                        error_name=None,  # TODO: do not know what to do with this at this point
+                    )
+                except ValueError as e:
+                    return Response(
+                        {"ERROR": str(e)}, status=status.HTTP_400_BAD_REQUEST
+                    )
+
         # Save AUTHOR info if included
         if len(split_data["author"]) > 0:
             result = core.api.utils.public_db.store_pub_databases_data(
@@ -268,7 +286,7 @@ def create_sample_data(request):
         )
     ],
     request=inline_serializer(
-        name="create_bioinfo_metadata",
+        name="create_metadata_value",
         fields={
             "analysis_date": serializers.CharField(),
             "assembly": serializers.CharField(),
@@ -344,7 +362,7 @@ def create_sample_data(request):
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def create_bioinfo_metadata(request):
+def create_metadata_value(request):
     if request.method == "POST":
         data = request.data
 
@@ -369,7 +387,7 @@ def create_bioinfo_metadata(request):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    analysis_defined = core.api.utils.bioinfo_metadata.get_analysis_defined(sample_obj)
+    analysis_defined = core.api.utils.metadata_values.get_analysis_defined(sample_obj)
     analysis_date = data.get("analysis_date", None)
     if analysis_date is not None:
         if analysis_date in list(analysis_defined):
@@ -378,30 +396,31 @@ def create_bioinfo_metadata(request):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-    split_data = core.api.utils.bioinfo_metadata.split_bioinfo_data(data, schema_obj)
-    if "ERROR" in split_data:
-        return Response(split_data, status=status.HTTP_400_BAD_REQUEST)
-
-    stored_data = core.api.utils.bioinfo_metadata.store_bioinfo_data(
-        split_data, schema_obj
+    stored_data = core.api.utils.metadata_values.store_metadata_values(
+        data, schema_obj, analysis_date
     )
     if "ERROR" in stored_data:
         return Response(stored_data, status=status.HTTP_400_BAD_REQUEST)
+
+    # Update state of sample:
     state_id = (
         core.models.SampleState.objects.filter(state__exact="Bioinfo")
         .last()
         .get_state_id()
     )
-    data_date = {"sampleID": sample_obj.get_sample_id(), "stateID": state_id}
+    try:
+        core.api.utils.common_functions.add_sample_state_history(
+            sample_obj,
+            state_id=state_id,
+            error_name=None,  # TODO: do not know what to do with this at this point
+        )
+    except ValueError as e:
+        return Response({"ERROR": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    # update sample state
-    sample_obj.update_state("Bioinfo")
-    # Include date and state in DateState table
-    date_serializer = core.api.serializers.CreateDateAfterChangeStateSerializer(
-        data=data_date
-    )
-    if date_serializer.is_valid():
-        date_serializer.save()
+    # FIXME: this might be not necessary. It depends whether we add the serializer (here or in api.utils.add_sample_state_history())
+    # Validate serializer
+    # if date_serializer.is_valid():
+    #    date_serializer.save()
 
     return Response(status=status.HTTP_201_CREATED)
 
@@ -616,7 +635,11 @@ def update_state(request):
         data = request.data
         if isinstance(data, QueryDict):
             data = data.dict()
+
+        # Attach the user making the request
         data["user"] = request.user.pk
+
+        # Fetch the sample object by its name
         sample_obj = core.utils.samples.get_sample_obj_from_sample_name(
             data["sample_name"]
         )
@@ -625,47 +648,62 @@ def update_state(request):
                 {"ERROR": core.config.ERROR_SAMPLE_NOT_DEFINED},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        sample_id = sample_obj.get_sample_id()
-        # if state exists,
-        if core.models.SampleState.objects.filter(state=data["state"]).exists():
-            s_data = {
-                "state": core.models.SampleState.objects.filter(state=data["state"])
-                .last()
-                .get_state_id()
-            }
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        sample_serializer = core.api.serializers.UpdateStateSampleSerializer(
-            sample_obj, data=s_data
-        )
-        if not sample_serializer.is_valid():
+        # Validate the new state exists
+        new_state_obj = core.models.SampleState.objects.filter(
+            state=data["state"]
+        ).last()
+        if not new_state_obj:
             return Response(
-                sample_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+                {"ERROR": "The specified state does not exist."},
+                status=status.HTTP_400_BAD_REQUEST,
             )
-        sample_serializer.save()
 
-        if "error_type" in data and "Error" in data["state"]:
-            error_type_id = (
-                core.models.Error.objects.filter(error_name=data["error_type"])
-                .last()
-                .get_error_id()
-            )
-            e_data = {"error_type": error_type_id}
-            sample_err_serializer = core.api.serializers.CreateErrorSerializer(
-                sample_obj, data=e_data
-            )
-            if not sample_err_serializer.is_valid():
-                return Response(
-                    sample_err_serializer.errors, status=status.HTTP_400_BAD_REQUEST
-                )
-            sample_err_serializer.save()
-
-        core.api.utils.common_functions.update_change_state_date(
-            sample_id, s_data["state"]
+        # Handle error type if present in the request
+        # FIXME: it has been tested with error_code == None --> automatically_assigned value "other" (error_code_pk=21). Further testing is required.
+        e_data = {
+            "error_name": data.get("error_name", None),
+            "error_code": data.get("error_code", None),
+        }
+        error_name_obj = core.api.utils.common_functions.handle_sample_errors(
+            dict_error=e_data
         )
+
+        # Create changed_at field if not provided
+        try:
+            current_time = data["changed_at"]
+        except KeyError:
+            current_time = timezone.now()
+
+        # Prepare data for the serializer
+        s_data = {
+            "is_current": True,
+            "changed_at": current_time,
+            "sample": sample_obj.pk,
+            "state": new_state_obj.pk,
+            "error_name": error_name_obj.pk,
+        }
+
+        # All previous records are marked as not current
+        core.models.SampleStateHistory.objects.filter(
+            sample=sample_obj, is_current=True
+        ).update(is_current=False)
+
+        # Serialize and validate the state update
+        sample_state_serializer = core.api.serializers.SampleStateHistorySerializer(
+            data=s_data
+        )
+        if not sample_state_serializer.is_valid():
+            return Response(
+                sample_state_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Save the new state history record
+        sample_state_serializer.save()
 
         return Response(
-            "Successful. sample state updated", status=status.HTTP_201_CREATED
+            "Successful: sample state updated and history recorded.",
+            status=status.HTTP_201_CREATED,
         )
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)

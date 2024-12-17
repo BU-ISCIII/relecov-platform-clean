@@ -41,7 +41,7 @@ class BioinfoMetadataFile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=("created at"))
 
     class Meta:
-        db_table = "core_bioinfo_metadata_file"
+        db_table = "core_metdata_values_file"
 
     def __str__(self):
         return "%s" % (self.title)
@@ -304,63 +304,32 @@ class MetadataVisualization(models.Model):
     objects = MetadataVisualizationManager()
 
 
-class BioinfoAnalysisFieldManager(models.Manager):
-    def create_new_field(self, data):
-        new_field = self.create(
-            property_name=data["property_name"],
-            label_name=data["label_name"],
-        )
-        return new_field
-
-
-class BioinfoAnalysisField(models.Model):
-    schemaID = models.ManyToManyField(Schema)
-    property_name = models.CharField(max_length=60)
-    label_name = models.CharField(max_length=80)
-    generated_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-
-    class Meta:
-        db_table = "core_bioinfo_analysis_field"
-
-    def __str__(self):
-        return "%s" % (self.property_name)
-
-    def get_id(self):
-        return "%s" % (self.pk)
-
-    def get_property(self):
-        return "%s" % (self.property_name)
-
-    def get_label(self):
-        return "%s" % (self.label_name)
-
-    def get_classification_name(self):
-        if self.classificationID is not None:
-            return self.classificationID.get_classification()
-        return None
-
-    objects = BioinfoAnalysisFieldManager()
-
-
-class BioinfoAnalysisValueManager(models.Manager):
+class MetadataValuesManager(models.Manager):
     def create_new_value(self, data):
         new_value = self.create(
             value=data["value"],
-            bioinfo_analysis_fieldID=data["bioinfo_analysis_fieldID"],
-            sampleID_id=data["sampleID_id"],
+            analysis_date=data["analysis_date"],
+            sample=data["sample_id"],
+            schema_property=data["schema_property_id"],
         )
         return new_value
 
 
-class BioinfoAnalysisValue(models.Model):
+class MetadataValues(models.Model):
     value = models.CharField(max_length=240, null=True, blank=True)
-    bioinfo_analysis_fieldID = models.ForeignKey(
-        BioinfoAnalysisField, on_delete=models.CASCADE
-    )
     generated_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    analysis_date = models.DateField()
+    sample = models.ForeignKey(
+        "core.Sample", on_delete=models.CASCADE, related_name="metadata_values"
+    )
+    schema_property = models.ForeignKey(
+        "core.SchemaProperties",
+        on_delete=models.CASCADE,
+        related_name="metadata_values",
+    )
 
     class Meta:
-        db_table = "core_bioinfo_analysis_value"
+        db_table = "core_metadata_values"
 
     def __str__(self):
         return "%s" % (self.value)
@@ -373,6 +342,8 @@ class BioinfoAnalysisValue(models.Model):
 
     def get_b_process_field_id(self):
         return "%s" % (self.bioinfo_analysis_fieldID)
+
+    objects = MetadataValuesManager()
 
 
 class LineageInfo(models.Model):
@@ -623,14 +594,13 @@ class SampleState(models.Model):
         return "%s" % (self.display_string)
 
 
-class Error(models.Model):
+class ErrorName(models.Model):
     error_name = models.CharField(max_length=100)
-    display_string = models.CharField(max_length=100)
-    description = models.CharField(max_length=100)
-    generated_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    error_code = models.CharField(max_length=10)
+    error_text = models.CharField(max_length=100, null=True, blank=True)
 
     class Meta:
-        db_table = "core_error"
+        db_table = "core_error_name"
 
     def __str__(self):
         return "%s" % (self.error_name)
@@ -641,40 +611,33 @@ class Error(models.Model):
     def get_error_id(self):
         return "%s" % (self.pk)
 
-    def get_display_string(self):
-        return "%s" % (self.display_string)
+    def get_error_code(self):
+        return "%s" % (self.error_code)
 
     def get_description(self):
-        return "%s" % (self.description)
+        return "%s" % (self.error_text)
 
 
 class SampleManager(models.Manager):
     def create_new_sample(self, data):
-        state = SampleState.objects.filter(state__exact=data["state"]).last()
         # FIXME: Sequencing_date is not supposed to be mandatory, collecting date is
         new_sample = self.create(
             sample_unique_id=data["sample_unique_id"],
             sequencing_sample_id=data["sequencing_sample_id"],
             sequencing_date=data["sequencing_date"],
             metadata_file=data["metadata_file"],
-            state=state,
             user=data["user"],
         )
         return new_sample
 
 
 class Sample(models.Model):
-    state = models.ForeignKey(SampleState, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    error_type = models.ForeignKey(
-        Error, on_delete=models.CASCADE, null=True, blank=True
-    )
     schema_obj = models.ForeignKey(
         Schema, on_delete=models.CASCADE, null=True, blank=True
     )
     lineage_values = models.ManyToManyField(LineageValues, blank=True)
     lineage_info = models.ManyToManyField(LineageInfo, blank=True)
-    bio_analysis_values = models.ManyToManyField(BioinfoAnalysisValue, blank=True)
 
     sample_unique_id = models.CharField(max_length=12)
     microbiology_lab_sample_id = models.CharField(max_length=80, null=True, blank=True)
@@ -771,6 +734,7 @@ class Sample(models.Model):
         data.append(self.sequence_file_R2_md5)
         return data
 
+    # TODO: consider removing this
     def update_state(self, state):
         if not SampleState.objects.filter(state__exact=state).exists():
             return False
@@ -859,32 +823,38 @@ class PublicDatabaseValues(models.Model):
         return "%s" % (self.pk)
 
 
-class DateUpdateState(models.Model):
-    stateID = models.ForeignKey(SampleState, on_delete=models.CASCADE)
-    sampleID = models.ForeignKey(Sample, on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now_add=True)
+class SampleStateHistory(models.Model):
+    sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
+    state = models.ForeignKey(SampleState, on_delete=models.CASCADE)
+    error_name = models.ForeignKey(ErrorName, on_delete=models.CASCADE)
+
+    is_current = models.BooleanField(default=True)
+    changed_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = "core_date_update_state"
+        db_table = "core_sample_state_history"
 
     def __str__(self):
-        return "%s_%s" % (self.stateID, self.sampleID)
+        return "%s_%s" % (self.sample, self.sample)
 
     def get_sample_id(self):
-        return "%s" % (self.sampleID)
-
-    def get_state_name(self):
-        if self.stateID is not None:
-            return "%s" % (self.stateID.get_state())
-        return ""
-
-    def get_state_display_name(self):
-        if self.stateID is not None:
-            return "%s" % (self.stateID.get_state_display_string())
-        return ""
+        return "%s" % (self.sample)
 
     def get_date(self):
-        return self.date.strftime("%d-%B-%Y")
+        return self.changed_at.strftime("%d-%B-%Y")
+
+    def get_state(self):
+        if self.state:
+            return "%s" % (self.state.get_state())
+        return None
+
+    # FIXME: Consider to refactor this.
+    # def update_state(self, state):
+    #    if not SampleState.objects.filter(state__exact=state).exists():
+    #        return False
+    #    self.state = SampleState.objects.filter(state__exact=state).last()
+    #    self.save()
+    #    return self
 
 
 class Variant(models.Model):

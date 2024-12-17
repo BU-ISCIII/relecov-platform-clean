@@ -46,7 +46,7 @@ def analyze_input_samples(request):
         sample_name = row[idx_sample]
         if sample_name == "":
             continue
-        if core.models.core.models.Sample.objects.filter(
+        if core.models.Sample.objects.filter(
             sequencing_sample_id__iexact=sample_name
         ).exists():
             s_already_record.append(sample_name)
@@ -74,10 +74,10 @@ def analyze_input_samples(request):
 def assign_samples_to_new_user(data):
     """Assign all samples from a laboratory to a new userID"""
     user_obj = User.objects.filter(pk__exact=data["userName"])
-    if core.models.core.models.Sample.objects.filter(
+    if core.models.Sample.objects.filter(
         collecting_institution__iexact=data["lab"]
     ).exists():
-        core.models.core.models.Sample.objects.filter(
+        core.models.Sample.objects.filter(
             collecting_institution__iexact=data["lab"]
         ).update(user=user_obj[0])
         return {"Success": "Success"}
@@ -91,8 +91,8 @@ def count_handled_samples():
     data = {}
     process = ["Defined", "Gisaid", "Ena", "Bioinfo"]
     for proc in process:
-        data[proc] = core.models.DateUpdateState.objects.filter(
-            stateID__state__iexact=proc
+        data[proc] = core.models.SampleStateHistory.objects.filter(
+            state__state__iexact=proc
         ).count()
     return data
 
@@ -315,6 +315,7 @@ def delete_temporary_sample_table(user_obj):
     return True
 
 
+# TODO: Replace the outdated DateUpdateState with the new SampleStateHistory
 def get_lab_last_actions(lab_name=None):
     """Get the last action performed on the samples for a specific lab.
     If no lab is given it returns the info for all labs
@@ -323,12 +324,12 @@ def get_lab_last_actions(lab_name=None):
     if lab_name is None:
         lab_actions = []
         labs = (
-            core.models.core.models.Sample.objects.all()
+            core.models.Sample.objects.all()
             .values_list("collecting_institution")
             .distinct()
         )
         for lab in labs:
-            sam_obj = core.models.core.models.Sample.objects.filter(
+            sam_obj = core.models.Sample.objects.filter(
                 collecting_institution__exact=lab[0]
             ).last()
             lab_data = [lab[0]]
@@ -349,7 +350,7 @@ def get_lab_last_actions(lab_name=None):
         return lab_actions
     else:
         actions = {}
-        last_sample_obj = core.models.core.models.Sample.objects.filter(
+        last_sample_obj = core.models.Sample.objects.filter(
             collecting_institution__iexact=lab_name
         ).last()
         action_objs = core.models.DateUpdateState.objects.filter(
@@ -391,6 +392,7 @@ def get_public_database_fields(schema_obj, db_type):
     return None
 
 
+# TODO: Replace the outdated DateUpdateState with the new SampleStateHistory
 def get_sample_display_data(sample_id, user):
     """Check if user is allowed to see the data and if true collect all info
     from sample to display
@@ -717,6 +719,7 @@ def save_excel_form_in_samba_folder(m_file, user_name):
     return
 
 
+# TODO: Replace the outdated DateUpdateState with the new SampleStateHistory
 def search_samples(sample_name, lab_name, sample_state, s_date, user):
     """Search the samples that match with the query conditions"""
     sample_list = []

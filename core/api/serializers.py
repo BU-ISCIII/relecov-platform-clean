@@ -5,15 +5,15 @@ from rest_framework import serializers
 import core.models
 
 
-class CreateBioinfoAnalysisValueSerializer(serializers.ModelSerializer):
+class CreateMetadataValueSerializer(serializers.ModelSerializer):
     class Meta:
-        model = core.models.BioinfoAnalysisValue
+        model = core.models.MetadataValues
         fields = "__all__"
 
 
-class CreateDateAfterChangeStateSerializer(serializers.ModelSerializer):
+class SampleStateHistorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = core.models.DateUpdateState
+        model = core.models.SampleStateHistory
         fields = "__all__"
 
 
@@ -26,12 +26,6 @@ class CreateSampleSerializer(serializers.ModelSerializer):
 class CreateEffectSerializer(serializers.ModelSerializer):
     class Meta:
         model = core.models.Effect
-        fields = "__all__"
-
-
-class CreateErrorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = core.models.Sample
         fields = "__all__"
 
 
