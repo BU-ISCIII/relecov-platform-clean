@@ -16,6 +16,7 @@ from drf_spectacular.utils import (
 )
 from rest_framework import serializers
 from django.http import QueryDict
+from django.utils import timezone
 
 # Local imports
 import core.urls
@@ -93,6 +94,7 @@ import core.config
         500: OpenApiResponse(description="Internal Server Error"),
     },
 )
+
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -612,7 +614,11 @@ def update_state(request):
         data = request.data
         if isinstance(data, QueryDict):
             data = data.dict()
+
+        # Attach the user making the request
         data["user"] = request.user.pk
+
+        # Fetch the sample object by its name
         sample_obj = core.utils.samples.get_sample_obj_from_sample_name(
             data["sample_name"]
         )
@@ -621,47 +627,58 @@ def update_state(request):
                 {"ERROR": core.config.ERROR_SAMPLE_NOT_DEFINED},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        sample_id = sample_obj.get_sample_id()
-        # if state exists,
-        if core.models.SampleState.objects.filter(state=data["state"]).exists():
-            s_data = {
-                "state": core.models.SampleState.objects.filter(state=data["state"])
-                .last()
-                .get_state_id()
-            }
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        sample_serializer = core.api.serializers.UpdateStateSampleSerializer(
-            sample_obj, data=s_data
-        )
-        if not sample_serializer.is_valid():
+        # Validate the new state exists
+        new_state_obj = core.models.SampleState.objects.filter(
+            state=data["state"]
+        ).last()
+        if not new_state_obj:
             return Response(
-                sample_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+                {"ERROR": "The specified state does not exist."},
+                status=status.HTTP_400_BAD_REQUEST,
             )
-        sample_serializer.save()
 
-        if "error_type" in data and "Error" in data["state"]:
-            error_type_id = (
-                core.models.Error.objects.filter(error_name=data["error_type"])
-                .last()
-                .get_error_id()
-            )
-            e_data = {"error_type": error_type_id}
-            sample_err_serializer = core.api.serializers.CreateErrorSerializer(
-                sample_obj, data=e_data
-            )
-            if not sample_err_serializer.is_valid():
-                return Response(
-                    sample_err_serializer.errors, status=status.HTTP_400_BAD_REQUEST
-                )
-            sample_err_serializer.save()
+        # Handle error type if present in the request
+        # FIXME: it has been tested with error_code == None --> automatically_assigned value "other" (error_code_pk=21). Further testing is required.
+        e_data = {
+            "error_name": data.get("error_name", None),
+            "error_code": data.get("error_code", None)
+        }
+        error_name_obj = core.api.utils.common_functions.handle_sample_errors(dict_error=e_data)
 
-        core.api.utils.common_functions.update_change_state_date(
-            sample_id, s_data["state"]
-        )
+        # Create changed_at field if not provided
+        try:
+            current_time = data['changed_at']
+        except KeyError:
+            current_time = timezone.now()
+
+        # Prepare data for the serializer
+        s_data = {
+            "is_current": True,
+            "changed_at": current_time,
+            "sample": sample_obj.pk,
+            "state": new_state_obj.pk,
+            "error_name": error_name_obj.pk,
+        }
+
+        # All previous records are marked as not current
+        core.models.SampleStateHistory.objects.filter(
+            sample=sample_obj, is_current=True
+        ).update(is_current=False)
+
+        # Serialize and validate the state update
+        sample_state_serializer = core.api.serializers.SampleStateHistorySerializer(data=s_data)
+        if not sample_state_serializer.is_valid():
+            return Response(
+                sample_state_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Save the new state history record
+        sample_state_serializer.save()
 
         return Response(
-            "Successful. sample state updated", status=status.HTTP_201_CREATED
+            "Successful: sample state updated and history recorded.",
+            status=status.HTTP_201_CREATED,
         )
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
