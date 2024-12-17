@@ -29,16 +29,6 @@ def get_analysis_defined(s_obj):
         bioinfo_analysis_fieldID__property_name="analysis_date", sample=s_obj
     ).values_list("value", flat=True)
 
-# TODO: Not needed any more. After refactoring date update of sample state is added automatically to mode SampleStateHistory (see core/api/views and serializers)
-def update_change_state_date(sample_id, state_id):
-    """Update the DateUpdateState table with the new sample state"""
-    d_date = {"stateID": state_id, "sampleID": sample_id}
-    date_update_serializer = core.api.serializers.CreateDateAfterChangeStateSerializer(
-        data=d_date
-    )
-    if date_update_serializer.is_valid():
-        date_update_serializer.save()
-    return
 
 def handle_sample_errors(dict_error):
     """
