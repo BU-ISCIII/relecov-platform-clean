@@ -22,7 +22,6 @@ def create_samples_received_map():
     raw_data = core.utils.rest_api.get_summarize_data("")
     if "ERROR" in raw_data:
         return raw_data
-    import pdb; pdb.set_trace()
 
     with open(geojson_file, encoding="utf-8") as geo_json:
         counties = json.load(geo_json)
