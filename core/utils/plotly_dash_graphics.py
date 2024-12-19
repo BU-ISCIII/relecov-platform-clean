@@ -42,9 +42,12 @@ def dash_bar_lab(option_list, data):
     )
     # FIXME: This is never used?
     def update_graph(select_lab_name):
-        if select_lab_name == 1:
+        if select_lab_name is None:
             raise PreventUpdate
         sub_data = data[data.lab_name == select_lab_name]
+        if sub_data.empty:
+            # Return an empty figure if no data is available
+            return empty_fig, f"Laboratory selected: {select_lab_name} (No data available)"
         graph = px.bar(
             sub_data,
             x=sub_data["date"],
