@@ -455,3 +455,34 @@ def pre_proc_depth_sample_run():
         }
     )
     return {"SUCCESS": "Success"}
+
+
+def pre_proc_samples_received_map():
+    geojson_file = os.path.join(
+        relecov_platform_settings.STATIC_ROOT,
+        "dashboard",
+        "custom",
+        "map",
+        "spain-communities.geojson",
+    )
+    raw_data = core.utils.rest_api.get_summarize_data("")
+    if "ERROR" in raw_data:
+        return raw_data
+    import pdb; pdb.set_trace()
+
+    with open(geojson_file, encoding="utf-8") as geo_json:
+        counties = json.load(geo_json)
+
+    data = {"ccaa_id": [], "ccaa_name": [], "samples": []}
+    for region in counties["features"]:
+        ccaa_name = region["properties"]["name"]
+        data["ccaa_id"].append(region["properties"]["cartodb_id"])
+        data["ccaa_name"].append(ccaa_name)
+        if ccaa_name in raw_data["region"]:
+            data["samples"].append(raw_data["region"][ccaa_name])
+        else:
+            data["samples"].append("0")
+    dashboard.models.GraphicJsonFile.objects.create_new_graphic_json(
+        {"graphic_name": "received_samples_map", "graphic_data": data}
+    )
+    return {"SUCCESS": "Success"}

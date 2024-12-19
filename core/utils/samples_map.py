@@ -9,33 +9,22 @@ from django_plotly_dash import DjangoDash
 # Local imports
 from relecov_platform import settings as relecov_platform_settings
 import core.utils.rest_api
-
+import dashboard.models
 
 def create_samples_received_map():
-    geojson_file = os.path.join(
-        relecov_platform_settings.STATIC_ROOT,
-        "dashboard",
-        "custom",
-        "map",
-        "spain-communities.geojson",
+    json_data = dashboard.utils.generic_graphic_data.get_graphic_json_data(
+        "received_samples_map"
     )
-    raw_data = core.utils.rest_api.get_summarize_data("")
-    if "ERROR" in raw_data:
-        return raw_data
+    if json_data is None:
+        # Execute the pre-processed task to get the data
+        result = dashboard.utils.generic_process_data.pre_proc_samples_received_map()
+        if "ERROR" in result:
+            return result
+        json_data = dashboard.utils.generic_graphic_data.get_graphic_json_data(
+            "received_samples_map"
+        )
 
-    with open(geojson_file, encoding="utf-8") as geo_json:
-        counties = json.load(geo_json)
-
-    data = {"ccaa_id": [], "ccaa_name": [], "samples": []}
-    for region in counties["features"]:
-        ccaa_name = region["properties"]["name"]
-        data["ccaa_id"].append(region["properties"]["cartodb_id"])
-        data["ccaa_name"].append(ccaa_name)
-        if ccaa_name in raw_data["region"]:
-            data["samples"].append(raw_data["region"][ccaa_name])
-        else:
-            data["samples"].append("0")
-    ldata = pd.DataFrame(data)
+    ldata = pd.DataFrame(json_data)
 
     fig = px.choropleth_mapbox(
         ldata,
