@@ -8,6 +8,8 @@ import core.utils.lineage
 import core.utils.variants
 import core.utils.rest_api
 import dashboard.models
+from relecov_platform import settings as relecov_platform_settings
+
 
 
 def pre_proc_calculation_date():
