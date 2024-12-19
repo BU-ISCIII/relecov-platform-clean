@@ -73,6 +73,8 @@ def update_graphic_json_data():
     dashboard.utils.generic_process_data.pre_proc_depth_variants()
     print("Running pre_proc_depth_sample_run()")
     dashboard.utils.generic_process_data.pre_proc_depth_sample_run()
+    print("Running pre_proc_samples_received_map()")
+    dashboard.utils.generic_process_data.pre_proc_samples_received_map()
     uniq_chrom_id_list = [
         x["chromosomeID"]
         for x in core.models.Gene.objects.values("chromosomeID").distinct()
