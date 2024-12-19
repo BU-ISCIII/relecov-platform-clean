@@ -758,7 +758,7 @@ def search_samples(sample_name, lab_name, sample_state, s_date, user):
         )
         sample_objs = sample_objs.filter(pk__in=state_ids)
     if s_date != "":
-        sample_objs = sample_objs.filter(sequencing_date=s_date)
+        sample_objs = sample_objs.filter(sequencing_date__exact=s_date)
     if len(sample_objs) == 1:
         sample_list.append(sample_objs[0].get_sample_id())
         return sample_list
