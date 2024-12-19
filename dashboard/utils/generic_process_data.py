@@ -12,7 +12,6 @@ import dashboard.models
 from relecov_platform import settings as relecov_platform_settings
 
 
-
 def pre_proc_calculation_date():
     """Fetch the information about date for each sample to know about the
     number of days between different steps of samples
