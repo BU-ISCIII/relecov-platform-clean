@@ -8,8 +8,8 @@ from django_plotly_dash import DjangoDash
 
 # Local imports
 from relecov_platform import settings as relecov_platform_settings
-import core.utils.rest_api
 import dashboard.models
+
 
 def create_samples_received_map():
     geojson_file = os.path.join(
