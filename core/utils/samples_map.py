@@ -12,6 +12,8 @@ import core.utils.rest_api
 import dashboard.models
 
 def create_samples_received_map():
+    with open(geojson_file, encoding="utf-8") as geo_json:
+        counties = json.load(geo_json)
     json_data = dashboard.utils.generic_graphic_data.get_graphic_json_data(
         "received_samples_map"
     )
