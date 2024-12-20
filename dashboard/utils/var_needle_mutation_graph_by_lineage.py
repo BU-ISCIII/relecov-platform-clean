@@ -89,13 +89,12 @@ def create_needle_plot_graph_mutation_by_lineage(lineage_list, lineage, mdata, n
             ),
             html.Div(
                 children=dashbio.NeedlePlot(
-                    title=f"Showing mutations for {n_samples} samples",
                     width="auto",
                     id="dashbio-needleplot",
                     mutationData=mdata,
                     rangeSlider=True,
                     xlabel="Genome Position",
-                    ylabel="Population Allele Frequency ",
+                    ylabel=f"Population Allele Frequency over {n_samples} samples",
                     domainStyle={
                         # "textangle": "45",
                         "displayMinorDomains": False,
