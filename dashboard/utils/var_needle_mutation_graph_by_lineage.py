@@ -110,7 +110,7 @@ def create_needle_plot_graph_mutation_by_lineage(lineage_list, lineage, mdata, n
     @app.callback(
         Output("dashbio-needleplot", "mutationData"),
         Output("dashbio-needleplot", "lineage"),
-        Output("samples_markdown", "n_samples"),
+        Output("samples_markdown", "children"),
         Input("needleplot-select-lineage", "value"),
     )
     def update_sample(selected_lineage):
