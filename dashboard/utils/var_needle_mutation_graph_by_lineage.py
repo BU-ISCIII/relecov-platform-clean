@@ -29,17 +29,15 @@ def get_variant_data_from_lineages(graphic_name=None, lineage=None, chromosome=N
     #        lineage_fieldID__property_name__iexact="lineage_name"
     #    ).exists():
     #        return None
-
-    if lineage is None:
-        lineage = (
-            core.models.LineageValues.objects.filter(
+    all_lineages = core.models.LineageValues.objects.filter(
                 lineage_fieldID__property_name__iexact="lineage_name"
-            )
-            .values_list("value", flat=True)
-            .first()
-        )
-
-    mdata = json_data[lineage]
+            ).values_list("value", flat=True)
+    if lineage is None:
+        lineage = all_lineages.first()
+    num_of_samples = len([x for x in all_lineages if x == lineage])
+    mdata = {}
+    mdata["mutations"] = json_data[lineage]
+    mdata["n_samples"] = num_of_samples
 
     return mdata, lineage
 
@@ -84,6 +82,9 @@ def create_needle_plot_graph_mutation_by_lineage(lineage_list, lineage, mdata):
                             ),
                         ]
                     ),
+                    html.Div(
+                        f"Showing mutations for {mdata["n_samples"]} samples"
+                    ),
                 ],
                 style={
                     "display": "flex",
@@ -95,7 +96,7 @@ def create_needle_plot_graph_mutation_by_lineage(lineage_list, lineage, mdata):
                 children=dashbio.NeedlePlot(
                     width="auto",
                     id="dashbio-needleplot",
-                    mutationData=mdata,
+                    mutationData=mdata["mutations"],
                     rangeSlider=True,
                     xlabel="Genome Position",
                     ylabel="Population Allele Frequency ",
