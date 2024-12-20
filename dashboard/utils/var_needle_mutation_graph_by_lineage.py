@@ -82,7 +82,7 @@ def create_needle_plot_graph_mutation_by_lineage(lineage_list, lineage, mdata):
                         ]
                     ),
                     html.Div(children=[
-                        dcc.Markdown(id='num_of_samples', children=f'Showing mutations for {mdata['n_samples']} samples')
+                        dcc.Markdown(id="num_of_samples", children=f"Showing mutations for {mdata['n_samples']} samples")
                     ]),
                 ],
                 style={
