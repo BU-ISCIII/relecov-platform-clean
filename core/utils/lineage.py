@@ -5,13 +5,9 @@ import core.models
 
 def get_lineages_list():
     """Function gets the lineage names and return then in an ordered list"""
-    latest_schema = core.utils.schema.get_default_schema()
-    lineage_name_field_id = core.models.LineageFields.objects.filter(
-        schemaID=latest_schema
-    ).first()
     return list(
         core.models.LineageValues.objects.all()
-        .filter(lineage_fieldID=lineage_name_field_id)
+        .filter(lineage_fieldID__property_name__iexact="lineage_name")
         .values_list("value", flat=True)
         .distinct()
         .order_by("value")
