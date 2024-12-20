@@ -81,6 +81,9 @@ def create_needle_plot_graph_mutation_by_lineage(lineage_list, lineage, mdata):
                             ),
                         ]
                     ),
+                    html.Div(children=[
+                        dcc.Markdown(id='num_of_samples', children=f'Showing mutations for {mdata['n_samples']} samples')
+                    ]),
                 ],
                 style={
                     "display": "flex",
@@ -108,7 +111,6 @@ def create_needle_plot_graph_mutation_by_lineage(lineage_list, lineage, mdata):
     @app.callback(
         Output("dashbio-needleplot", "mutationData"),
         Output("dashbio-needleplot", "lineage"),
-        Output("dashbio-needleplot", "ylabel"),
         Input("needleplot-select-lineage", "value"),
     )
     def update_sample(selected_lineage):
