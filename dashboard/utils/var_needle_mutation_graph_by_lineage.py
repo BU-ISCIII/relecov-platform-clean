@@ -30,17 +30,19 @@ def get_variant_data_from_lineages(graphic_name=None, lineage=None, chromosome=N
     #    ).exists():
     #        return None
     all_lineages = core.models.LineageValues.objects.filter(
-                lineage_fieldID__property_name__iexact="lineage_name"
-            ).values_list("value", flat=True)
+        lineage_fieldID__property_name__iexact="lineage_name"
+    ).values_list("value", flat=True)
     if lineage is None:
         lineage = all_lineages.first()
-    mdata= json_data[lineage]
+    mdata = json_data[lineage]
     n_samples = len([x for x in all_lineages if x == lineage])
 
     return mdata, lineage, n_samples
 
 
-def create_needle_plot_graph_mutation_by_lineage(lineage_list, lineage, mdata, n_samples):
+def create_needle_plot_graph_mutation_by_lineage(
+    lineage_list, lineage, mdata, n_samples
+):
     options = []
     for lin in lineage_list:
         options.append({"label": lin, "value": lin})
@@ -80,9 +82,14 @@ def create_needle_plot_graph_mutation_by_lineage(lineage_list, lineage, mdata, n
                             ),
                         ]
                     ),
-                    html.Div(children=[
-                        dcc.Markdown(id="samples_markdown", children=f"Showing mutations for {n_samples} samples")
-                    ]),
+                    html.Div(
+                        children=[
+                            dcc.Markdown(
+                                id="samples_markdown",
+                                children=f"Showing mutations for {n_samples} samples",
+                            )
+                        ]
+                    ),
                 ],
                 style={
                     "display": "flex",
@@ -97,7 +104,7 @@ def create_needle_plot_graph_mutation_by_lineage(lineage_list, lineage, mdata, n
                     mutationData=mdata,
                     rangeSlider=True,
                     xlabel="Genome Position",
-                    ylabel=f"Population Allele Frequency samples",
+                    ylabel="Population Allele Frequency samples",
                     domainStyle={
                         # "textangle": "45",
                         "displayMinorDomains": False,
