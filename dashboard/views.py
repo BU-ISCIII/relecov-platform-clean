@@ -32,7 +32,7 @@ def mutations_in_lineage(request):
     # mutations in lineages by lineage
     def_chrom = core.utils.variants.get_default_chromosome()
     lineages_list = core.utils.lineage.get_lineages_list()
-    mdata, lineage = (
+    mdata, lineage, n_samples = (
         dashboard.utils.var_needle_mutation_graph_by_lineage.get_variant_data_from_lineages(
             graphic_name="variations_per_lineage", lineage=None, chromosome=def_chrom
         )
@@ -45,7 +45,7 @@ def mutations_in_lineage(request):
             {"ERROR": dashboard.dashboard_config.ERROR_NO_LINEAGES_ARE_DEFINED_YET},
         )
     dashboard.utils.var_needle_mutation_graph_by_lineage.create_needle_plot_graph_mutation_by_lineage(
-        lineages_list, lineage, mdata
+        lineages_list, lineage, mdata, n_samples
     )
     return render(
         request,
