@@ -80,9 +80,6 @@ def create_needle_plot_graph_mutation_by_lineage(lineage_list, lineage, mdata, n
                             ),
                         ]
                     ),
-                    html.Div(
-                        f"Showing mutations for {n_samples} samples"
-                    ),
                 ],
                 style={
                     "display": "flex",
@@ -92,6 +89,7 @@ def create_needle_plot_graph_mutation_by_lineage(lineage_list, lineage, mdata, n
             ),
             html.Div(
                 children=dashbio.NeedlePlot(
+                    title=f"Showing mutations for {n_samples} samples",
                     width="auto",
                     id="dashbio-needleplot",
                     mutationData=mdata,
