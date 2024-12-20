@@ -34,13 +34,14 @@ def get_variant_data_from_lineages(graphic_name=None, lineage=None, chromosome=N
             ).values_list("value", flat=True)
     if lineage is None:
         lineage = all_lineages.first()
-    n_samples = len([x for x in all_lineages if x == lineage])
-    mdata = json_data[lineage]
+    mdata = {}
+    mdata["mutations"] = json_data[lineage]
+    mdata["n_samples"] = len([x for x in all_lineages if x == lineage])
 
-    return mdata, lineage, n_samples
+    return mdata, lineage
 
 
-def create_needle_plot_graph_mutation_by_lineage(lineage_list, lineage, mdata, n_samples):
+def create_needle_plot_graph_mutation_by_lineage(lineage_list, lineage, mdata):
     options = []
     for lin in lineage_list:
         options.append({"label": lin, "value": lin})
@@ -91,10 +92,10 @@ def create_needle_plot_graph_mutation_by_lineage(lineage_list, lineage, mdata, n
                 children=dashbio.NeedlePlot(
                     width="auto",
                     id="dashbio-needleplot",
-                    mutationData=mdata,
+                    mutationData=mdata["mutations"],
                     rangeSlider=True,
                     xlabel="Genome Position",
-                    ylabel=f"Population Allele Frequency over {n_samples} samples",
+                    ylabel=f"Population Allele Frequency ({mdata["n_samples"]} samples)",
                     domainStyle={
                         # "textangle": "45",
                         "displayMinorDomains": False,
@@ -107,16 +108,16 @@ def create_needle_plot_graph_mutation_by_lineage(lineage_list, lineage, mdata, n
     @app.callback(
         Output("dashbio-needleplot", "mutationData"),
         Output("dashbio-needleplot", "lineage"),
-        Output("dashbio-needleplot", "n_samples"),
+        Output("dashbio-needleplot", "ylabel"),
         Input("needleplot-select-lineage", "value"),
     )
     def update_sample(selected_lineage):
-        mdata, lineage, n_samples = get_variant_data_from_lineages(
+        mdata, lineage = get_variant_data_from_lineages(
             graphic_name="variations_per_lineage",
             lineage=selected_lineage,
             chromosome=None,
         )
-        return mdata, lineage, n_samples
+        return mdata, lineage
 
     @app.callback(
         Output("dashbio-needleplot", "rangeSlider"),
