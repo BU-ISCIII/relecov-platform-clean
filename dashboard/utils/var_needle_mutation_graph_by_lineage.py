@@ -76,7 +76,7 @@ def create_needle_plot_graph_mutation_by_lineage(lineage_list, lineage, mdata, n
                                 clearable=False,
                                 multi=False,
                                 value=lineage,
-                                style={"width": "150px"},
+                                style={"width": "150px", "margin-right": "30px"},
                             ),
                         ]
                     ),
