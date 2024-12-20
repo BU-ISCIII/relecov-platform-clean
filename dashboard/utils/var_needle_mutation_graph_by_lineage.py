@@ -119,7 +119,8 @@ def create_needle_plot_graph_mutation_by_lineage(lineage_list, lineage, mdata, n
             lineage=selected_lineage,
             chromosome=None,
         )
-        return mdata, lineage, n_samples
+        markdown_text = f"Showing mutations for {n_samples} samples"
+        return mdata, lineage, markdown_text
 
     @app.callback(
         Output("dashbio-needleplot", "rangeSlider"),
