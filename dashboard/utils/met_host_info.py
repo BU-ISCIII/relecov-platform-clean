@@ -4,115 +4,26 @@ from collections import OrderedDict
 import pandas as pd
 
 # Local imports
-import core.utils.rest_api
 import dashboard.dashboard_config
 import dashboard.utils.plotly
+import dashboard.utils.generic_graphic_data
 
 
 def host_info_graphics():
-    def split_age_in_ranges(data):
-        tmp_range = {}
-        invalid_data = 0
-        for key, val in data.items():
-            try:
-                int_key = int(key)
-            except ValueError:
-                continue
-            quotient = int_key // 10
-            if quotient < 0:
-                invalid_data += val
-                continue
-            if quotient not in tmp_range:
-                tmp_range[quotient] = 0
-            tmp_range[quotient] += val
-        return tmp_range, invalid_data
-
-    def fetching_data_for_range_age():
-        # get stats utilization fields from LIMS
-        lims_fields = core.utils.rest_api.get_stats_data(
-            {"sample_project_name": "Relecov", "project_field": "host_age"}
-        )
-        host_age = {}
-        for key, val in lims_fields.items():
-            try:
-                host_age[int(key)] = val
-            except ValueError:
-                continue
-        # group data by decimal range
-        tmp_range, invalid_data = split_age_in_ranges(lims_fields)
-        max_value = max(tmp_range.keys())
-        host_age_range = OrderedDict()
-        for idx in range(max_value + 1):
-            try:
-                host_age_range[dashboard.dashboard_config.HOST_RANGE_AGE_TEXT[idx]] = (
-                    tmp_range[idx]
-                )
-            except KeyError:
-                host_age_range[dashboard.dashboard_config.HOST_RANGE_AGE_TEXT[idx]] = 0
-        host_age_range_df = pd.DataFrame(
-            host_age_range.items(), columns=["range_age", "number"]
-        )
-        return host_age_range_df, invalid_data
-
-    def fetching_data_for_sex_and_range_data():
-        lims_fields = core.utils.rest_api.get_stats_data(
-            {"sample_project_name": "Relecov", "project_field": "host_gender,host_age"}
-        )
-        max_value = 0
-        invalid_data = 0
-        tmp_range_per_key = {}
-        host_age_range_per_key_df = pd.DataFrame()
-        for key, values in lims_fields.items():
-            tmp_range_per_key[key], tmp_invalid_data = split_age_in_ranges(values)
-            invalid_data += tmp_invalid_data
-            tmp_max_value = max(tmp_range_per_key[key].keys())
-            if tmp_max_value > max_value:
-                max_value = tmp_max_value
-
-        age_range_list = []
-        for idx in range(max_value + 1):
-            age_range_list.append(dashboard.dashboard_config.HOST_RANGE_AGE_TEXT[idx])
-        host_age_range_per_key_df["range_age"] = age_range_list
-
-        for key in tmp_range_per_key.keys():
-            age_range_list = []
-            for idx in range(max_value + 1):
-                try:
-                    age_range_list.append(tmp_range_per_key[key][idx])
-                except KeyError:
-                    age_range_list.append(0)
-            host_age_range_per_key_df[key] = age_range_list
-        return host_age_range_per_key_df, invalid_data
-
-    def fetching_data_for_gender():
-        # get stats for host gender from LIMS
-        lims_fields = core.utils.rest_api.get_stats_data(
-            {"sample_project_name": "Relecov", "project_field": "host_gender"}
-        )
-        if "ERROR" in lims_fields:
-            return lims_fields, ""
-        labels = []
-        values = []
-        for key, val in lims_fields.items():
-            labels.append(key)
-            values.append(val)
-        return labels, values
-
-    # sort_age = list(ages_int.keys()).sort()
-    host_info = {}
-    # pie graphic for gender
-    gender_label, gender_values = fetching_data_for_gender()
-    if "ERROR" in gender_label:
-        return gender_label
-    host_info["gender_graph"] = dashboard.utils.plotly.pie_graphic(
-        labels=gender_label,
-        values=gender_values,
+    host_info_json = dashboard.utils.generic_graphic_data.get_graphic_json_data("host_info")
+    if host_info_json is None:
+        dashboard.utils.generic_process_data.pre_proc_host_info()
+        host_info_json = dashboard.utils.generic_graphic_data.get_graphic_json_data("host_info")
+    
+    host_info_plots = {}
+    host_info_plots["gender_graph"] = dashboard.utils.plotly.pie_graphic(
+        labels=host_info_json["gender_label"],
+        values=host_info_json["gender_values"],
         options={"title": "Gender distribution"},
     )
-    # graphic for gender and age
-    host_gender_age_df = fetching_data_for_sex_and_range_data()[0]
+    host_gender_age_df = pd.DataFrame.from_dict(host_info_json["host_gender_data"])
     col_names = list(host_gender_age_df.columns)
-    host_info["gender_age_graph"] = dashboard.utils.plotly.bar_graphic(
+    host_info_plots["gender_age_graph"] = dashboard.utils.plotly.bar_graphic(
         data=host_gender_age_df,
         col_names=col_names,
         legend=col_names[1:],
@@ -122,14 +33,17 @@ def host_info_graphics():
             "height": 300,
         },
     )
-    host_age_df, invalid_data = fetching_data_for_range_age()
-    host_info["range_age_graph"] = dashboard.utils.plotly.bar_graphic(
+    host_age_df = pd.DataFrame(
+            host_info_json["host_age_data"].items(), columns=["range_age", "number"]
+    )
+    host_info_plots["range_age_graph"] = dashboard.utils.plotly.bar_graphic(
         data=host_age_df,
         col_names=["range_age", "number"],
         legend=[""],
         yaxis={"title": "Number of samples"},
         options={"title": "Samples received for host age", "height": 300},
     )
-    if invalid_data > 0:
-        host_info["invalid_data"] = invalid_data
-    return host_info
+    if any(v > 0 for v in host_info_json["invalid_data"].values()):
+        total_invalid_data = sum(x for x in host_info_json["invalid_data"].values())
+        host_info_plots["invalid_data"] = total_invalid_data
+    return host_info_plots
