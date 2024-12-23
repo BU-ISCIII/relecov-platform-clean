@@ -635,9 +635,9 @@ def get_all_recieved_samples_with_dates(accumulated=False):
         return r_samples
     dates = (
         core.models.Sample.objects.all()
-        .values_list("sequencing_date")
+        .values_list("created_at")
         .distinct()
-        .order_by("-sequencing_date")
+        .order_by("created_at")
     )
     sum = 0
     for date in dates:
