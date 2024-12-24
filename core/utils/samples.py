@@ -9,6 +9,8 @@ from django.contrib.auth.models import Group, User
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from django.db.models import Q
+from django.db.models import Count
+from django.db.models.functions import TruncDate
 import relecov_tools.utils
 
 # Local imports
@@ -633,20 +635,18 @@ def get_all_recieved_samples_with_dates(accumulated=False):
     r_samples = []
     if not core.models.Sample.objects.all().exists():
         return r_samples
-    dates = (
-        core.models.Sample.objects.all()
-        .values_list("created_at")
-        .distinct()
-        .order_by("created_at")
+    date_counts = (
+        core.models.Sample.objects
+        .annotate(date_only=TruncDate("created_at"))
+        .values("date_only") 
+        .annotate(count=Count("id"))
+        .order_by("date_only")
     )
     sum = 0
-    for date in dates:
-        if date[0] is None:
-            continue
-        value = core.models.Sample.objects.filter(
-            created_at__contains=date[0]
-        ).count()
-        s_date = date[0].date()
+    for date_count in date_counts:
+        s_date = date_count["date_only"]
+        value = date_count["count"]
+
         if accumulated:
             sum += value
             r_samples.append({s_date: sum})
