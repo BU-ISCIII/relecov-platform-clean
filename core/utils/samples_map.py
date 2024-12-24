@@ -33,15 +33,13 @@ def create_samples_received_map():
             "received_samples_map"
         )
 
-    ldata = pd.DataFrame(json_data)
-
     fig = px.choropleth_mapbox(
-        ldata,
+        json_data,
         geojson=counties,
-        locations=ldata.ccaa_id,
-        color=ldata.samples,
+        locations=json_data["ccaa_id"],
+        color=json_data["samples"],
         color_continuous_scale="Viridis",
-        range_color=ldata.ccaa_name,
+        range_color=json_data["ccaa_name"],
         mapbox_style="carto-positron",
         zoom=3.8,
         center={"lat": 35.9, "lon": -5.3},
