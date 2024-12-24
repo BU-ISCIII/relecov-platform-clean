@@ -23,6 +23,7 @@ def host_info_graphics():
     )
     host_gender_age_df = pd.DataFrame.from_dict(host_info_json["gender_data"])
     col_names = list(host_gender_age_df.columns)
+    import pdb; pdb.set_trace()
     host_info_plots["gender_age_graph"] = dashboard.utils.plotly.bar_graphic(
         data=host_gender_age_df,
         col_names=col_names,
