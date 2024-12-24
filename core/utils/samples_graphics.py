@@ -61,5 +61,6 @@ def received_samples_graph():
         "x_title": "Date",
         "y_title": "Number of samples",
         "title": "",
+        "xaxis": {"range": [data["x"][0], data["x"][-1]]}
     }
     return core.utils.plotly_graphics.line_graphic(data["x"], data["y"], options)
