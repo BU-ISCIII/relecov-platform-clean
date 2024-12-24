@@ -12,6 +12,7 @@ import core.utils.rest_api
 import dashboard.models
 from relecov_platform import settings as relecov_platform_settings
 
+
 def pre_proc_calculation_date():
     """Fetch the information about date for each sample to know about the
     number of days between different steps of samples
@@ -489,6 +490,7 @@ def pre_proc_samples_received_map():
     )
     return {"SUCCESS": "Success"}
 
+
 def pre_proc_host_info():
     def split_age_in_ranges(data):
         tmp_range = {}
@@ -574,7 +576,7 @@ def pre_proc_host_info():
             labels.append(key)
             values.append(val)
         return labels, values
-    
+
     total_invalid_data = {}
     host_info_json = {}
     # pie graphic for gender
@@ -600,4 +602,3 @@ def pre_proc_host_info():
         }
     )
     return {"SUCCESS": "Success"}
-
