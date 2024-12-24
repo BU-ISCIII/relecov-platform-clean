@@ -68,6 +68,10 @@ def line_graphic(x_data, y_data, options):
         title_font_color="green",
         title_font_size=20,
     )
+    if "xaxis" in options:
+        fig.update_layout(
+            xaxis=options["xaxis"]
+        )
     plot_div = plot(fig, output_type="div", config={"displaylogo": False})
     return plot_div
 
