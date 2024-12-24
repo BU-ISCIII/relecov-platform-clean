@@ -646,7 +646,7 @@ def get_all_recieved_samples_with_dates(accumulated=False):
         value = core.models.Sample.objects.filter(
             created_at__contains=date[0]
         ).count()
-        s_date = date[0].strftime("%Y %m %d")
+        s_date = date[0].date()
         if accumulated:
             sum += value
             r_samples.append({s_date: sum})
