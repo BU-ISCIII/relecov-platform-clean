@@ -636,9 +636,8 @@ def get_all_recieved_samples_with_dates(accumulated=False):
     if not core.models.Sample.objects.all().exists():
         return r_samples
     date_counts = (
-        core.models.Sample.objects
-        .annotate(date_only=TruncDate("created_at"))
-        .values("date_only") 
+        core.models.Sample.objects.annotate(date_only=TruncDate("created_at"))
+        .values("date_only")
         .annotate(count=Count("id"))
         .order_by("date_only")
     )
