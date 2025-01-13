@@ -497,6 +497,6 @@ def received_samples(request):
 def contact(request):
     contact_data = {
         "email": "bioinformatica@isciii.es",
-        "telephone": "91 822 37 95"
+        "telephone": "(+34) 91 822 37 95"
     }
     return render(request, "core/contact.html", {"contact_data": contact_data})
