@@ -156,10 +156,10 @@ Usage: relecov-tools read-bioinfo-metadata [OPTIONS]
       -s, --software_name   Name of the software employed in the bioinformatics analysis (default: viralrecon).
       -o, --out_dir         Path to save output file"
 ```
-- Note: Software-specific configurations are available in [bioinfo_config.json](./relecov_tools/conf/bioinfo_config.json).
+- Note: Software-specific configurations are available in [bioinfo_config.json](https://github.com/BU-ISCIII/relecov-tools/blob/main/relecov_tools/conf/bioinfo_config.json).
 
 #### validate
-`validate` commands validate the data in json format outputted by `read-metadata` command against a json schema, in this case the relecov [schema specification](./relecov_tools/schema/relecov_schema.json). It also creates a summary of the errors and warnings found in excel format as a report to the users.
+`validate` commands validate the data in json format outputted by `read-metadata` command against a json schema, in this case the relecov [schema specification](https://github.com/BU-ISCIII/relecov-tools/blob/main/relecov_tools/schema/relecov_schema.json). It also creates a summary of the errors and warnings found in excel format as a report to the users.
 
 ```
 $ relecov-tools validate --help
