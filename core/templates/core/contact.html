@@ -2,6 +2,56 @@
 {% load static %}
 
 {% block content %}
-<br><br><br><br><br><br><br><br><br>
-    contact
+<section class="hero-animated d-flex">
+    <div class="container position-relative">
+        <!-- Page Wrapper -->
+        <div id="wrapper">
+
+            <!-- Sidebar -->
+            {% include "core/intranetSideBar.html" %}
+            <!-- End of Sidebar -->
+
+            <!-- Content Wrapper -->
+            <div id="content-wrapper" class="d-flex flex-column">
+
+                <!-- Main Content -->
+                <div id="content">
+                    <!-- Begin Page Content -->
+                    <div class="container-fluid">
+                        <!-- Page Heading -->
+                        <div class="row"  style="text-align: center">
+                            <h1>LABORATORY CONTACT DATA</h1>
+                        </div>
+                        <!-- Content Row -->
+                        <div class="row justify-content-center">
+                            <div class="row m-5">
+                                <div class="col-sm-12" >
+                                    <div class="card  border-default mb-3">
+                                        <div class="card-header text-center">
+                                            <h3 style="text-align:center">Contact</h3>
+                                        </div>
+                                        <div class="card-body  text-center">
+                                            <p>Please contact one of the following for questions regarding the platform:</p>
+                                            <table class="table table-hover">
+                                                <tr>
+                                                    <td>Email: </td>
+                                                    <td>{{contact_data.email}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Contact Telephone</td>
+                                                    <td>{{contact_data.telephone}}</td>
+                                                </tr>
+                                            </table>
+                                        </div> <!-- end card body  -->
+                                    </div> <!-- end card  -->
+                                </div> <!--// end col-sm-12 -->
+                            </div> <!--// end row -->
+                        </div>   <!-- end row -->
+                    </div> <!-- /.container-fluid -->
+                </div> <!-- End of Main Content -->
+            </div> <!-- End Content wrapper-->
+        </div> <!-- wrapper -->
+    </div>  <!-- End container -->
+</section>
+
 {% endblock %}
