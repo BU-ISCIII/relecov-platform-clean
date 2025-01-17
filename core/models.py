@@ -41,7 +41,7 @@ class BioinfoMetadataFile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=("created at"))
 
     class Meta:
-        db_table = "core_metdata_values_file"
+        db_table = "core_metadata_values_file"
 
     def __str__(self):
         return "%s" % (self.title)
