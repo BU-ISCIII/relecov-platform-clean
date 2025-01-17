@@ -142,13 +142,24 @@ def create_sample_data(request):
         if is_first_entry:
             error_name_obj = core.models.ErrorName.objects.filter(pk=1).first()
             try:
-                core.api.utils.common_functions.add_sample_state_history(
+                state_history_obj = core.api.utils.common_functions.add_sample_state_history(
                     sample_obj,
                     state_id=split_data["sample"]["state"],
                     error_name=error_name_obj,
                 )
             except ValueError as e:
                 return Response({"ERROR": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            # Serialization
+            state_history_serializer = core.api.serializers.SampleStateHistorySerializer(
+                data=state_history_obj
+            )
+            # Validation
+            if not state_history_serializer.is_valid():
+                return Response(
+                    state_history_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+                )
+                    
+            state_history_serializer.save()
 
         # Save ENA info if included
         if len(split_data["ena"]) > 0:
@@ -170,7 +181,7 @@ def create_sample_data(request):
                     .get_state_id()
                 )
                 try:
-                    core.api.utils.common_functions.add_sample_state_history(
+                    state_history_obj = core.api.utils.common_functions.add_sample_state_history(
                         sample_obj,
                         state_id=state_id,
                         error_name=None,  # TODO: do not know what to do with this at this point
@@ -179,6 +190,16 @@ def create_sample_data(request):
                     return Response(
                         {"ERROR": str(e)}, status=status.HTTP_400_BAD_REQUEST
                     )
+                # Serialization
+                state_history_serializer = core.api.serializers.SampleStateHistorySerializer(
+                    data=state_history_obj
+                )
+                # Validation
+                if not state_history_serializer.is_valid():
+                    return Response(
+                        state_history_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+                    )
+                state_history_serializer.save()
 
         # Save GISAID info if included
         if len(split_data["gisaid"]) > 0:
@@ -196,7 +217,7 @@ def create_sample_data(request):
                     .get_state_id()
                 )
                 try:
-                    core.api.utils.common_functions.add_sample_state_history(
+                    state_history_obj = core.api.utils.common_functions.add_sample_state_history(
                         sample_obj,
                         state_id=state_id,
                         error_name=None,  # TODO: do not know what to do with this at this point
@@ -205,6 +226,16 @@ def create_sample_data(request):
                     return Response(
                         {"ERROR": str(e)}, status=status.HTTP_400_BAD_REQUEST
                     )
+                # Serialization
+                state_history_serializer = core.api.serializers.SampleStateHistorySerializer(
+                    data=state_history_obj
+                )
+                # Validation
+                if not state_history_serializer.is_valid():
+                    return Response(
+                        state_history_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+                    )
+                state_history_serializer.save()
 
         # Save AUTHOR info if included
         if len(split_data["author"]) > 0:
@@ -409,18 +440,24 @@ def create_metadata_value(request):
         .get_state_id()
     )
     try:
-        core.api.utils.common_functions.add_sample_state_history(
+        state_history_obj = core.api.utils.common_functions.add_sample_state_history(
             sample_obj,
             state_id=state_id,
             error_name=None,  # TODO: do not know what to do with this at this point
         )
     except ValueError as e:
         return Response({"ERROR": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-    # FIXME: this might be not necessary. It depends whether we add the serializer (here or in api.utils.add_sample_state_history())
-    # Validate serializer
-    # if date_serializer.is_valid():
-    #    date_serializer.save()
+    # Serialization
+    state_history_serializer = core.api.serializers.SampleStateHistorySerializer(
+        data=state_history_obj
+    )
+    # Validation
+    if not state_history_serializer.is_valid():
+        return Response(
+            {"ERROR": state_history_serializer.errors},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    state_history_serializer.save()
 
     return Response(status=status.HTTP_201_CREATED)
 

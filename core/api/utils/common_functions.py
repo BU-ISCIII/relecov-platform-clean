@@ -85,18 +85,11 @@ def add_sample_state_history(sample_obj, state_id, error_name=None):
     ).update(is_current=False)
 
     # Add the new state history
-    state_data = {
+    state_history_obj = {
         "is_current": True,
         "changed_at": timezone.now(),
         "sample": sample_obj.pk,
         "state": state_obj.pk,
         "error_name": error_obj.pk,
     }
-    # TODO: needs is_valid assestment.
-    state_serializer = core.api.serializers.SampleStateHistorySerializer(
-        data=state_data
-    )
-    if not state_serializer.is_valid():
-        Response(status=status.HTTP_201_CREATED)
-    state_serializer.save()
-    return state_obj
+    return state_history_obj
