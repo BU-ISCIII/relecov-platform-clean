@@ -141,172 +141,70 @@
         "name": "RelecovManager",
         "permissions": []
     }
-},    {
+},
+{
     "model": "core.errorname",
     "pk": 1,
     "fields": {
         "error_code": "0",
-        "error_name": "No Error"
+        "error_name": "No error"
     }
 },
 {
     "model": "core.errorname",
     "pk": 2,
     "fields": {
-        "error_code": "100",
-        "error_name": "AttributeError: An object attribute is missing or invalid"
+        "error_code": "1",
+        "error_name": "Schema name and version is not defined"
     }
 },
 {
     "model": "core.errorname",
     "pk": 3,
     "fields": {
-        "error_code": "101",
-        "error_name": "TypeError: An operation or function was applied to an object of inappropriate type"
+        "error_code": "3",
+        "error_name": "Sample already defined"
     }
 },
 {
     "model": "core.errorname",
     "pk": 4,
     "fields": {
-        "error_code": "102",
-        "error_name": "ValueError: An operation received an argument with the right type but inappropriate value"
+        "error_code": "4",
+        "error_name": "Sample already defined"
     }
 },
+
 {
     "model": "core.errorname",
     "pk": 5,
     "fields": {
-        "error_code": "103",
-        "error_name": "KeyError: A key was not found in a mapping or dictionary"
+        "error_code": "5",
+        "error_name": "Failed to store data"
     }
 },
 {
     "model": "core.errorname",
     "pk": 6,
     "fields": {
-        "error_code": "104",
-        "error_name": "IndexError: A sequence subscript was out of range"
+        "error_code": "6",
+        "error_name": "Failed to update sample state history due to invalid state or missing data"
     }
 },
 {
     "model": "core.errorname",
     "pk": 7,
     "fields": {
-        "error_code": "105",
-        "error_name": "ImportError: A module or object could not be imported"
+        "error_code": "7",
+        "error_name": "Accession empty or not provided"
     }
 },
 {
     "model": "core.errorname",
-    "pk": 8,
-    "fields": {
-        "error_code": "106",
-        "error_name": "ModuleNotFoundError: A specified module could not be found"
-    }
-},
-{
-    "model": "core.errorname",
-    "pk": 9,
-    "fields": {
-        "error_code": "107",
-        "error_name": "ZeroDivisionError: Division or modulo by zero"
-    }
-},
-{
-    "model": "core.errorname",
-    "pk": 10,
-    "fields": {
-        "error_code": "108",
-        "error_name": "FileNotFoundError: A file or directory was requested but does not exist"
-    }
-},
-{
-    "model": "core.errorname",
-    "pk": 11,
-    "fields": {
-        "error_code": "109",
-        "error_name": "IOError: An input/output operation failed"
-    }
-},
-{
-    "model": "core.errorname",
-    "pk": 12,
-    "fields": {
-        "error_code": "110",
-        "error_name": "PermissionError: An operation lacked the necessary permissions"
-    }
-},
-{
-    "model": "core.errorname",
-    "pk": 13,
-    "fields": {
-        "error_code": "111",
-        "error_name": "TimeoutError: An operation exceeded its designated time limit"
-    }
-},
-{
-    "model": "core.errorname",
-    "pk": 14,
-    "fields": {
-        "error_code": "112",
-        "error_name": "MemoryError: An operation ran out of memory"
-    }
-},
-{
-    "model": "core.errorname",
-    "pk": 15,
-    "fields": {
-        "error_code": "113",
-        "error_name": "RecursionError: The maximum recursion depth was exceeded"
-    }
-},
-{
-    "model": "core.errorname",
-    "pk": 16,
-    "fields": {
-        "error_code": "114",
-        "error_name": "NameError: A variable or function name is not defined"
-    }
-},
-{
-    "model": "core.errorname",
-    "pk": 17,
-    "fields": {
-        "error_code": "115",
-        "error_name": "SyntaxError: Invalid syntax in the code"
-    }
-},
-{
-    "model": "core.errorname",
-    "pk": 18,
-    "fields": {
-        "error_code": "116",
-        "error_name": "IndentationError: Code indentation is incorrect"
-    }
-},
-{
-    "model": "core.errorname",
-    "pk": 19,
-    "fields": {
-        "error_code": "117",
-        "error_name": "StopIteration: Iteration has no further items"
-    }
-},
-{
-    "model": "core.errorname",
-    "pk": 20,
-    "fields": {
-        "error_code": "118",
-        "error_name": "OverflowError: A numerical calculation exceeded a range limit"
-    }
-},
-{
-    "model": "core.errorname",
-    "pk": 21,
+    "pk": 999,
     "fields": {
         "error_code": "999",
-        "error_name": "Other unspecified error occurred"
+        "error_name": "Other"
     }
 }
 ]
