@@ -30,10 +30,10 @@ def get_analysis_defined(s_obj):
         bioinfo_analysis_fieldID__property_name="analysis_date", sample=s_obj
     ).values_list("value", flat=True)
 
+
 def add_sample_state_history(sample_obj, state_id, error_name=None):
     """
     Adds a new state history entry for a sample and marks previous states as not current.
-    Since all 
     """
     # Validate the state exists
     state_obj = None
@@ -44,10 +44,10 @@ def add_sample_state_history(sample_obj, state_id, error_name=None):
     if state_id:
         state_obj = core.models.SampleState.objects.filter(pk=state_id).last()
     else:
-        # If no state is defined, use the last record for that sample 
+        # If no state is defined, use the last record for that sample
         state_obj = (
             core.models.SampleStateHistory.objects.filter(sample=sample_obj)
-            .order_by('-changed_at')
+            .order_by("-changed_at")
             .first()
         )
 

@@ -846,6 +846,7 @@ class SampleStateHistory(models.Model):
         if self.state:
             return "%s" % (self.state.get_state())
         return None
+
     def update_state(self):
         if not SampleState.objects.filter(state__exact=self.state).exists():
             return False
