@@ -31,6 +31,7 @@ import core.api.utils.common_functions
 import core.config
 
 
+# TODO: add validate step. relecov tool.
 @extend_schema(
     examples=[
         OpenApiExample(
@@ -102,7 +103,6 @@ def create_sample_data(request):
         data = request.data
         if isinstance(data, QueryDict):
             data = data.dict()
-
         schema_obj = core.api.utils.common_functions.get_schema_version_if_exists(data)
         if schema_obj is None:
             error = {"ERROR": "schema name and version is not defined"}
@@ -114,10 +114,18 @@ def create_sample_data(request):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         # check if sample is already defined
-        if core.utils.samples.get_sample_obj_from_sample_name(
+        sample_obj = core.utils.samples.get_sample_obj_from_sample_name(
             data["sequencing_sample_id"]
-        ):
-            error = {"ERROR": "sample already defined"}
+        )
+        if sample_obj:
+            error = "Sample already defined"
+            error_name_value = core.models.ErrorName.objects.filter(error_name=error).first()
+            if error_name_value:
+                core.api.utils.common_functions.add_sample_state_history(
+                    sample_obj,
+                    state_id=None,
+                    error_name=error,
+                )
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
         # get the user to assign the sample based on the collecting_institution
@@ -138,35 +146,32 @@ def create_sample_data(request):
         # Add initial state history (after creating the sample)
         is_first_entry = not core.models.SampleStateHistory.objects.filter(
             sample=sample_obj
-        ).exists()
+            ).exists()
         if is_first_entry:
-            error_name_obj = core.models.ErrorName.objects.filter(pk=1).first()
-            try:
-                state_history_obj = core.api.utils.common_functions.add_sample_state_history(
-                    sample_obj,
-                    state_id=split_data["sample"]["state"],
-                    error_name=error_name_obj,
-                )
-            except ValueError as e:
-                return Response({"ERROR": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-            # Serialization
-            state_history_serializer = core.api.serializers.SampleStateHistorySerializer(
-                data=state_history_obj
+            error_name_value = core.models.ErrorName.objects.filter(pk=1).values_list('error_name',flat=True).first()
+            core.api.utils.common_functions.add_sample_state_history(
+                sample_obj,
+                state_id=split_data["sample"]["state"],
+                error_name=error_name_value,
             )
-            # Validation
-            if not state_history_serializer.is_valid():
-                return Response(
-                    state_history_serializer.errors, status=status.HTTP_400_BAD_REQUEST
-                )
-                    
-            state_history_serializer.save()
 
         # Save ENA info if included
         if len(split_data["ena"]) > 0:
+            state_id = (
+                core.models.SampleState.objects.filter(state__exact="Ena")
+                .last()
+                .get_state_id()
+            )
             result = core.api.utils.public_db.store_pub_databases_data(
                 split_data["ena"], "ena", schema_obj, sample_id
             )
             if "ERROR" in result:
+                error = 'Failed to store data'
+                core.api.utils.common_functions.add_sample_state_history(
+                    sample_obj,
+                    state_id=state_id,
+                    error_name=error, 
+                )
                 return Response(result, status=status.HTTP_206_PARTIAL_CONTENT)
             # check that the ena_sample_accession is not empty or "Not Provided"
             if (
@@ -175,67 +180,70 @@ def create_sample_data(request):
                 and split_data["ena"]["ena_sample_accession"] is not None
             ):
                 # Save entry in update state table for valid ena_sample_accession
-                state_id = (
-                    core.models.SampleState.objects.filter(state__exact="Ena")
-                    .last()
-                    .get_state_id()
-                )
                 try:
-                    state_history_obj = core.api.utils.common_functions.add_sample_state_history(
+                    core.api.utils.common_functions.add_sample_state_history(
                         sample_obj,
                         state_id=state_id,
-                        error_name=None,  # TODO: do not know what to do with this at this point
+                        error_name='No error', 
                     )
-                except ValueError as e:
+                except ValueError:
+                    error = 'Failed to update sample state history due to invalid state or missing data'
+                    core.api.utils.common_functions.add_sample_state_history(
+                        sample_obj,
+                        state_id=state_id,
+                        error_name=error, 
+                    )
                     return Response(
-                        {"ERROR": str(e)}, status=status.HTTP_400_BAD_REQUEST
+                        {"ERROR": error}, status=status.HTTP_400_BAD_REQUEST
                     )
-                # Serialization
-                state_history_serializer = core.api.serializers.SampleStateHistorySerializer(
-                    data=state_history_obj
+            else:
+                error = "Accession empty or not provided"
+                core.api.utils.common_functions.add_sample_state_history(
+                    sample_obj,
+                    state_id=state_id,
+                    error_name=error, 
                 )
-                # Validation
-                if not state_history_serializer.is_valid():
-                    return Response(
-                        state_history_serializer.errors, status=status.HTTP_400_BAD_REQUEST
-                    )
-                state_history_serializer.save()
+                return Response(
+                    {"ERROR": error}, status=status.HTTP_400_BAD_REQUEST
+                )
 
         # Save GISAID info if included
         if len(split_data["gisaid"]) > 0:
+            state_id = (
+                core.models.SampleState.objects.filter(state__exact="Gisaid")
+                .last()
+                .get_state_id()
+            )
             if "EPI_ISL" in split_data["gisaid"]["gisaid_accession_id"]:
                 result = core.api.utils.public_db.store_pub_databases_data(
                     split_data["gisaid"], "gisaid", schema_obj, sample_id
                 )
                 if "ERROR" in result:
+                    error = 'Failed to store data'
+                    core.api.utils.common_functions.add_sample_state_history(
+                        sample_obj,
+                        state_id=state_id,
+                        error_name=error, 
+                        )
                     return Response(result, status=status.HTTP_400_BAD_REQUEST)
                 # Save entry in update state table
                 sample_obj.update_state("Gisaid")
-                state_id = (
-                    core.models.SampleState.objects.filter(state__exact="Gisaid")
-                    .last()
-                    .get_state_id()
-                )
                 try:
-                    state_history_obj = core.api.utils.common_functions.add_sample_state_history(
+                    core.api.utils.common_functions.add_sample_state_history(
                         sample_obj,
                         state_id=state_id,
-                        error_name=None,  # TODO: do not know what to do with this at this point
+                        error_name='No error', 
                     )
                 except ValueError as e:
+                    error = 'Failed to update sample state history due to invalid state or missing data'
+                    core.api.utils.common_functions.add_sample_state_history(
+                        sample_obj,
+                        state_id=state_id,
+                        error_name=error, 
+                    )
                     return Response(
                         {"ERROR": str(e)}, status=status.HTTP_400_BAD_REQUEST
                     )
-                # Serialization
-                state_history_serializer = core.api.serializers.SampleStateHistorySerializer(
-                    data=state_history_obj
-                )
-                # Validation
-                if not state_history_serializer.is_valid():
-                    return Response(
-                        state_history_serializer.errors, status=status.HTTP_400_BAD_REQUEST
-                    )
-                state_history_serializer.save()
 
         # Save AUTHOR info if included
         if len(split_data["author"]) > 0:
@@ -440,24 +448,19 @@ def create_metadata_value(request):
         .get_state_id()
     )
     try:
-        state_history_obj = core.api.utils.common_functions.add_sample_state_history(
+        core.api.utils.common_functions.add_sample_state_history(
             sample_obj,
             state_id=state_id,
-            error_name=None,  # TODO: do not know what to do with this at this point
+            error_name='No error'
         )
     except ValueError as e:
-        return Response({"ERROR": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    # Serialization
-    state_history_serializer = core.api.serializers.SampleStateHistorySerializer(
-        data=state_history_obj
-    )
-    # Validation
-    if not state_history_serializer.is_valid():
-        return Response(
-            {"ERROR": state_history_serializer.errors},
-            status=status.HTTP_400_BAD_REQUEST,
+        error = 'Failed to store data'
+        core.api.utils.common_functions.add_sample_state_history(
+            sample_obj,
+            state_id=state_id,
+            error_name=error, 
         )
-    state_history_serializer.save()
+        return Response({"ERROR": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     return Response(status=status.HTTP_201_CREATED)
 
@@ -558,6 +561,8 @@ def create_metadata_value(request):
         },
     ),
 )
+
+# TODO: still need to add update_sample_history here
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -628,16 +633,7 @@ def create_variant_data(request):
         if found_error:
             core.api.utils.variants.delete_created_variancs(v_in_sample_list, v_an_list)
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
-
         sample_obj.update_state("Variant")
-        # Include date and state in DateState table
-        state_id = (
-            core.models.SampleState.objects.filter(state__exact="Variant")
-            .last()
-            .get_state_id()
-        )
-        sample_id = sample_obj.get_sample_id()
-        core.api.utils.common_functions.update_change_state_date(sample_id, state_id)
 
         return Response(status=status.HTTP_201_CREATED)
     return Response(error, status=status.HTTP_400_BAD_REQUEST)
@@ -680,67 +676,53 @@ def update_state(request):
         sample_obj = core.utils.samples.get_sample_obj_from_sample_name(
             data["sample_name"]
         )
+
+        # Catch errors during the execution
+        errors = []
         if sample_obj is None:
             return Response(
-                {"ERROR": core.config.ERROR_SAMPLE_NOT_DEFINED},
-                status=status.HTTP_400_BAD_REQUEST,
+                core.config.ERROR_SAMPLE_NOT_DEFINED,
+                status=status.HTTP_400_BAD_REQUEST
             )
-
+        
         # Validate the new state exists
         new_state_obj = core.models.SampleState.objects.filter(
             state=data["state"]
         ).last()
+
+        # Catch errors during the execution
         if not new_state_obj:
-            return Response(
-                {"ERROR": "The specified state does not exist."},
-                status=status.HTTP_400_BAD_REQUEST,
+            errors.append({
+                'error_name': "The specified state does not exist",
+                'http_status': status.HTTP_400_BAD_REQUEST }
             )
 
-        # Handle error type if present in the request
-        # FIXME: it has been tested with error_code == None --> automatically_assigned value "other" (error_code_pk=21). Further testing is required.
-        e_data = {
-            "error_name": data.get("error_name", None),
-            "error_code": data.get("error_code", None),
-        }
-        error_name_obj = core.api.utils.common_functions.handle_sample_errors(
-            dict_error=e_data
-        )
-
-        # Create changed_at field if not provided
+        # Add new sample state in history records
         try:
-            current_time = data["changed_at"]
-        except KeyError:
-            current_time = timezone.now()
-
-        # Prepare data for the serializer
-        s_data = {
-            "is_current": True,
-            "changed_at": current_time,
-            "sample": sample_obj.pk,
-            "state": new_state_obj.pk,
-            "error_name": error_name_obj.pk,
-        }
-
-        # All previous records are marked as not current
-        core.models.SampleStateHistory.objects.filter(
-            sample=sample_obj, is_current=True
-        ).update(is_current=False)
-
-        # Serialize and validate the state update
-        sample_state_serializer = core.api.serializers.SampleStateHistorySerializer(
-            data=s_data
-        )
-        if not sample_state_serializer.is_valid():
-            return Response(
-                sample_state_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            core.api.utils.common_functions.add_sample_state_history(
+                sample_obj=sample_obj,
+                state_id= new_state_obj.pk if new_state_obj else None,
+                error_name='No errors'
             )
+        except ValueError as e:
+            error = 'Failed to update sample state history due to invalid state or missing data'
+            core.api.utils.common_functions.add_sample_state_history(
+                sample_obj,
+                state_id=new_state_obj.pk if new_state_obj else None,
+                error_name=error, 
+            )
+            return Response({"ERROR": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Save the new state history record
-        sample_state_serializer.save()
-
-        return Response(
-            "Successful: sample state updated and history recorded.",
-            status=status.HTTP_201_CREATED,
-        )
+        # Return response of error encountered while updating sample state
+        if len(errors) > 0:
+            return Response(
+                errors[0]['error_name'],
+                status=errors[0]['http_status'],
+            )
+        else:
+            return Response(
+                "Successful: sample state updated and history recorded.",
+                status=status.HTTP_201_CREATED,
+            )
     else:
         return Response(status=status.HTTP_400_BAD_REQUEST)
