@@ -734,7 +734,6 @@ class Sample(models.Model):
         data.append(self.sequence_file_R2_md5)
         return data
 
-    # TODO: consider removing this
     def update_state(self, state):
         if not SampleState.objects.filter(state__exact=state).exists():
             return False
@@ -847,14 +846,12 @@ class SampleStateHistory(models.Model):
         if self.state:
             return "%s" % (self.state.get_state())
         return None
-
-    # FIXME: Consider to refactor this.
-    # def update_state(self, state):
-    #    if not SampleState.objects.filter(state__exact=state).exists():
-    #        return False
-    #    self.state = SampleState.objects.filter(state__exact=state).last()
-    #    self.save()
-    #    return self
+    def update_state(self):
+        if not SampleState.objects.filter(state__exact=self.state).exists():
+            return False
+        self.state = SampleState.objects.filter(state__exact=self.state).last()
+        self.save()
+        return self
 
 
 class Variant(models.Model):
