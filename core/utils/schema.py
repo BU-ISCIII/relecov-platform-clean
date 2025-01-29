@@ -246,29 +246,6 @@ def store_schema_properties(schema_obj, s_properties, required):
     return {"SUCCESS": ""}
 
 
-def store_bioinfo_fields(schema_obj, s_properties):
-    """Store the fields to be used for saving analysis information"""
-    # p = re.compile(r"Bioinformatic?..*[\w+]")
-    # p2 = re.compile(r"Lineage.+[\w+]")
-    for prop_key in s_properties.keys():
-        # classification = ""
-        data = dict(s_properties[prop_key])
-        if "sample_name" in data:
-            continue
-        if "classification" in data:
-            match = re.search(r"^Bioinformatic.*", data["classification"])
-            if not match:
-                continue
-            # fetch the Classification instance
-            fields = {}
-            # fields["classificationID"] = class_obj
-            fields["property_name"] = prop_key
-            fields["label_name"] = data["label"]
-            n_field = core.models.BioinfoAnalysisField.objects.create_new_field(fields)
-            n_field.schemaID.add(schema_obj)
-    return {"SUCCESS": ""}
-
-
 def store_lineage_fields(schema_obj, s_properties):
     """Store the fields to be used for lineage analysis information"""
     for prop_key in s_properties.keys():
@@ -358,7 +335,6 @@ def process_schema_file(json_file, default, user, apps_name):
     )
     if "ERROR" in result:
         return result
-    store_bioinfo_fields(new_schema, schema_data["full_schema"]["properties"])
     store_lineage_fields(new_schema, schema_data["full_schema"]["properties"])
     store_public_data_fields(new_schema, schema_data["full_schema"]["properties"])
 
