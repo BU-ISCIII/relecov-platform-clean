@@ -3,7 +3,7 @@
 PLATFORM_VERSION="1.0.0"
 ## . ./install_settings.txt
 
-
+# FIXME: Rename project name with something more generic. "pathoweb-"${project_name}""
 usage() {
 	cat << EOF
 This script install and upgrade the relecov platform application.
