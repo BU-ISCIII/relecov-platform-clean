@@ -97,6 +97,8 @@ import core.config
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
+# FIXME: When input data has not ENA value, it returns 404, but samples were successfully added to database.
+#          - Proposal: emit a warning message instead  
 def create_sample_data(request):
     if request.method == "POST":
         data = request.data
@@ -179,6 +181,7 @@ def create_sample_data(request):
                 )
                 return Response(result, status=status.HTTP_206_PARTIAL_CONTENT)
             # check that the ena_sample_accession is not empty or "Not Provided"
+            # TODO: should this be optional? Errors suggest that the sample was not recorded.
             if (
                 split_data["ena"]["ena_sample_accession"] != "Not Provided"
                 and split_data["ena"]["ena_sample_accession"] != ""
@@ -430,14 +433,15 @@ def create_metadata_value(request):
         )
 
     analysis_defined = core.api.utils.metadata_values.get_analysis_defined(sample_obj)
-    analysis_date = data.get("analysis_date", None)
+    # TODO: This field should be updated in order to make it more general
+    analysis_date = data.get("lineage_analysis_date", None)
     if analysis_date is not None:
         if analysis_date in list(analysis_defined):
             return Response(
                 {"ERROR": core.config.ERROR_ANALYSIS_ALREADY_DEFINED},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-
+    # FIXME: 'analysis_date' create errors when it is none. A custom serializer that allows both specific date format and "not-provided" value should be added. 
     stored_data = core.api.utils.metadata_values.store_metadata_values(
         data, schema_obj, analysis_date
     )

@@ -35,7 +35,7 @@ def store_metadata_values(s_data, schema_obj, analysis_date):
             "value": value,
             "sample": sample_obj.id,
             "schema_property": property_name.id,
-            "analysis_date": analysis_date,
+            "analysis_date": analysis_date, # FIXME: allowed format is: YYYY-MM-DD. Add "Not provided" value too
         }
         meta_value_serializer = core.api.serializers.CreateMetadataValueSerializer(
             data=data
@@ -47,5 +47,4 @@ def store_metadata_values(s_data, schema_obj, analysis_date):
                 )
             }
         meta_value_serializer.save()
-
     return {"SUCCESS": "success"}

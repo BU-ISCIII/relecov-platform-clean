@@ -365,7 +365,7 @@ class LineageInfo(models.Model):
     def get_lineage_id(self):
         return "%s" % (self.pk)
 
-
+# FIXME: Lineage tables should be removed in #181
 class LineageFieldsManager(models.Manager):
     def create_new_field(self, data):
         new_field = self.create(
