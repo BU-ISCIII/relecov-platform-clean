@@ -227,8 +227,8 @@ def store_schema_properties(schema_obj, s_properties, required):
             )
         except (KeyError, DataError) as e:
             print(prop_key, " error ", e)
+            return {"ERROR": e }
             # schema_obj.delete()
-            # return {"ERROR": e}
         if "options" in data:
             for item in s_properties[prop_key]["enum"]:
                 enum = re.search(r"(.+) \[(.*)\]", item)
