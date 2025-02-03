@@ -28,15 +28,21 @@ def store_metadata_values(s_data, schema_obj, analysis_date):
         sequencing_sample_id__iexact=s_data["sequencing_sample_id"]
     ).last()
     for field, value in s_data.items():
+        
         property_name = core.models.SchemaProperties.objects.filter(
             schemaID=schema_obj, property__iexact=field
         ).last()
-        data = {
-            "value": value,
-            "sample": sample_obj.id,
-            "schema_property": property_name.id,
-            "analysis_date": analysis_date, # FIXME: allowed format is: YYYY-MM-DD. Add "Not provided" value too
-        }
+        try:
+            data = {
+                "value": value,
+                "sample": sample_obj.id,
+                "schema_property": property_name.id,
+                "analysis_date": analysis_date, # FIXME: allowed format is: YYYY-MM-DD. Add "Not provided" value too
+            }
+        except AttributeError:
+            return {
+                "ERROR": f'{core.config.ERROR_FIELD_NOT_DEFINED, field}',
+            }
         meta_value_serializer = core.api.serializers.CreateMetadataValueSerializer(
             data=data
         )
