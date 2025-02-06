@@ -39,7 +39,7 @@ def store_metadata_values(s_data, schema_obj, analysis_date):
                 "value": value,
                 "sample": sample_obj.id,
                 "schema_property": property_name.id,
-                "analysis_date": analysis_date, # FIXME: allowed format is: YYYY-MM-DD. Add "Not provided" value too
+                "analysis_date": analysis_date,  # FIXME: allowed format is: YYYY-MM-DD. Add "Not provided" value too
             }
         except AttributeError:
             return {

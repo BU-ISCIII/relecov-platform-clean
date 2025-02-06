@@ -336,7 +336,7 @@ def get_lab_last_actions(lab_name=None):
                 if core.models.SampleStateHistory.objects.filter(sample=sam_obj, state__state__exact=action).exist():
                     lab_data.append(
                         core.models.SampleStateHistory.objects.filter(
-                            sample=sam_obj, 
+                            sample=sam_obj,
                             state__state__exact=action
                         )
                         .last()

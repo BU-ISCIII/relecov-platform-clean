@@ -171,6 +171,7 @@ def search_sample(request):
         )
     return render(request, "core/searchSample.html", {"search_data": search_data})
 
+
 # FIXME: This needs a template or error message when user != admin tryies to access.
 @login_required
 def metadata_visualization(request):

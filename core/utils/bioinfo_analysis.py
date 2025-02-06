@@ -2,7 +2,8 @@
 import core.models
 import core.utils.samples
 import core.utils.schema
-from django.db.models import Max, F, Subquery, OuterRef
+from django.db.models import Max, Subquery, OuterRef
+
 
 def get_bio_analysis_stats_from_lab(lab_name=None):
     """Get the number of samples that are analized and compare with the number
@@ -26,6 +27,7 @@ def get_bio_analysis_stats_from_lab(lab_name=None):
         bio_stats["analized"] = samples_bioquery.values("sample_id").distinct().count()
         bio_stats["received"] = len(sample_objs)
     return bio_stats
+
 
 def get_bioinfo_analysis_data_from_sample(sample_id):
     """Get the latest bioinfo analysis data for the sample, ensuring unique values"""
@@ -80,9 +82,7 @@ def get_bioinfo_analysis_data_from_sample(sample_id):
             bio_field.schema_property.get_label(),
             value
         ])
-    
     return bio_anlys_data
-
 
 
 # FIXME: Replace BioinfoAnalysisField wit MetadataValue
