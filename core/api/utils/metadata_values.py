@@ -29,7 +29,7 @@ def store_metadata_values(s_data, schema_obj, analysis_date):
     ).last()
     for field, value in s_data.items():
         # This condition avoids error when assessing bioinformatics fields
-        if 'schema_' in field :
+        if "schema_" in field:
             continue
         property_name = core.models.SchemaProperties.objects.filter(
             schemaID=schema_obj, property__iexact=field
@@ -43,7 +43,7 @@ def store_metadata_values(s_data, schema_obj, analysis_date):
             }
         except AttributeError:
             return {
-                "ERROR": f'{core.config.ERROR_FIELD_NOT_DEFINED, field}',
+                "ERROR": f"{core.config.ERROR_FIELD_NOT_DEFINED, field}",
             }
         meta_value_serializer = core.api.serializers.CreateMetadataValueSerializer(
             data=data

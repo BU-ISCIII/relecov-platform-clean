@@ -363,9 +363,7 @@ def metadata_form(request):
         m_batch_form = core.utils.samples.create_form_for_batch(
             schema_obj, request.user
         )
-        sample_saved = core.utils.samples.get_sample_pre_recorded(
-            request.user
-        )
+        sample_saved = core.utils.samples.get_sample_pre_recorded(request.user)
         return render(
             request,
             "core/metadataForm.html",

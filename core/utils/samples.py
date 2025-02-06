@@ -333,11 +333,12 @@ def get_lab_last_actions(lab_name=None):
             ).last()
             lab_data = [lab[0]]
             for action in action_list:
-                if core.models.SampleStateHistory.objects.filter(sample=sam_obj, state__state__exact=action).exist():
+                if core.models.SampleStateHistory.objects.filter(
+                    sample=sam_obj, state__state__exact=action
+                ).exist():
                     lab_data.append(
                         core.models.SampleStateHistory.objects.filter(
-                            sample=sam_obj,
-                            state__state__exact=action
+                            sample=sam_obj, state__state__exact=action
                         )
                         .last()
                         .get_date()
@@ -426,9 +427,7 @@ def get_sample_display_data(sample_id, user):
             sample=sample_obj
         ).order_by("-changed_at")
         for action_date_obj in actions_date_objs:
-            actions.append(
-                [action_date_obj.get_state(), action_date_obj.get_date()]
-            )
+            actions.append([action_date_obj.get_state(), action_date_obj.get_date()])
         s_data["actions"] = actions
 
     lab_sample = sample_obj.get_collecting_lab_sample_id()
@@ -527,11 +526,12 @@ def get_sample_per_date_per_lab(lab_name):
     """
     samples_per_date = OrderedDict()
     sample_qs = get_sample_objs_per_lab(lab_name)
-    sequence_date_obj = core.models.SchemaProperties.objects.get(property='sequencing_date')
+    sequence_date_obj = core.models.SchemaProperties.objects.get(
+        property="sequencing_date"
+    )
     s_dates = (
         core.models.MetadataValues.objects.filter(
-            sample__in=sample_qs,
-            schema_property__id=sequence_date_obj.pk
+            sample__in=sample_qs, schema_property__id=sequence_date_obj.pk
         )
         .values_list("value", flat=True)
         .distinct()
