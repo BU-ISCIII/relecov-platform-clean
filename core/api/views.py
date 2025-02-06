@@ -98,7 +98,7 @@ import core.config
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 # FIXME: When input data has not ENA value, it returns 404, but samples were successfully added to database.
-#          - Proposal: emit a warning message instead  
+#          - Proposal: emit a warning message instead
 def create_sample_data(request):
     if request.method == "POST":
         data = request.data
@@ -441,7 +441,7 @@ def create_metadata_value(request):
                 {"ERROR": core.config.ERROR_ANALYSIS_ALREADY_DEFINED},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-    # FIXME: 'analysis_date' create errors when it is none. A custom serializer that allows both specific date format and "not-provided" value should be added. 
+    # FIXME: 'analysis_date' create errors when it is none. A custom serializer that allows both specific date format and "not-provided" value should be added.
     stored_data = core.api.utils.metadata_values.store_metadata_values(
         data, schema_obj, analysis_date
     )
