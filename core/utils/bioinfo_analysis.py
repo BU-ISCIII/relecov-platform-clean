@@ -48,11 +48,13 @@ def get_bioinfo_analysis_data_from_sample(sample_id):
     # Get all MetadataValues related to the schema and sample
     bioan_fields_qs = core.models.MetadataValues.objects.filter(
         schema_property__schemaID=schema_obj,
-        sample=sample_obj  # Ensure we only fetch for this specific sample
+        sample=sample_obj,  # Ensure we only fetch for this specific sample
     )
 
     # Get the latest analysis_date for this sample
-    latest_analysis_date = bioan_fields_qs.aggregate(Max("analysis_date"))["analysis_date__max"]
+    latest_analysis_date = bioan_fields_qs.aggregate(Max("analysis_date"))[
+        "analysis_date__max"
+    ]
 
     # If no data exists, return None
     if not latest_analysis_date:
@@ -65,9 +67,11 @@ def get_bioinfo_analysis_data_from_sample(sample_id):
             bioan_fields_qs.filter(
                 analysis_date=latest_analysis_date,
                 schema_property=OuterRef("schema_property"),
-                value=OuterRef("value")
-            ).order_by("-generated_at").values("generated_at")[:1]
-        )
+                value=OuterRef("value"),
+            )
+            .order_by("-generated_at")
+            .values("generated_at")[:1]
+        ),
     )
 
     # If still empty, return None
@@ -78,10 +82,7 @@ def get_bioinfo_analysis_data_from_sample(sample_id):
     for bio_field in latest_bioan_fields:
         value = bio_field.get_value() if bio_field else ""
 
-        bio_anlys_data.append([
-            bio_field.schema_property.get_label(),
-            value
-        ])
+        bio_anlys_data.append([bio_field.schema_property.get_label(), value])
     return bio_anlys_data
 
 

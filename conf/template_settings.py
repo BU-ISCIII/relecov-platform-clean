@@ -76,7 +76,7 @@ DATABASES = {
         "USER": "djangouser",
         "PASSWORD": "djangopass",
         "PORT": "djangoport",
-        "NAME": "pathoweb",
+        "NAME": "relecov",
         "HOST": "djangohost",
     },
 }

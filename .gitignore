@@ -9,9 +9,9 @@ migrations/
 virtualenv/
 manage.py
 install_*.txt
+initial_*.txt
 relecov_platform/
 documents/
-initial_*.txt
 
 # VS code
 .vscode/

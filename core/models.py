@@ -694,7 +694,9 @@ class Sample(models.Model):
         return self.ena_obj.get_ena_data()
 
     def get_state(self):
-        latest_state = SampleStateHistory.objects.filter(sample=self, is_current=True).last()
+        latest_state = SampleStateHistory.objects.filter(
+            sample=self, is_current=True
+        ).last()
         if latest_state and latest_state.state:
             return "%s" % (latest_state.state.get_state())
         return None
