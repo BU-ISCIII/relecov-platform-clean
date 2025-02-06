@@ -18,7 +18,7 @@ DEBUG = True
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "localserverip", "dns_url"]
 
 # Application definition
-
+# FIXME: The project should be renamed. "Pathoweb-'${project_name}' ?
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -76,7 +76,7 @@ DATABASES = {
         "USER": "djangouser",
         "PASSWORD": "djangopass",
         "PORT": "djangoport",
-        "NAME": "relecov",
+        "NAME": "pathoweb",
         "HOST": "djangohost",
     },
 }

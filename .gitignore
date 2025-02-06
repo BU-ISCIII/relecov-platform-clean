@@ -8,10 +8,10 @@ migrations/
 /static/
 virtualenv/
 manage.py
-install_settings.txt
+install_*.txt
 relecov_platform/
 documents/
-initial_settings.txt
+initial_*.txt
 
 # VS code
 .vscode/

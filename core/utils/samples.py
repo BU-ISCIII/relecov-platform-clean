@@ -315,7 +315,6 @@ def delete_temporary_sample_table(user_obj):
     return True
 
 
-# TODO: Replace the outdated DateUpdateState with the new SampleStateHistory
 def get_lab_last_actions(lab_name=None):
     """Get the last action performed on the samples for a specific lab.
     If no lab is given it returns the info for all labs
@@ -334,12 +333,11 @@ def get_lab_last_actions(lab_name=None):
             ).last()
             lab_data = [lab[0]]
             for action in action_list:
-                if core.models.DateUpdateState.objects.filter(
-                    sampleID=sam_obj, stateID__state__exact=action
-                ).exists():
+                if core.models.SampleStateHistory.objects.filter(sample=sam_obj, state__state__exact=action).exist():
                     lab_data.append(
-                        core.models.DateUpdateState.objects.filter(
-                            sampleID=sam_obj, stateID__state__exact=action
+                        core.models.SampleStateHistory.objects.filter(
+                            sample=sam_obj, 
+                            state__state__exact=action
                         )
                         .last()
                         .get_date()
@@ -353,11 +351,11 @@ def get_lab_last_actions(lab_name=None):
         last_sample_obj = core.models.Sample.objects.filter(
             collecting_institution__iexact=lab_name
         ).last()
-        action_objs = core.models.DateUpdateState.objects.filter(
-            sampleID=last_sample_obj
+        action_objs = core.models.SampleStateHistory.objects.filter(
+            sample=last_sample_obj
         )
         for action_obj in action_objs:
-            s_state = action_obj.get_state_name()
+            s_state = action_obj.get_state()
             if s_state in action_list:
                 actions[s_state] = action_obj.get_date()
         return actions
@@ -392,7 +390,6 @@ def get_public_database_fields(schema_obj, db_type):
     return None
 
 
-# TODO: Replace the outdated DateUpdateState with the new SampleStateHistory
 def get_sample_display_data(sample_id, user):
     """Check if user is allowed to see the data and if true collect all info
     from sample to display
@@ -423,14 +420,14 @@ def get_sample_display_data(sample_id, user):
         )
     )
     # Fetch actions done on the sample
-    if core.models.DateUpdateState.objects.filter(sampleID=sample_obj).exists():
+    if core.models.SampleStateHistory.objects.filter(sample=sample_obj).exists():
         actions = []
-        actions_date_objs = core.models.DateUpdateState.objects.filter(
-            sampleID=sample_obj
-        ).order_by("-date")
+        actions_date_objs = core.models.SampleStateHistory.objects.filter(
+            sample=sample_obj
+        ).order_by("-changed_at")
         for action_date_obj in actions_date_objs:
             actions.append(
-                [action_date_obj.get_state_display_name(), action_date_obj.get_date()]
+                [action_date_obj.get_state(), action_date_obj.get_date()]
             )
         s_data["actions"] = actions
 
@@ -444,11 +441,11 @@ def get_sample_display_data(sample_id, user):
             # iskylims_data is a list with one element. Then get the first element
             for key, i_data in iskylims_data[0].items():
                 if key == "Project values":
-                    for p_key, p_data in iskylims_data["Project values"].items():
+                    for p_key, p_data in iskylims_data[0]["Project values"].items():
                         s_data["iskylims_p_data"].append([p_key, p_data])
                 else:
                     s_data["iskylims_basic"].append([key, i_data])
-            s_data["iskylims_project"] = iskylims_data["sample_project"]
+            s_data["iskylims_project"] = iskylims_data[0]["sample_project"]
     return s_data
 
 
@@ -529,18 +526,25 @@ def get_sample_per_date_per_lab(lab_name):
     and number of samples
     """
     samples_per_date = OrderedDict()
-
+    sample_qs = get_sample_objs_per_lab(lab_name)
+    sequence_date_obj = core.models.SchemaProperties.objects.get(property='sequencing_date')
     s_dates = (
-        core.models.Sample.objects.filter(collecting_institution__iexact=lab_name)
-        .values_list("sequencing_date", flat=True)
+        core.models.MetadataValues.objects.filter(
+            sample__in=sample_qs,
+            schema_property__id=sequence_date_obj.pk
+        )
+        .values_list("value", flat=True)
         .distinct()
-        .order_by("sequencing_date")
+        .order_by("value")
     )
+
     for s_date in s_dates:
-        date = datetime.strftime(s_date, "%d-%B-%Y")
-        samples_per_date[date] = core.models.Sample.objects.filter(
-            collecting_institution__iexact=lab_name, sequencing_date=s_date
-        ).count()
+        if s_date:
+            date = datetime.strptime(s_date, "%Y-%m-%d").strftime("%d-%B-%Y")
+            samples_per_date[date] = core.models.MetadataValues.objects.filter(
+                sample__in=sample_qs, value=s_date, schema_property__id=1405
+            ).count()
+
     return samples_per_date
 
 
@@ -719,7 +723,7 @@ def save_excel_form_in_samba_folder(m_file, user_name):
     return
 
 
-# TODO: Replace the outdated DateUpdateState with the new SampleStateHistory
+# FIXME: Replace the outdated DateUpdateState with the new SampleStateHistory
 def search_samples(sample_name, lab_name, sample_state, s_date, user):
     """Search the samples that match with the query conditions"""
     sample_list = []

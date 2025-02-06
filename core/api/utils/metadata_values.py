@@ -28,7 +28,9 @@ def store_metadata_values(s_data, schema_obj, analysis_date):
         sequencing_sample_id__iexact=s_data["sequencing_sample_id"]
     ).last()
     for field, value in s_data.items():
-        
+        # This condition avoids error when assessing bioinformatics fields
+        if 'schema_' in field :
+            continue
         property_name = core.models.SchemaProperties.objects.filter(
             schemaID=schema_obj, property__iexact=field
         ).last()
