@@ -65,6 +65,8 @@ def sample_display(request, sample_id):
     sample_data["ena"] = core.utils.public_db.get_public_information_from_sample(
         "ena", sample_id
     )
+    # TODO: Reduce search waiting time by optimizing DB queries
+    # FIXME: Some tables in the template appear abnormally. Fix it and discuss the strategy followed in get_bioinfo_analysis_data_from_sample
     sample_data["bioinfo"] = (
         core.utils.bioinfo_analysis.get_bioinfo_analysis_data_from_sample(sample_id)
     )
@@ -169,7 +171,7 @@ def search_sample(request):
         )
     return render(request, "core/searchSample.html", {"search_data": search_data})
 
-
+# FIXME: This needs a template or error message when user != admin tryies to access.
 @login_required
 def metadata_visualization(request):
     if request.user.username != "admin":
@@ -360,7 +362,9 @@ def metadata_form(request):
         m_batch_form = core.utils.samples.create_form_for_batch(
             schema_obj, request.user
         )
-        sample_saved = core.utils.samples.get_sample_pre_recorded(request.user)
+        sample_saved = core.utils.samples.get_sample_pre_recorded(
+            request.user
+        )
         return render(
             request,
             "core/metadataForm.html",

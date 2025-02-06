@@ -341,7 +341,7 @@ class MetadataValues(models.Model):
         return "%s" % (self.pk)
 
     def get_b_process_field_id(self):
-        return "%s" % (self.bioinfo_analysis_fieldID)
+        return "%s" % (self.schema_property)
 
     objects = MetadataValuesManager()
 
@@ -693,8 +693,9 @@ class Sample(models.Model):
         return self.ena_obj.get_ena_data()
 
     def get_state(self):
-        if self.state:
-            return "%s" % (self.state.get_state())
+        latest_state = SampleStateHistory.objects.filter(sample=self, is_current=True).last()
+        if latest_state and latest_state.state:
+            return "%s" % (latest_state.state.get_state())
         return None
 
     def get_user(self):
